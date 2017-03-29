@@ -1,6 +1,13 @@
 package pl.lodz.p.edu.grs.model;
 
-import javax.persistence.*;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.PrePersist;
+import java.time.LocalDateTime;
 
 
 @Entity
@@ -18,6 +25,8 @@ public class Game {
 
     @Column(nullable = false)
     private boolean available;
+
+    private LocalDateTime createdAt;
 
     public Game() {
     }
@@ -63,6 +72,19 @@ public class Game {
 
     public void setAvailable(boolean available) {
         this.available = available;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    @PrePersist
+    public void setDate() {
+        this.createdAt = LocalDateTime.now();
     }
 
     @Override
