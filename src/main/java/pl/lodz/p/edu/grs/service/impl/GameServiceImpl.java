@@ -8,6 +8,8 @@ import pl.lodz.p.edu.grs.model.Game;
 import pl.lodz.p.edu.grs.repository.GameRepository;
 import pl.lodz.p.edu.grs.service.GameService;
 
+import java.util.List;
+
 @Service
 public class GameServiceImpl implements GameService{
 
@@ -21,6 +23,11 @@ public class GameServiceImpl implements GameService{
     @Override
     public Page<Game> findAll(Pageable pageable) {
         return gameRepository.findAll(pageable);
+    }
+
+    @Override
+    public List<Game> findAll() {
+        return gameRepository.findAll();
     }
 
     @Override
