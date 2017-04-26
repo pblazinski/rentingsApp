@@ -1,9 +1,11 @@
 package pl.lodz.p.edu.grs.jmx;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.jmx.export.annotation.ManagedAttribute;
 import org.springframework.jmx.export.annotation.ManagedResource;
 import org.springframework.stereotype.Component;
 
+@Profile("default")
 @Component
 @ManagedResource
 public class MyManageSettings  {

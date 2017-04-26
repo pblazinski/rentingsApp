@@ -26,6 +26,7 @@ public class Game {
     @Column(nullable = false)
     private boolean available;
 
+    @Column
     private LocalDateTime createdAt;
 
     public Game() {
