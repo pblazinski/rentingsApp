@@ -36,7 +36,7 @@ public class GameController {
 
     @GetMapping(value = "/mock")
     public Game mockGames() {
-        Game game = new Game("First Game", "I am description", true);
+        Game game = new Game("First Game", "I am description", true,80);
         return gameService.addGame(game);
     }
 

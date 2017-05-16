@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-public class Borrow {
+public class    Borrow {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -87,6 +87,7 @@ public class Borrow {
     @PrePersist
     public void setDate() {
         this.timeBorrowed = LocalDateTime.now();
+        this.deadline = LocalDateTime.now().plusDays(7);
     }
 
     @Override

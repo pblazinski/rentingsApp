@@ -1,12 +1,7 @@
 package pl.lodz.p.edu.grs.model;
 
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.PrePersist;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 
@@ -31,6 +26,9 @@ public class Game {
 
     @Column(nullable = false)
     private double price;
+
+    @ManyToOne
+    private Category category;
 
     public Game() {
     }
@@ -93,6 +91,14 @@ public class Game {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
     }
 
     @PrePersist
