@@ -29,18 +29,22 @@ public class Game {
     @Column
     private LocalDateTime createdAt;
 
+    @Column(nullable = false)
+    private double price;
+
     public Game() {
     }
 
-    public Game(String title, String description, boolean available) {
-        this(null, title, description, available);
+    public Game(String title, String description, boolean available,double price) {
+        this(null, title, description, available,price);
     }
 
-    public Game(Long id, String title, String description, boolean available) {
+    public Game(Long id, String title, String description, boolean available, double price) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.available = available;
+        this.price=price;
     }
 
     public Long getId() {
@@ -81,6 +85,14 @@ public class Game {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
     }
 
     @PrePersist
