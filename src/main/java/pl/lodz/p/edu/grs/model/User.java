@@ -1,5 +1,7 @@
 package pl.lodz.p.edu.grs.model;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -16,17 +18,22 @@ public class User {
     @Column(unique = true, nullable = false)
     private String email;
 
-    @Column(nullable = false)
+    @Column
     private String firstName;
 
-    @Column(nullable = false)
+//    @Column
+//    private String password;
+
+    @Column
     private String surName;
 
     @Column(nullable = false)
     private boolean active;
 
-    @Column
+    @OneToMany(fetch = FetchType.LAZY)
     private List<Game> borrowed;
+
+    public User(){}
 
     public User(String login, String email, boolean active) {
         this.login = login;
@@ -72,6 +79,30 @@ public class User {
 
     public void setBorrowed(List<Game> borrowed) {
         this.borrowed = borrowed;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+//    public String getPassword() {
+//        return password;
+//    }
+//
+//    public void setPassword(String password) {
+//        this.password = new BCryptPasswordEncoder().encode(password);
+//    }
+
+    public String getSurName() {
+        return surName;
+    }
+
+    public void setSurName(String surName) {
+        this.surName = surName;
     }
 
     @Override

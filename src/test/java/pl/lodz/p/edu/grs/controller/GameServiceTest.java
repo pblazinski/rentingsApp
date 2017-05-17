@@ -34,7 +34,7 @@ public class GameServiceTest {
 
     @Test
     public void gameAdd_shouldAdd() {
-        Game game = new Game("title","desc", true);
+        Game game = new Game("title","desc", true,80);
 
         when(gameRepository.saveAndFlush(game)).thenReturn(game);
 

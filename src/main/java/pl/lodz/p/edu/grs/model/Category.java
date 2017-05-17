@@ -16,10 +16,11 @@ public class Category {
     @OneToMany
     private List<Game> gameList;
 
+    public Category(){}
+
     public Category(String name) {
         this.name = name;
     }
-
 
     public Long getId() {
         return id;

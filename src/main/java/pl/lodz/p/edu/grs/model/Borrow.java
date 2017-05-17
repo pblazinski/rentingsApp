@@ -12,10 +12,10 @@ public class    Borrow {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @OneToMany
     private List<Game> borrowedGames;
 
-    @Column(nullable = false)
+    @ManyToOne
     private User user;
 
     @Column(nullable = false)
@@ -30,6 +30,7 @@ public class    Borrow {
     @Column
     private double penalties;
 
+    public Borrow(){}
 
     public Borrow(List<Game> borrowedGames, User user) {
         this.borrowedGames = borrowedGames;
