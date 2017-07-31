@@ -30,6 +30,5 @@ public class UserController {
     public User testUser(){
         User user = new User("Ralink","rafal14kop@gmail.com",true);
         return userService.addUser(user);
-
     }
 }
