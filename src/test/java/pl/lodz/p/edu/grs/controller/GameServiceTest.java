@@ -33,7 +33,7 @@ public class GameServiceTest {
     }
 
     @Test
-    public void gameAdd_shouldAdd() {
+    public void shouldAddGame() {
         Game game = new Game("title","desc", true);
 
         when(gameRepository.saveAndFlush(game)).thenReturn(game);
@@ -48,7 +48,7 @@ public class GameServiceTest {
     }
 
     @Test
-    public void findAll_ShouldReturn1() {
+    public void shouldReturnListOfGame() {
         List<Game> list = Collections.singletonList(new Game());
 
         when(gameRepository.findAll()).thenReturn(list);
