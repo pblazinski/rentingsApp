@@ -5,11 +5,13 @@ import org.aspectj.lang.annotation.Pointcut;
 public class GameRantingsPointcuts {
 
     @Pointcut("execution(* *..controller..*(..))")
-    public void asyncControllerMethod() {}
+    public void asyncControllerMethod() {
+    }
 
 
     @Pointcut("bean(*Controller)")
-    public void asyncBeanController() {}
+    public void asyncBeanController() {
+    }
 
     @Pointcut("@annotation(Monitored)")
     public void monitor() {
