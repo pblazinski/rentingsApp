@@ -2,12 +2,9 @@ package pl.lodz.p.edu.grs.model;
 
 import org.springframework.data.annotation.CreatedDate;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDateTime;
+
 
 @Entity
 public class Game {
@@ -29,18 +26,25 @@ public class Game {
     @CreatedDate
     private LocalDateTime createdAt;
 
+    @Column(nullable = false)
+    private double price;
+
+    @ManyToOne
+    private Category category;
+
     public Game() {
     }
 
-    public Game(String title, String description, boolean available) {
-        this(null, title, description, available);
+    public Game(String title, String description, boolean available,double price) {
+        this(null, title, description, available,price);
     }
 
-    public Game(Long id, String title, String description, boolean available) {
+    public Game(Long id, String title, String description, boolean available, double price) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.available = available;
+        this.price=price;
     }
 
     public Long getId() {
@@ -81,6 +85,27 @@ public class Game {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    @PrePersist
+    public void setDate() {
+        this.createdAt = LocalDateTime.now();
     }
 
     @Override
