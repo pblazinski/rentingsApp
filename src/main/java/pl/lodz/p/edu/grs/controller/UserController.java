@@ -14,21 +14,25 @@ public class UserController {
     private UserService userService;
 
     @Autowired
-    public UserController(UserService userService){this.userService=userService;}
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @PostMapping
-    public User addNewUser(@RequestBody User user){return userService.addUser(user);}
+    public User addNewUser(@RequestBody User user) {
+        return userService.addUser(user);
+    }
 
     @GetMapping
     public Page<User> getUsers(@RequestParam(defaultValue = "10") Integer size,
-                               @RequestParam(defaultValue = "0") Integer page){
-        return userService.findAll(new PageRequest(page,size));
+                               @RequestParam(defaultValue = "0") Integer page) {
+        return userService.findAll(new PageRequest(page, size));
     }
 
 
     @GetMapping(value = "/test")
-    public User testUser(){
-        User user = new User("Ralink","rafal14kop@gmail.com",true);
+    public User testUser() {
+        User user = new User("Ralink", "rafal14kop@gmail.com", true);
         return userService.addUser(user);
     }
 }

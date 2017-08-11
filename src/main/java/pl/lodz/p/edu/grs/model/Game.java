@@ -1,5 +1,7 @@
 package pl.lodz.p.edu.grs.model;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
@@ -7,6 +9,8 @@ import java.time.LocalDateTime;
 
 
 @Entity
+@Getter
+@Setter
 public class Game {
 
     @Id
@@ -35,8 +39,8 @@ public class Game {
     public Game() {
     }
 
-    public Game(String title, String description, boolean available,double price) {
-        this(null, title, description, available,price);
+    public Game(String title, String description, boolean available, double price) {
+        this(null, title, description, available, price);
     }
 
     public Game(Long id, String title, String description, boolean available, double price) {
@@ -44,64 +48,9 @@ public class Game {
         this.title = title;
         this.description = description;
         this.available = available;
-        this.price=price;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public boolean isAvailable() {
-        return available;
-    }
-
-    public void setAvailable(boolean available) {
-        this.available = available;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
         this.price = price;
     }
 
-    public Category getCategory() {
-        return category;
-    }
-
-    public void setCategory(Category category) {
-        this.category = category;
-    }
 
     @PrePersist
     public void setDate() {

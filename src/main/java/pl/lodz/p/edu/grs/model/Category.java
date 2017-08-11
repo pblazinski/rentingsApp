@@ -1,9 +1,14 @@
 package pl.lodz.p.edu.grs.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
+@Getter
+@Setter
 public class Category {
 
     @Id
@@ -16,33 +21,7 @@ public class Category {
     @OneToMany
     private List<Game> gameList;
 
-    public Category(){}
-
     public Category(String name) {
         this.name = name;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public List<Game> getGameList() {
-        return gameList;
-    }
-
-    public void setGameList(List<Game> gameList) {
-        this.gameList = gameList;
     }
 }
