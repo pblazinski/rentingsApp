@@ -34,7 +34,7 @@ public class GameController {
         return gameService.getGame(id);
     }
 
-    @PostMapping("/edit")
+    @PutMapping
     public Game updateGame(@RequestBody Game game) {
         return gameService.updateGame(game);
     }
