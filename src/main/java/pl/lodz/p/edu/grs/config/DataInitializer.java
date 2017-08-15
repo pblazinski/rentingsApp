@@ -15,17 +15,13 @@ public class DataInitializer {
 
     GameService gameService;
 
-    GameRepository gameRepository;
-
     UserService userService;
 
     @Autowired
     public DataInitializer(final GameService gameService,
-                           final UserService userService,
-                           final GameRepository gameRepository) {
+                           final UserService userService) {
         this.gameService = gameService;
         this.userService = userService;
-        this.gameRepository = gameRepository;
     }
 
 
@@ -39,8 +35,8 @@ public class DataInitializer {
         Game game = new Game("Quake", "FPS bestseller", true, 80);
         Game game1 = new Game("H1Z1: King Of The Kill", "Battle Royale", true, 120);
 
-        gameRepository.saveAndFlush(game);
-        gameRepository.save(game1);
+        gameService.addGame(game);
+        gameService.addGame(game1);
     }
 
     private void mockUsers() {
