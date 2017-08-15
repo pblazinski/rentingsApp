@@ -42,10 +42,8 @@ public class DataInitializer {
     private void mockUsers() {
         User user = new User("Ralink", "rafal14kop@gmail.com", true);
         User user1 = new User("Patryk", "patryk@blazinski.com", true);
-
+        user.setPassword("test");
         userService.addUser(user);
         userService.addUser(user1);
     }
-
-
 }

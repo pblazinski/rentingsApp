@@ -1,5 +1,6 @@
 package pl.lodz.p.edu.grs.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -29,8 +30,9 @@ public class User {
     @Column
     private String firstName;
 
-//    @Column
-//    private String password;
+    @Column
+    @JsonIgnore
+    private String password;
 
     @Column
     private String surName;
@@ -51,9 +53,9 @@ public class User {
         this.active = active;
     }
 
-//    public void setPassword(String password) {
-//        this.password = new BCryptPasswordEncoder().encode(password);
-//    }
+    public void setPassword(String password) {
+        this.password = new BCryptPasswordEncoder().encode(password);
+    }
 
     @Override
     public String toString() {
