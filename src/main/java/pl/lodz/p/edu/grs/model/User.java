@@ -1,6 +1,7 @@
 package pl.lodz.p.edu.grs.model;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -12,6 +13,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
 public class User {
 
     @Id
@@ -42,9 +44,6 @@ public class User {
 
     @OneToMany(fetch = FetchType.LAZY)
     private List<Game> borrowed;
-
-    public User() {
-    }
 
     public User(String login, String email, boolean active) {
         this.login = login;
