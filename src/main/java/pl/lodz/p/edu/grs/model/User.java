@@ -2,9 +2,11 @@ package pl.lodz.p.edu.grs.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -30,6 +32,10 @@ public class User {
 
     @Column
     private String surName;
+
+    @Column
+    @CreatedDate
+    private LocalDateTime createdAt;
 
     @Column(nullable = false)
     private boolean active;

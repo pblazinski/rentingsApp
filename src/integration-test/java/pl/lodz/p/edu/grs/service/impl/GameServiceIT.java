@@ -26,6 +26,6 @@ public class GameServiceIT {
 
         assertThat(all)
                 .isNotNull()
-                .isEmpty();
+                .isNotEmpty();
     }
 }

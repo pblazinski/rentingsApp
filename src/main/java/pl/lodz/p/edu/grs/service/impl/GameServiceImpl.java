@@ -34,4 +34,31 @@ public class GameServiceImpl implements GameService {
     public Game addGame(Game game) {
         return gameRepository.saveAndFlush(game);
     }
+
+    @Override
+    public Game updateGame(Game game) {
+        Game result = gameRepository.findOne(game.getId());
+
+        result.setId(game.getId());
+        result.setCategory(game.getCategory());
+        result.setDescription(game.getDescription());
+        result.setPrice(game.getPrice());
+        result.setTitle(game.getTitle());
+        result.setAvailable(game.isAvailable());
+
+        return gameRepository.save(result);
+    }
+
+    @Override
+    public void removeGame(Long id) {
+        Game result = gameRepository.findOne(id);
+        gameRepository.delete(result);
+    }
+
+    @Override
+    public Game getGame(Long id) {
+        return gameRepository.findOne(id);
+    }
+
+
 }
