@@ -6,6 +6,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import pl.lodz.p.edu.grs.model.Game;
 import pl.lodz.p.edu.grs.repository.GameRepository;
+import pl.lodz.p.edu.grs.service.CategoryService;
 import pl.lodz.p.edu.grs.service.GameService;
 
 import java.util.Collections;
@@ -22,10 +23,12 @@ public class GameServiceTest {
 
     private GameService gameService;
 
+    private CategoryService categoryService;
+
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        gameService = new GameServiceImpl(gameRepository);
+        gameService = new GameServiceImpl(gameRepository, categoryService);
     }
 
     @Test

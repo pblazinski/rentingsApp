@@ -33,7 +33,7 @@ public class Game {
     @Column(nullable = false)
     private double price;
 
-    @ManyToOne(cascade = javax.persistence.CascadeType.PERSIST)
+    @ManyToOne
     private Category category;
 
 
