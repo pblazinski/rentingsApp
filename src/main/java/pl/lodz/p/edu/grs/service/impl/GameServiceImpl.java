@@ -36,8 +36,8 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public Game addGame(Game game) {
-        game.setCategory(categoryService.findByName(game.getCategory().getName()));
+    public Game addGame(Game game, Long id) {
+        game.setCategory(categoryService.findOne(id));
         return gameRepository.saveAndFlush(game);
     }
 

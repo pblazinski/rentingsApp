@@ -44,8 +44,8 @@ public class DataInitializer {
         game.setCategory(categoryService.findOne(1L));
         game1.setCategory(categoryService.findOne(1L));
 
-        gameService.addGame(game);
-        gameService.addGame(game1);
+        gameService.addGame(game, 1L);
+        gameService.addGame(game1, 1L);
     }
 
     private void mockUsers() {

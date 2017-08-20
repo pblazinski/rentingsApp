@@ -25,8 +25,9 @@ public class GameController {
     }
 
     @PostMapping
-    public Game addNewGame(@RequestBody Game game) {
-        return gameService.addGame(game);
+    public Game addNewGame(@RequestBody Game game,
+                           @RequestBody Long categoryId) {
+        return gameService.addGame(game, categoryId);
     }
 
     @GetMapping("/{id}")

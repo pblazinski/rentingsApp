@@ -12,7 +12,7 @@ public interface GameService {
 
     List<Game> findAll();
 
-    Game addGame(Game game);
+    Game addGame(Game game, Long id);
 
     Game updateGame(Game game);
 
