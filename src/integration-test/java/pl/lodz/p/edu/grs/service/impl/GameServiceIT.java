@@ -1,30 +1,30 @@
-package pl.lodz.p.edu.grs.controller;
+package pl.lodz.p.edu.grs.service.impl;
 
-
-import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
+import pl.lodz.p.edu.grs.Application;
 import pl.lodz.p.edu.grs.model.Game;
 import pl.lodz.p.edu.grs.repository.GameRepository;
 
 import java.util.List;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest
-@ActiveProfiles("test")
-public class GameServiceIntegrationTest {
+import static org.assertj.core.api.Assertions.assertThat;
+
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = Application.class)
+public class GameServiceIT {
 
     @Autowired
     private GameRepository gameRepository;
 
     @Test
-    public void testFindAll() {
+    public void shouldReturnEmptyListOfGame() {
         List<Game> all = gameRepository.findAll();
-        Assertions.assertThat(all)
+
+        assertThat(all)
                 .isNotNull()
                 .isEmpty();
     }
