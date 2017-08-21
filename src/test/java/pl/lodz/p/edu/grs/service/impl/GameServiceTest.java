@@ -1,7 +1,5 @@
-package pl.lodz.p.edu.grs.controller;
+package pl.lodz.p.edu.grs.service.impl;
 
-
-import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -9,15 +7,13 @@ import org.mockito.MockitoAnnotations;
 import pl.lodz.p.edu.grs.model.Game;
 import pl.lodz.p.edu.grs.repository.GameRepository;
 import pl.lodz.p.edu.grs.service.GameService;
-import pl.lodz.p.edu.grs.service.impl.GameServiceImpl;
 
 import java.util.Collections;
 import java.util.List;
 
-import static org.mockito.Mockito.times;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
 
 public class GameServiceTest {
 
@@ -33,31 +29,37 @@ public class GameServiceTest {
     }
 
     @Test
-    public void gameAdd_shouldAdd() {
+
+    public void shouldAddGame() {
+        //given
         Game game = new Game("title","desc", true,80);
+        when(gameRepository.saveAndFlush(game))
+                .thenReturn(game);
 
-        when(gameRepository.saveAndFlush(game)).thenReturn(game);
-
+        //when
         Game game1 = gameService.addGame(game);
 
-        verify(gameRepository,times(1)).saveAndFlush(game);
-
-        Assertions.assertThat(game.getTitle())
+        //then
+        verify(gameRepository)
+                .saveAndFlush(game);
+        assertThat(game.getTitle())
                 .isEqualTo(game1.getTitle());
-
     }
 
     @Test
-    public void findAll_ShouldReturn1() {
+    public void shouldReturnListOfGame() {
+        //given
         List<Game> list = Collections.singletonList(new Game());
+        when(gameRepository.findAll())
+                .thenReturn(list);
 
-        when(gameRepository.findAll()).thenReturn(list);
-
+        //when
         List<Game> all = gameService.findAll();
 
-        verify(gameRepository, times(1)).findAll();
-
-        Assertions.assertThat(list.size())
+        //then
+        verify(gameRepository)
+                .findAll();
+        assertThat(list.size())
                 .isEqualTo(all.size());
     }
 }

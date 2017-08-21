@@ -8,9 +8,9 @@ import org.springframework.context.annotation.EnableMBeanExport;
 @EnableCaching
 @EnableMBeanExport
 @SpringBootApplication
-public class GameRentingSystemApplication {
+public class Application {
 
-	public static void main(String[] args) {
-		SpringApplication.run(GameRentingSystemApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
 }

@@ -11,7 +11,7 @@ import pl.lodz.p.edu.grs.service.GameService;
 import java.util.List;
 
 @Service
-public class GameServiceImpl implements GameService{
+public class GameServiceImpl implements GameService {
 
     private GameRepository gameRepository;
 
