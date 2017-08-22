@@ -42,11 +42,11 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public Game updateGame(Game game) {
+    public Game updateGame(Game game, Long id) {
         Game result = gameRepository.findOne(game.getId());
 
         result.setId(game.getId());
-        result.setCategory(categoryService.findByName(game.getCategory().getName()));
+        result.setCategory(categoryService.findOne(id));
         result.setDescription(game.getDescription());
         result.setPrice(game.getPrice());
         result.setTitle(game.getTitle());

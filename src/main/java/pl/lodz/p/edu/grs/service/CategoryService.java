@@ -18,4 +18,6 @@ public interface CategoryService {
     Category findOne(Long id);
 
     Category findByName(String name);
+
+    void removeCategory(Long id);
 }

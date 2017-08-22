@@ -36,8 +36,9 @@ public class GameController {
     }
 
     @PutMapping
-    public Game updateGame(@RequestBody Game game) {
-        return gameService.updateGame(game);
+    public Game updateGame(@RequestBody Game game,
+                           @RequestBody Long categoryId) {
+        return gameService.updateGame(game, categoryId);
     }
 
     @PostMapping("/{id}")
