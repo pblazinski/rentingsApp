@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import pl.lodz.p.edu.grs.exceptions.CategoryInUseException;
+import pl.lodz.p.edu.grs.exceptions.NotFoundException;
 import pl.lodz.p.edu.grs.model.Category;
 import pl.lodz.p.edu.grs.repository.CategoryRepository;
 import pl.lodz.p.edu.grs.repository.GameRepository;
@@ -12,12 +14,18 @@ import pl.lodz.p.edu.grs.service.CategoryService;
 import java.util.List;
 
 @Service
-public class CategoryServiceImpl implements CategoryService{
+public class CategoryServiceImpl implements CategoryService {
 
     private CategoryRepository categoryRepository;
 
+    private GameRepository gameRepository;
+
     @Autowired
-    public CategoryServiceImpl(CategoryRepository categoryRepository){this.categoryRepository=categoryRepository;}
+    public CategoryServiceImpl(GameRepository gameRepository,
+                               CategoryRepository categoryRepository) {
+        this.categoryRepository = categoryRepository;
+        this.gameRepository = gameRepository;
+    }
 
 
     @Override
@@ -46,7 +54,21 @@ public class CategoryServiceImpl implements CategoryService{
     }
 
     @Override
+    public Category updateCategory(Category category) {
+        Category updated = categoryRepository.findOne(category.getId());
+        if (updated == null) {
+            throw new NotFoundException(String.format("Category with id=[%d] not found!", category.getId()));
+        }
+        updated.setName(category.getName());
+
+        return categoryRepository.save(updated);
+    }
+
+
+    @Override
     public void removeCategory(Long id) {
+        if (!gameRepository.findByCategoryId(id).isEmpty())
+            throw new CategoryInUseException(String.format("Category with id=[%d] in use!", id));
         categoryRepository.delete(id);
     }
 }

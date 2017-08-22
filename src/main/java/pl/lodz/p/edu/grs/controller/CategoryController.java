@@ -26,8 +26,13 @@ public class CategoryController {
     }
 
     @PostMapping
-    public Category addNewCategory(Category category) {
+    public Category addNewCategory(@RequestBody Category category) {
         return categoryService.addCategory(category);
+    }
+
+    @PutMapping
+    public Category updateCategory(@RequestBody Category category) {
+        return categoryService.updateCategory(category);
     }
 
     @GetMapping("/{name}")
