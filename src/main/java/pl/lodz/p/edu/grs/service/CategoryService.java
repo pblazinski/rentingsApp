@@ -14,4 +14,8 @@ public interface CategoryService {
     List<Category> findAll();
 
     Category addCategory(Category category);
+
+    Category findOne(Long id);
+
+    Category findByName(String name);
 }

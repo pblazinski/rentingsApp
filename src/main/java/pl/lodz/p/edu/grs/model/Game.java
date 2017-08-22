@@ -1,8 +1,8 @@
 package pl.lodz.p.edu.grs.model;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
 public class Game {
 
     @Id
@@ -27,7 +28,6 @@ public class Game {
     private boolean available;
 
     @Column
-    @CreatedDate
     private LocalDateTime createdAt;
 
     @Column(nullable = false)
@@ -36,8 +36,6 @@ public class Game {
     @ManyToOne
     private Category category;
 
-    public Game() {
-    }
 
     public Game(String title, String description, boolean available, double price) {
         this(null, title, description, available, price);
@@ -50,7 +48,6 @@ public class Game {
         this.available = available;
         this.price = price;
     }
-
 
     @PrePersist
     public void setDate() {

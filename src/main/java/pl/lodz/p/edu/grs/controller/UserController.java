@@ -28,11 +28,4 @@ public class UserController {
                                @RequestParam(defaultValue = "0") Integer page) {
         return userService.findAll(new PageRequest(page, size));
     }
-
-
-    @GetMapping(value = "/test")
-    public User testUser() {
-        User user = new User("Ralink", "rafal14kop@gmail.com", true);
-        return userService.addUser(user);
-    }
 }

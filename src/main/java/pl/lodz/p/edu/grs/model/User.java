@@ -1,15 +1,20 @@
 package pl.lodz.p.edu.grs.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
 public class User {
 
     @Id
@@ -25,11 +30,16 @@ public class User {
     @Column
     private String firstName;
 
-//    @Column
-//    private String password;
+    @Column
+    @JsonIgnore
+    private String password;
 
     @Column
     private String surName;
+
+    @Column
+    @CreatedDate
+    private LocalDateTime createdAt;
 
     @Column(nullable = false)
     private boolean active;
@@ -37,18 +47,15 @@ public class User {
     @OneToMany(fetch = FetchType.LAZY)
     private List<Game> borrowed;
 
-    public User() {
-    }
-
     public User(String login, String email, boolean active) {
         this.login = login;
         this.email = email;
         this.active = active;
     }
 
-//    public void setPassword(String password) {
-//        this.password = new BCryptPasswordEncoder().encode(password);
-//    }
+    public void setPassword(String password) {
+        this.password = new BCryptPasswordEncoder().encode(password);
+    }
 
     @Override
     public String toString() {

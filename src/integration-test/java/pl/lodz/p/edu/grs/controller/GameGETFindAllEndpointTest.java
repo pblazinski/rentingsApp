@@ -21,7 +21,7 @@ public class GameGETFindAllEndpointTest {
 
     @Test
     public void shouldReturnEmptyGamesList() throws Exception {
-        mockMvc.perform(get("/api/v1/games"))
+        mockMvc.perform(get("/api/games"))
                 .andExpect(status().isOk());
     }
 }

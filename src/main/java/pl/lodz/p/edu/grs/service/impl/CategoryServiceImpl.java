@@ -34,4 +34,14 @@ public class CategoryServiceImpl implements CategoryService{
     public Category addCategory(Category category) {
         return categoryRepository.saveAndFlush(category);
     }
+
+    @Override
+    public Category findOne(Long id) {
+        return categoryRepository.findOne(id);
+    }
+
+    @Override
+    public Category findByName(String name) {
+        return categoryRepository.findByName(name);
+    }
 }
