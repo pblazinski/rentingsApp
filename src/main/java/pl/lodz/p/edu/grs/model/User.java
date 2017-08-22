@@ -1,15 +1,23 @@
 package pl.lodz.p.edu.grs.model;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import java.util.List;
 
+@Data
 @Entity
-@Getter
-@Setter
+@Builder
+@AllArgsConstructor
 public class User {
 
     @Id
@@ -17,22 +25,17 @@ public class User {
     private Long id;
 
     @Column(unique = true, nullable = false)
-    private String login;
-
-    @Column(unique = true, nullable = false)
     private String email;
 
-    @Column
-    private String firstName;
-
-//    @Column
-//    private String password;
-
-    @Column
-    private String surName;
+    @JsonIgnore
+    @Column(nullable = false)
+    private String password;
 
     @Column(nullable = false)
-    private boolean active;
+    private String firstName;
+
+    @Column(nullable = false)
+    private String lastName;
 
     @OneToMany(fetch = FetchType.LAZY)
     private List<Game> borrowed;
@@ -40,23 +43,22 @@ public class User {
     public User() {
     }
 
-    public User(String login, String email, boolean active) {
-        this.login = login;
+    public User(final String email, final String firstName, final String lastName) {
         this.email = email;
-        this.active = active;
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
 
-//    public void setPassword(String password) {
-//        this.password = new BCryptPasswordEncoder().encode(password);
-//    }
+    public void updatePassword(final String password) {
+        this.password = password;
+    }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", login='" + login + '\'' +
-                ", email='" + email + '\'' +
-                ", active=" + active +
-                '}';
+    public void updateNames(final String firstName, final String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
+    public void updateEmail(final String email) {
+        this.email = email;
     }
 }
