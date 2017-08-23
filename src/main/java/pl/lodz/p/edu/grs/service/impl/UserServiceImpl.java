@@ -11,8 +11,11 @@ import pl.lodz.p.edu.grs.model.User;
 import pl.lodz.p.edu.grs.repository.UserRepository;
 import pl.lodz.p.edu.grs.service.UserService;
 
+import javax.transaction.Transactional;
+
 @Slf4j
 @Service
+@Transactional
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
@@ -55,7 +58,7 @@ public class UserServiceImpl implements UserService {
 
         userRepository.delete(user);
 
-        log.info("Removed user with id <{}>", user.getId());
+        log.info("Removed user with id <{}>", userId);
     }
 
     @Override
@@ -83,11 +86,10 @@ public class UserServiceImpl implements UserService {
 
         user = userRepository.save(user);
 
-        log.info("Updated user names from <{} {}> to <{} {}> for user with id <{}>",
+        log.info("Updated user names to <{} {}> for user with id <{}>",
                 firstName,
                 lastName,
-                userId
-        );
+                userId);
 
         return user;
     }
@@ -95,17 +97,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public User updateEmail(final long userId,
                             final String email) {
-
         User user = userRepository.getOne(userId);
 
         user.updateEmail(email);
 
         user = userRepository.save(user);
 
-        log.info("Updated user email from <{}> to <{}> for user with id <{}>",
+        log.info("Updated user email to <{}> for user with id <{}>",
                 email,
-                userId
-        );
+                userId);
 
         return user;
     }

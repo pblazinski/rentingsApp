@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -58,6 +59,9 @@ public class UserServiceImplTest {
         Page<User> result = userService.findAll(pageable);
 
         //then
+        verify(userRepository)
+                .findAll(pageable);
+
         assertThat(result)
                 .isEqualTo(usersPage);
         assertThat(result.getContent())
@@ -81,6 +85,11 @@ public class UserServiceImplTest {
         User result = userService.registerUser(registerDTO);
 
         //then
+        verify(userFactory)
+                .createUser(registerDTO);
+        verify(userRepository)
+                .save(user);
+
         assertThat(result)
                 .isNotNull();
         assertThat(result.getFirstName())
@@ -97,5 +106,106 @@ public class UserServiceImplTest {
                 .isEqualTo(UserUtil.PASSWORD);
     }
 
-    //TODO add test for remove update Password Email and Names
+    @Test
+    public void shouldDeleteUser() throws Exception {
+        //given
+        long userId = 1L;
+        User user = UserUtil.mockUser();
+
+        when(userRepository.getOne(userId))
+                .thenReturn(user);
+
+        //when
+        userService.remove(userId);
+
+        //then
+        verify(userRepository)
+                .getOne(userId);
+        verify(userRepository)
+                .delete(user);
+    }
+
+    @Test
+    public void shouldUpdateUserPassword() throws Exception {
+        //given
+        User user = UserUtil.mockUser();
+
+        String password = "new password";
+        Long userId = UserUtil.USER_ID;
+
+        when(userRepository.getOne(userId))
+                .thenReturn(user);
+        when(passwordEncoder.encode(password))
+                .thenReturn(password);
+        when(userRepository.save(user))
+                .thenReturn(user);
+
+        //when
+        User result = userService.updatePassword(userId, password);
+
+        //then
+        verify(passwordEncoder)
+                .encode(password);
+        verify(userRepository)
+                .save(user);
+
+        assertThat(result.getPassword())
+                .isNotBlank()
+                .isEqualTo(password);
+    }
+
+    @Test
+    public void shouldUpdateUserEmail() throws Exception {
+        //given
+        User user = UserUtil.mockUser();
+
+        String email = "new@email.com";
+        Long userId = UserUtil.USER_ID;
+
+        when(userRepository.getOne(userId))
+                .thenReturn(user);
+        when(userRepository.save(user))
+                .thenReturn(user);
+
+        //when
+        User result = userService.updateEmail(userId, email);
+
+        //then
+        verify(userRepository)
+                .save(user);
+
+        assertThat(result.getEmail())
+                .isNotBlank()
+                .isEqualTo(email);
+    }
+
+    @Test
+    public void shouldUpdateUserFirstNameAndLastName() {
+        //given
+        User user = UserUtil.mockUser();
+
+        String firstName = "New First Name";
+        String lastName = "New Last Name";
+
+        Long userId = UserUtil.USER_ID;
+
+        when(userRepository.getOne(userId))
+                .thenReturn(user);
+        when(userRepository.save(user))
+                .thenReturn(user);
+
+        //when
+        User result = userService.updateNames(userId, firstName, lastName);
+
+        //then
+        verify(userRepository)
+                .save(user);
+
+        assertThat(result.getFirstName())
+                .isNotBlank()
+                .isEqualTo(firstName);
+        assertThat(result.getLastName())
+                .isNotBlank()
+                .isEqualTo(lastName);
+    }
 }
