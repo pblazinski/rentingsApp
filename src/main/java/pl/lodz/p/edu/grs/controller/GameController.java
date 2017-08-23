@@ -43,8 +43,8 @@ public class GameController {
         return gameService.updateGame(game, categoryId, gameId);
     }
 
-    @PostMapping("/{id}")
-    public void removeGame(@PathVariable Long id) {
-        gameService.removeGame(id);
+    @DeleteMapping("/{id}")
+    public void deleteGame(@PathVariable Long id) {
+        gameService.deleteGame(id);
     }
 }

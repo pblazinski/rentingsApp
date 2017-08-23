@@ -59,7 +59,7 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public void removeGame(Long id) {
+    public void deleteGame(Long id) {
         Game result = gameRepository.findOne(id);
         gameRepository.delete(result);
     }

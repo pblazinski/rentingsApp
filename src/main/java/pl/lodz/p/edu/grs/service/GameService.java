@@ -16,7 +16,7 @@ public interface GameService {
 
     Game updateGame(Game game, Long categoryId, Long gameId);
 
-    void removeGame(Long id);
+    void deleteGame(Long id);
 
     Game getGame(Long id);
 }

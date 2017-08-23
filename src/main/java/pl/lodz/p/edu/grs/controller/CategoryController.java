@@ -40,7 +40,7 @@ public class CategoryController {
         return categoryService.findByName(name);
     }
 
-    @PostMapping("/{id}")
+    @DeleteMapping("/{id}")
     public void deleteCategory(@PathVariable Long id) {
         categoryService.deleteCategory(id);
     }
