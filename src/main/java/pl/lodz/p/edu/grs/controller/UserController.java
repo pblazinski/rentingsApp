@@ -1,5 +1,6 @@
 package pl.lodz.p.edu.grs.controller;
 
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -9,6 +10,7 @@ import pl.lodz.p.edu.grs.service.UserService;
 
 @RestController
 @RequestMapping(value = "api/user")
+@Api(value = "api/user", description = "Endpoints for user management")
 public class UserController {
 
     private UserService userService;
