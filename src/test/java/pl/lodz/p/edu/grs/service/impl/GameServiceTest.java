@@ -40,7 +40,7 @@ public class GameServiceTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         gameService = new GameServiceImpl(gameRepository, categoryService);
-        categoryService = new CategoryServiceImpl(categoryRepository);
+        categoryService = new CategoryServiceImpl(gameRepository, categoryRepository);
     }
 
     @Test

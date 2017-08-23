@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import pl.lodz.p.edu.grs.exceptions.NotFoundException;
 import pl.lodz.p.edu.grs.model.Game;
 import pl.lodz.p.edu.grs.repository.GameRepository;
 import pl.lodz.p.edu.grs.service.CategoryService;
@@ -36,17 +37,19 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public Game addGame(Game game, Long id) {
-        game.setCategory(categoryService.findOne(id));
+    public Game addGame(Game game, Long categoryId) {
+        game.setCategory(categoryService.findOne(categoryId));
         return gameRepository.saveAndFlush(game);
     }
 
     @Override
-    public Game updateGame(Game game) {
-        Game result = gameRepository.findOne(game.getId());
-
+    public Game updateGame(Game game, Long categoryId, Long gameId) {
+        Game result = gameRepository.findOne(gameId);
+        if (result == null) {
+            throw new NotFoundException(String.format("Game with id=[%d] not found!", game.getId()));
+        }
         result.setId(game.getId());
-        result.setCategory(categoryService.findByName(game.getCategory().getName()));
+        result.setCategory(categoryService.findOne(categoryId));
         result.setDescription(game.getDescription());
         result.setPrice(game.getPrice());
         result.setTitle(game.getTitle());
@@ -56,7 +59,7 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public void removeGame(Long id) {
+    public void deleteGame(Long id) {
         Game result = gameRepository.findOne(id);
         gameRepository.delete(result);
     }
