@@ -37,19 +37,19 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public Game addGame(Game game, Long id) {
-        game.setCategory(categoryService.findOne(id));
+    public Game addGame(Game game, Long categoryId) {
+        game.setCategory(categoryService.findOne(categoryId));
         return gameRepository.saveAndFlush(game);
     }
 
     @Override
-    public Game updateGame(Game game, Long id) {
-        Game result = gameRepository.findOne(game.getId());
+    public Game updateGame(Game game, Long categoryId, Long gameId) {
+        Game result = gameRepository.findOne(gameId);
         if (result == null) {
             throw new NotFoundException(String.format("Game with id=[%d] not found!", game.getId()));
         }
         result.setId(game.getId());
-        result.setCategory(categoryService.findOne(id));
+        result.setCategory(categoryService.findOne(categoryId));
         result.setDescription(game.getDescription());
         result.setPrice(game.getPrice());
         result.setTitle(game.getTitle());

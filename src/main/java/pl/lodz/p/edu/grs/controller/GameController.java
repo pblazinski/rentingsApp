@@ -3,6 +3,7 @@ package pl.lodz.p.edu.grs.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.access.method.P;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.edu.grs.model.Game;
 import pl.lodz.p.edu.grs.service.GameService;
@@ -35,10 +36,11 @@ public class GameController {
         return gameService.getGame(id);
     }
 
-    @PutMapping
+    @PutMapping("/{id}")
     public Game updateGame(@RequestBody Game game,
-                           @RequestBody Long categoryId) {
-        return gameService.updateGame(game, categoryId);
+                           @RequestBody Long categoryId,
+                           @PathVariable Long gameId) {
+        return gameService.updateGame(game, categoryId, gameId);
     }
 
     @PostMapping("/{id}")

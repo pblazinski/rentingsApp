@@ -19,7 +19,7 @@ public interface CategoryService {
 
     Category findByName(String name);
 
-    Category updateCategory(Category category);
+    Category updateCategory(Category category, Long id);
 
-    void removeCategory(Long id);
+    void deleteCategory(Long id);
 }

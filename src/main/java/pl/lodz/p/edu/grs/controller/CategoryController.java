@@ -1,7 +1,6 @@
 package pl.lodz.p.edu.grs.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.edu.grs.model.Category;
 import pl.lodz.p.edu.grs.service.CategoryService;
@@ -30,9 +29,10 @@ public class CategoryController {
         return categoryService.addCategory(category);
     }
 
-    @PutMapping
-    public Category updateCategory(@RequestBody Category category) {
-        return categoryService.updateCategory(category);
+    @PutMapping("/{id}")
+    public Category updateCategory(@RequestBody Category category,
+                                   @PathVariable Long categoryId) {
+        return categoryService.updateCategory(category, categoryId);
     }
 
     @GetMapping("/{name}")
@@ -41,7 +41,7 @@ public class CategoryController {
     }
 
     @PostMapping("/{id}")
-    public void removeCategory(@PathVariable Long id) {
-        categoryService.removeCategory(id);
+    public void deleteCategory(@PathVariable Long id) {
+        categoryService.deleteCategory(id);
     }
 }

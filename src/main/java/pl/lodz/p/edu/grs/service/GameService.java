@@ -12,9 +12,9 @@ public interface GameService {
 
     List<Game> findAll();
 
-    Game addGame(Game game, Long id);
+    Game addGame(Game game, Long categoryId);
 
-    Game updateGame(Game game, Long id);
+    Game updateGame(Game game, Long categoryId, Long gameId);
 
     void removeGame(Long id);
 

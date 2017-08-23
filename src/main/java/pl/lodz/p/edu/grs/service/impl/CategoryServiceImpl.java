@@ -54,8 +54,8 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Category updateCategory(Category category) {
-        Category updated = categoryRepository.findOne(category.getId());
+    public Category updateCategory(Category category, Long id) {
+        Category updated = categoryRepository.findOne(id);
         if (updated == null) {
             throw new NotFoundException(String.format("Category with id=[%d] not found!", category.getId()));
         }
@@ -66,9 +66,10 @@ public class CategoryServiceImpl implements CategoryService {
 
 
     @Override
-    public void removeCategory(Long id) {
-        if (!gameRepository.findByCategoryId(id).isEmpty())
+    public void deleteCategory(Long id) {
+        if (!gameRepository.findByCategoryId(id).isEmpty()) {
             throw new CategoryInUseException(String.format("Category with id=[%d] in use!", id));
+        }
         categoryRepository.delete(id);
     }
 }
