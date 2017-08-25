@@ -2,9 +2,9 @@ package pl.lodz.p.edu.grs.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import pl.lodz.p.edu.grs.controller.user.RegisterUserDTO;
 import pl.lodz.p.edu.grs.model.Category;
 import pl.lodz.p.edu.grs.model.Game;
-import pl.lodz.p.edu.grs.model.User;
 import pl.lodz.p.edu.grs.service.CategoryService;
 import pl.lodz.p.edu.grs.service.GameService;
 import pl.lodz.p.edu.grs.service.UserService;
@@ -49,11 +49,11 @@ public class DataInitializer {
     }
 
     private void mockUsers() {
-        User user = new User("Ralink", "rafal14kop@gmail.com", true);
-        User user1 = new User("Patryk", "patryk@blazinski.com", true);
+        RegisterUserDTO firstUser = new RegisterUserDTO("rafal@koper", "rafal", "koper", "password");
+        RegisterUserDTO secondUser = new RegisterUserDTO("patryk@blazinski", "Patryk", "blazinski", "password");
 
-        userService.addUser(user);
-        userService.addUser(user1);
+        userService.registerUser(firstUser);
+        userService.registerUser(secondUser);
     }
 
     private void mockCategories() {
