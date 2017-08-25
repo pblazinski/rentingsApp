@@ -2,6 +2,7 @@ package pl.lodz.p.edu.grs.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import pl.lodz.p.edu.grs.controller.category.CategoryDto;
 import pl.lodz.p.edu.grs.controller.user.RegisterUserDTO;
 import pl.lodz.p.edu.grs.model.Category;
 import pl.lodz.p.edu.grs.model.Game;
@@ -57,8 +58,10 @@ public class DataInitializer {
     }
 
     private void mockCategories() {
-        Category category = new Category("FPS");
+        CategoryDto categoryFPS = new CategoryDto("FPS");
+        CategoryDto categoryRPG = new CategoryDto("RPG");
 
-        categoryService.addCategory(category);
+        categoryService.addCategory(categoryFPS);
+        categoryService.addCategory(categoryRPG);
     }
 }

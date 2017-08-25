@@ -1,12 +1,15 @@
-package pl.lodz.p.edu.grs.controller;
+package pl.lodz.p.edu.grs.controller.category;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.edu.grs.model.Category;
 import pl.lodz.p.edu.grs.service.CategoryService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -14,13 +17,12 @@ import java.util.List;
 @Api(value = "api/category", description = "Endpoints for game categories")
 public class CategoryController {
 
-    private CategoryService categoryService;
+    private final CategoryService categoryService;
 
     @Autowired
-    public CategoryController(CategoryService categoryService) {
+    public CategoryController(final CategoryService categoryService) {
         this.categoryService = categoryService;
     }
-
 
     @GetMapping
     @ApiOperation(value = "Get all categories list")
@@ -30,15 +32,17 @@ public class CategoryController {
 
     @PostMapping
     @ApiOperation(value = "Create category")
-    public Category addNewCategory(@RequestBody Category category) {
-        return categoryService.addCategory(category);
+    public Category addCategory(@RequestBody @Valid final CategoryDto categoryDto) {
+        return categoryService.addCategory(categoryDto);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{categoryId}")
     @ApiOperation(value = "Update category")
-    public Category updateCategory(@RequestBody Category category,
-                                   @PathVariable Long categoryId) {
-        return categoryService.updateCategory(category, categoryId);
+    public HttpEntity updateName(@PathVariable final Long categoryId,
+                                 @RequestBody @Valid final CategoryDto categoryDto) {
+        Category category = categoryService.updateCategory(categoryDto.getName(), categoryId);
+
+        return ResponseEntity.ok(category);
     }
 
     @GetMapping("/{name}")
@@ -49,7 +53,9 @@ public class CategoryController {
 
     @DeleteMapping("/{id}")
     @ApiOperation(value = "Delete category")
-    public void deleteCategory(@PathVariable Long id) {
-        categoryService.deleteCategory(id);
+    public HttpEntity remove(@PathVariable Long id) {
+        categoryService.remove(id);
+
+        return ResponseEntity.ok().build();
     }
 }

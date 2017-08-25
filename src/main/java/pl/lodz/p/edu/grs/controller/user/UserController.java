@@ -27,6 +27,7 @@ import javax.validation.Valid;
 public class UserController {
     //TODO handle not found for update method and remove
     //TODO handle authorization etc
+    //TODO add remove integration test
 
     private final UserService userService;
 
