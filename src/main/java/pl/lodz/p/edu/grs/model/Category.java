@@ -1,8 +1,6 @@
 package pl.lodz.p.edu.grs.model;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
@@ -10,7 +8,9 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class Category {
 
     @Id
@@ -31,4 +31,9 @@ public class Category {
         this.name = name;
         this.id = id;
     }
+
+    public void updateName(final String name) {
+        this.name = name;
+    }
+
 }
