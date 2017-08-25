@@ -1,16 +1,16 @@
 package pl.lodz.p.edu.grs.model;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+@Builder
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class Game {
 
     @Id
@@ -61,6 +61,23 @@ public class Game {
                 ", description='" + description + '\'' +
                 ", available=" + available +
                 '}';
+    }
+
+    public void updateTitleAndDescription(final String title, final String description) {
+        this.title = title;
+        this.description = description;
+    }
+
+    public void updatePrice(final double price) {
+        this.price = price;
+    }
+
+    public void updateAvailability(boolean available) {
+        this.available = available;
+    }
+
+    public void updateCategory(Category category) {
+        this.category = category;
     }
 
 }
