@@ -49,7 +49,9 @@ public class GameServiceImpl implements GameService {
                         final Long categoryId) {
         Category category = categoryService.findOne(categoryId);
 
-        Game result = gameFactory.create(game, category);
+        Game result = gameFactory.create(game);
+
+        result.updateCategory(category);
 
         result = gameRepository.save(result);
 

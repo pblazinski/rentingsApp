@@ -1,7 +1,6 @@
 package pl.lodz.p.edu.grs.service.impl;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -11,7 +10,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import pl.lodz.p.edu.grs.controller.game.GameDto;
-import pl.lodz.p.edu.grs.factory.CategoryFactory;
 import pl.lodz.p.edu.grs.factory.GameFactory;
 import pl.lodz.p.edu.grs.model.Category;
 import pl.lodz.p.edu.grs.model.Game;
@@ -39,18 +37,12 @@ public class GameServiceImplTest {
     private GameFactory gameFactory;
 
     @Mock
-    private CategoryRepository categoryRepository;
-
-    @Mock
-    private CategoryFactory categoryFactory;
-
     private CategoryService categoryService;
 
     private GameService gameService;
 
     @Before
     public void setUp() throws Exception {
-        this.categoryService = new CategoryServiceImpl(categoryRepository, categoryFactory);
         this.gameService = new GameServiceImpl(gameRepository, categoryService, gameFactory);
     }
 
@@ -88,7 +80,7 @@ public class GameServiceImplTest {
 
         when(categoryService.findOne(category.getId()))
                 .thenReturn(category);
-        when(gameFactory.create(gameDto, category))
+        when(gameFactory.create(gameDto))
                 .thenReturn(game);
         when(gameRepository.save(game))
                 .thenReturn(game);
@@ -97,15 +89,12 @@ public class GameServiceImplTest {
         //when
         Game result = gameService.addGame(gameDto, category.getId());
 
-        category = categoryRepository.findOne(category.getId());
 
         //verify
         verify(gameFactory)
-                .create(gameDto, category);
+                .create(gameDto);
         verify(gameRepository)
                 .save(game);
-
-        category = categoryRepository.getOne(category.getId());
 
         assertThat(result)
                 .isNotNull();
@@ -206,7 +195,7 @@ public class GameServiceImplTest {
                 .thenReturn(game);
         when(gameRepository.save(game))
                 .thenReturn(game);
-        when(categoryRepository.getOne(1L))
+        when(categoryService.findOne(1L))
                 .thenReturn(category);
 
         //when
