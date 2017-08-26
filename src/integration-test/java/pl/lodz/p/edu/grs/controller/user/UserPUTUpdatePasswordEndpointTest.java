@@ -14,10 +14,13 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import pl.lodz.p.edu.grs.model.user.User;
 import pl.lodz.p.edu.grs.repository.UserRepository;
+import pl.lodz.p.edu.grs.security.AppUser;
 import pl.lodz.p.edu.grs.service.UserService;
+import pl.lodz.p.edu.grs.util.StubHelper;
 import pl.lodz.p.edu.grs.util.UserUtil;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -43,16 +46,17 @@ public class UserPUTUpdatePasswordEndpointTest {
 
     private static final String INVALID_PASSWORD = "            ";
 
+    private User user;
+
     @Before
     public void setUp() throws Exception {
         userRepository.deleteAll();
+        this.user = StubHelper.stubUser();
     }
 
     @Test
     public void shouldReturnOkStatusWhenUpdatePassword() throws Exception {
         //given
-        RegisterUserDTO userDTO = UserUtil.mockRegisterUserDTO();
-        User user = userService.registerUser(userDTO);
         String oldPassword = user.getPassword();
         UpdateUserPasswordDto passwordDto = mockUpdatePasswordDto(NEW_PASSWORD);
 
@@ -61,6 +65,7 @@ public class UserPUTUpdatePasswordEndpointTest {
         MockHttpServletRequestBuilder requestBuilder = put(String.format("/api/users/%d/password", user.getId()))
                 .accept(MediaType.APPLICATION_JSON_UTF8)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .with(user(new AppUser(user)))
                 .content(content);
 
         //when
@@ -85,10 +90,55 @@ public class UserPUTUpdatePasswordEndpointTest {
     }
 
     @Test
-    public void shouldReturnBadRequestWhenUpdatePasswordForBlankPassword() throws Exception {
+    public void shouldReturnUnauthorizedWhenNotAuthorized() throws Exception {
+        //given
+        UpdateUserPasswordDto passwordDto = mockUpdatePasswordDto(NEW_PASSWORD);
+
+        String content = objectMapper.writeValueAsString(passwordDto);
+
+        MockHttpServletRequestBuilder requestBuilder = put(String.format("/api/users/%d/password", user.getId()))
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(content);
+
+        //when
+        ResultActions result = mockMvc.perform(requestBuilder);
+
+        //then
+        user = userRepository.findOne(user.getId());
+
+        result.andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    public void shouldReturnForbiddenWhenNotOwner() throws Exception {
         //given
         RegisterUserDTO userDTO = UserUtil.mockRegisterUserDTO();
+        userDTO.setEmail("other@email");
         User user = userService.registerUser(userDTO);
+
+        UpdateUserPasswordDto passwordDto = mockUpdatePasswordDto(NEW_PASSWORD);
+
+        String content = objectMapper.writeValueAsString(passwordDto);
+
+        MockHttpServletRequestBuilder requestBuilder = put(String.format("/api/users/%d/password", this.user.getId()))
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .with(user(new AppUser(user)))
+                .content(content);
+
+        //when
+        ResultActions result = mockMvc.perform(requestBuilder);
+
+        //then
+        userRepository.findOne(user.getId());
+
+        result.andExpect(status().isForbidden());
+    }
+
+    @Test
+    public void shouldReturnBadRequestWhenUpdatePasswordForBlankPassword() throws Exception {
+        //given
         String oldPassword = user.getPassword();
         UpdateUserPasswordDto emailDto = mockUpdatePasswordDto(INVALID_PASSWORD);
 
@@ -97,6 +147,7 @@ public class UserPUTUpdatePasswordEndpointTest {
         MockHttpServletRequestBuilder requestBuilder = put(String.format("/api/users/%d/password", user.getId()))
                 .accept(MediaType.APPLICATION_JSON_UTF8)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .with(user(new AppUser(user)))
                 .content(content);
 
         //when
