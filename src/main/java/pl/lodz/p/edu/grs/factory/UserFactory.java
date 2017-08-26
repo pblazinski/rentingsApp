@@ -3,7 +3,7 @@ package pl.lodz.p.edu.grs.factory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import pl.lodz.p.edu.grs.controller.user.RegisterUserDTO;
-import pl.lodz.p.edu.grs.model.User;
+import pl.lodz.p.edu.grs.model.user.User;
 
 @Component
 public class UserFactory {
