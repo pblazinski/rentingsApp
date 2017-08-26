@@ -19,7 +19,6 @@ import pl.lodz.p.edu.grs.service.CategoryService;
 import pl.lodz.p.edu.grs.util.CategoryUtil;
 
 import javax.persistence.EntityNotFoundException;
-import javax.swing.text.html.parser.Entity;
 import javax.validation.ConstraintViolationException;
 import java.util.List;
 
