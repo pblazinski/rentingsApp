@@ -87,7 +87,7 @@ public class GameServiceImplTest {
 
 
         //when
-        Game result = gameService.addGame(gameDto, category.getId());
+        Game result = gameService.addGame(gameDto);
 
 
         //verify

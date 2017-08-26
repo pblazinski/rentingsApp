@@ -3,8 +3,13 @@ package pl.lodz.p.edu.grs.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
+import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Builder
@@ -19,12 +24,15 @@ public class Game {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank
     @Column(unique = true, nullable = false)
     private String title;
 
+    @NotBlank
     @Column(nullable = false)
     private String description;
 
+    @NotNull
     @Column(nullable = false)
     private boolean available;
 
@@ -32,10 +40,11 @@ public class Game {
     @JsonIgnore
     private LocalDateTime createdAt;
 
+    @Min(0)
     @Column(nullable = false)
     private double price;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Category category;
 
 

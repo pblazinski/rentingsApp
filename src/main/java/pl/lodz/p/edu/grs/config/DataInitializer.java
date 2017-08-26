@@ -38,11 +38,11 @@ public class DataInitializer {
     }
 
     private void mockGames() {
-        GameDto game = new GameDto("Quake", "FPS bestseller", true, 80);
-        GameDto game1 = new GameDto("H1Z1: King Of The Kill", "Battle Royale", true, 120);
+        GameDto game = new GameDto("Quake", "FPS bestseller", true, 80, 1L);
+        GameDto game1 = new GameDto("H1Z1: King Of The Kill", "Battle Royale", true, 120, 2L);
 
-        gameService.addGame(game, 1L);
-        gameService.addGame(game1, 2L);
+        gameService.addGame(game);
+        gameService.addGame(game1);
     }
 
     private void mockUsers() {

@@ -32,11 +32,10 @@ public class GameController {
         return gameService.findAll(pageable);
     }
 
-    @PostMapping("/{categoryId}/new")
+    @PostMapping
     @ApiOperation(value = "Create game")
-    public Game addGame(@RequestBody @Valid final GameDto gameDto,
-                           @PathVariable final Long categoryId) {
-        return gameService.addGame(gameDto, categoryId);
+    public Game addGame(@RequestBody @Valid final GameDto gameDto) {
+        return gameService.addGame(gameDto);
     }
 
     @PutMapping("/{id}/info")

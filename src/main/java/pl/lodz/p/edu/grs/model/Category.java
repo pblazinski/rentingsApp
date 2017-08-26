@@ -13,6 +13,7 @@ import javax.persistence.*;
 @Setter
 @Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class Category {
 
     @Id
@@ -23,13 +24,9 @@ public class Category {
     @Column(nullable = false)
     private String name;
 
+
     public Category(String name) {
         this.name = name;
-    }
-
-    public Category(Long id, String name) {
-        this.name = name;
-        this.id = id;
     }
 
     public void updateName(final String name) {

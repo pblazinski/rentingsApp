@@ -15,14 +15,17 @@ import javax.validation.constraints.NotNull;
 public class GameDto {
 
     @NotBlank
-    String title;
+    private String title;
 
     @NotBlank
-    String description;
+    private String description;
 
     @NotNull
-    boolean available;
+    private boolean available;
 
     @NotNull
-    double price;
+    private double price;
+
+    @NotNull
+    private long categoryId;
 }

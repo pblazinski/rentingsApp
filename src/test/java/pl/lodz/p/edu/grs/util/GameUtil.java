@@ -20,11 +20,13 @@ public class GameUtil {
 
     public static final double PRICE = 20.99;
 
+    public static final long CATEGORY_ID = 1L;
+
     private GameUtil() {
     }
 
     public static GameDto mockGameDto() {
-        return new GameDto(TITLE, DESCRIPTION, AVAILABLE, PRICE);
+        return new GameDto(TITLE, DESCRIPTION, AVAILABLE, PRICE, CATEGORY_ID);
     }
 
     public static Game mockGame() {

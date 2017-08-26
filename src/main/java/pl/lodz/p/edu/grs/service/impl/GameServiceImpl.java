@@ -45,22 +45,21 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public Game addGame(final GameDto game,
-                        final Long categoryId) {
-        Category category = categoryService.findOne(categoryId);
+    public Game addGame(final GameDto game) {
+        Category category = categoryService.findOne(game.getCategoryId());
 
         Game result = gameFactory.create(game);
 
-        result.updateCategory(category);
+        result.setCategory(category);
 
         result = gameRepository.save(result);
 
-        log.info("Add game <{}> with title <{}> , price <{}> , availability <{}> and category <{}>",
-                result.getId(),
-                result.getTitle(),
-                result.getPrice(),
-                result.isAvailable(),
-                result.getCategory().getName());
+//        log.info("Add game <{}> with title <{}> , price <{}> , availability <{}> and category <{}>",
+//                result.getId(),
+//                result.getTitle(),
+//                result.getPrice(),
+//                result.isAvailable(),
+//                result.getCategory().getName());
 
         return result;
     }

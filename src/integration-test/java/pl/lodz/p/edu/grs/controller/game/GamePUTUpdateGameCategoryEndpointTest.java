@@ -1,6 +1,5 @@
 package pl.lodz.p.edu.grs.controller.game;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -24,16 +23,14 @@ import pl.lodz.p.edu.grs.service.GameService;
 import pl.lodz.p.edu.grs.util.CategoryUtil;
 import pl.lodz.p.edu.grs.util.GameUtil;
 
-import java.io.IOException;
-import java.util.HashMap;
-
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
-public class GamePOSTAddGameEndpointTest {
+public class GamePUTUpdateGameCategoryEndpointTest {
 
     @Autowired
     private GameService gameService;
@@ -59,20 +56,22 @@ public class GamePOSTAddGameEndpointTest {
         categoryRepository.deleteAll();
     }
 
-    //TODO Game add fix add rest of tests
     @Test
     @Ignore
-    public void shouldReturnOkStatusWhenAddGame() throws Exception {
-        //given
-        GameDto gameDto = GameUtil.mockGameDto();
-
+    public void shouldReturnOkStatusWhenUpdateGameCategory() throws Exception {
         Category category = categoryService.addCategory(CategoryUtil.mockCategoryDto());
+        Category category1 = categoryService.addCategory(CategoryUtil.mockCategoryDto());
 
+        GameDto gameDto = GameUtil.mockGameDto();
         gameDto.setCategoryId(category.getId());
 
-        String content = objectMapper.writeValueAsString(gameDto);
+        Game game = gameService.addGame(gameDto);
 
-        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/api/games/")
+        UpdateGameCategoryDto gameCategoryDto = new UpdateGameCategoryDto(game.getId(), category1.getId());
+
+        String content = objectMapper.writeValueAsString(gameCategoryDto);
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.put("/api/games/category")
                 .accept(MediaType.APPLICATION_JSON_UTF8)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(content);
@@ -80,10 +79,11 @@ public class GamePOSTAddGameEndpointTest {
         //when
         ResultActions result = mockMvc.perform(requestBuilder);
 
-        //then
-        String body = result.andReturn().getResponse().getContentAsString();
-        long id = getIdFromContentBody(body);
-        Game game = gameRepository.findOne(id);
+        game = gameRepository.findOne(game.getId());
+
+        assertThat(game.getCategory().getId())
+                .isEqualTo(category1.getId())
+                .isNotSameAs(category.getId());
 
         result.andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").exists())
@@ -100,15 +100,7 @@ public class GamePOSTAddGameEndpointTest {
                 .andExpect(jsonPath("$.category.name").value(game.getCategory().getName()))
                 .andExpect(jsonPath("$.available").exists())
                 .andExpect(jsonPath("$.available").value(game.isAvailable()));
-
     }
 
-    private long getIdFromContentBody(final String content) throws IOException {
-        TypeReference<HashMap<String, String>> typeRef
-                = new TypeReference<HashMap<String, String>>() {
-        };
-
-        HashMap<String, Object> map = objectMapper.readValue(content, typeRef);
-        return Long.valueOf((String) map.get("id"));
-    }
+    //TODO bad request when cant find categroy
 }

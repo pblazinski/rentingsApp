@@ -9,7 +9,7 @@ public interface GameService {
 
     Page<Game> findAll(Pageable pageable);
 
-    Game addGame(GameDto gameDto, Long categoryId);
+    Game addGame(GameDto gameDto);
 
     Game updateTitleAndDescription(Long id, String title, String description);
 

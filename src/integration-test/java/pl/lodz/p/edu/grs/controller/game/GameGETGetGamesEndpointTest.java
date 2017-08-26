@@ -57,7 +57,8 @@ public class GameGETGetGamesEndpointTest {
         Category category = categoryService.addCategory(categoryDto);
 
         GameDto gameDto = GameUtil.mockGameDto();
-        Game game = gameService.addGame(gameDto, category.getId());
+        gameDto.setCategoryId(category.getId());
+        Game game = gameService.addGame(gameDto);
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.get("/api/games/");
 
