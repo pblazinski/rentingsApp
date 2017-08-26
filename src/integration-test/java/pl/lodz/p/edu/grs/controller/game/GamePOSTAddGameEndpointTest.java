@@ -103,16 +103,6 @@ public class GamePOSTAddGameEndpointTest {
 
     }
 
-
-    private long getIdFromContentBody(final String content) throws IOException {
-        TypeReference<HashMap<String, String>> typeRef
-                = new TypeReference<HashMap<String, String>>() {
-        };
-
-        HashMap<String, Object> map = objectMapper.readValue(content, typeRef);
-        return Long.valueOf((String) map.get("id"));
-    }
-
     private long getIdFromContentBodyJson(final String content) throws JSONException {
         JSONObject jsonObject = new JSONObject(content);
 

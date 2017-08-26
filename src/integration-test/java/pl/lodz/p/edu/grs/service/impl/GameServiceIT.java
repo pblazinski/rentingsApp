@@ -1,8 +1,10 @@
 package pl.lodz.p.edu.grs.service.impl;
 
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.omg.CosNaming.NamingContextPackage.NotFound;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
@@ -11,6 +13,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.TransactionSystemException;
 import pl.lodz.p.edu.grs.Application;
 import pl.lodz.p.edu.grs.controller.game.GameDto;
+import pl.lodz.p.edu.grs.exceptions.NotFoundException;
 import pl.lodz.p.edu.grs.model.Category;
 import pl.lodz.p.edu.grs.model.Game;
 import pl.lodz.p.edu.grs.repository.CategoryRepository;
@@ -46,6 +49,12 @@ public class GameServiceIT {
 
     @After
     public void tearDown() throws Exception {
+        gameRepository.deleteAll();
+        categoryRepository.deleteAll();
+    }
+
+    @Before
+    public void setUp() throws Exception {
         gameRepository.deleteAll();
         categoryRepository.deleteAll();
     }
@@ -308,9 +317,22 @@ public class GameServiceIT {
     @Test(expected = EntityNotFoundException.class)
     public void shouldThrowEntityNotFoundExceptionWhenUpdateCategoryForNotExistedGame() {
         //given
-
+        Category category = categoryService.addCategory(CategoryUtil.mockCategoryDto());
         //when
-        gameService.updateCategory(100L, 1L);
+        gameService.updateCategory(100L, category.getId());
+
+        //then
+    }
+
+    @Test(expected = NotFoundException.class)
+    public void shouldThrowNotFoundExceptionWhenUpdateCategoryForNotExistedCategory() {
+        //given
+        Category category = categoryService.addCategory(CategoryUtil.mockCategoryDto());
+        GameDto gameDto = GameUtil.mockGameDto();
+        gameDto.setCategoryId(category.getId());
+        Game game = gameService.addGame(gameDto);
+        //when
+        gameService.updateCategory(game.getId(), 100L);
 
         //then
     }

@@ -3,11 +3,14 @@ package pl.lodz.p.edu.grs.controller.game;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.Validator;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.edu.grs.model.Game;
 import pl.lodz.p.edu.grs.service.GameService;
@@ -19,11 +22,20 @@ import javax.validation.Valid;
 @Api(value = "api/games", description = "Endpoints for games management")
 public class GameController {
 
-    private GameService gameService;
+    private final GameService gameService;
+
+    private final Validator category;
 
     @Autowired
-    public GameController(GameService gameService) {
+    public GameController(final GameService gameService,
+                          @Qualifier("categoryValidator") final Validator category) {
         this.gameService = gameService;
+        this.category = category;
+    }
+
+    @InitBinder("category")
+    protected void initRegistrationApplicationCreateRequestBinder(final WebDataBinder binder) {
+        binder.setValidator(category);
     }
 
     @GetMapping
