@@ -1,6 +1,5 @@
 package pl.lodz.p.edu.grs.controller.game;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

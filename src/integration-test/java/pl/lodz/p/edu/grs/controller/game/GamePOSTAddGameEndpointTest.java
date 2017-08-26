@@ -2,8 +2,9 @@ package pl.lodz.p.edu.grs.controller.game;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,7 @@ import pl.lodz.p.edu.grs.util.GameUtil;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -59,9 +61,7 @@ public class GamePOSTAddGameEndpointTest {
         categoryRepository.deleteAll();
     }
 
-    //TODO Game add fix add rest of tests
     @Test
-    @Ignore
     public void shouldReturnOkStatusWhenAddGame() throws Exception {
         //given
         GameDto gameDto = GameUtil.mockGameDto();
@@ -82,7 +82,7 @@ public class GamePOSTAddGameEndpointTest {
 
         //then
         String body = result.andReturn().getResponse().getContentAsString();
-        long id = getIdFromContentBody(body);
+        long id = getIdFromContentBodyJson(body);
         Game game = gameRepository.findOne(id);
 
         result.andExpect(status().isOk())
@@ -103,6 +103,7 @@ public class GamePOSTAddGameEndpointTest {
 
     }
 
+
     private long getIdFromContentBody(final String content) throws IOException {
         TypeReference<HashMap<String, String>> typeRef
                 = new TypeReference<HashMap<String, String>>() {
@@ -110,5 +111,19 @@ public class GamePOSTAddGameEndpointTest {
 
         HashMap<String, Object> map = objectMapper.readValue(content, typeRef);
         return Long.valueOf((String) map.get("id"));
+    }
+
+    private long getIdFromContentBodyJson(final String content) throws JSONException {
+        JSONObject jsonObject = new JSONObject(content);
+
+        Iterator<?> keys = jsonObject.keys();
+
+        while (keys.hasNext()) {
+            String key = (String) keys.next();
+            if (key.equals("id")) {
+                return (Integer) jsonObject.get(key);
+            }
+        }
+        return 1L;
     }
 }

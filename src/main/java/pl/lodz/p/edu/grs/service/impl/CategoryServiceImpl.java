@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import pl.lodz.p.edu.grs.controller.category.CategoryDto;
+import pl.lodz.p.edu.grs.exceptions.NotFoundException;
 import pl.lodz.p.edu.grs.factory.CategoryFactory;
 import pl.lodz.p.edu.grs.model.Category;
 import pl.lodz.p.edu.grs.repository.CategoryRepository;
@@ -62,7 +63,10 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Category findOne(final Long id) {
-        Category category = categoryRepository.getOne(id);
+        Category category = categoryRepository.findOne(id);
+        if( category == null) {
+            throw new NotFoundException("Category Entity Not Found");
+        }
 
         log.info("Found category <{}> with name <{}>", category.getId(), category.getName());
 

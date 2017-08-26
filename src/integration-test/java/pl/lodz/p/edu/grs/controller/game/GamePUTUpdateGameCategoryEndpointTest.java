@@ -2,7 +2,6 @@ package pl.lodz.p.edu.grs.controller.game;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,7 +56,6 @@ public class GamePUTUpdateGameCategoryEndpointTest {
     }
 
     @Test
-    @Ignore
     public void shouldReturnOkStatusWhenUpdateGameCategory() throws Exception {
         Category category = categoryService.addCategory(CategoryUtil.mockCategoryDto());
         Category category1 = categoryService.addCategory(CategoryUtil.mockCategoryDto());

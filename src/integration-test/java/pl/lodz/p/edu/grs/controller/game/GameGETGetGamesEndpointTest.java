@@ -21,7 +21,6 @@ import pl.lodz.p.edu.grs.service.GameService;
 import pl.lodz.p.edu.grs.util.CategoryUtil;
 import pl.lodz.p.edu.grs.util.GameUtil;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -47,8 +46,8 @@ public class GameGETGetGamesEndpointTest {
 
     @Before
     public void setUp() {
-    gameRepository.deleteAll();
-    categoryRepository.deleteAll();
+        gameRepository.deleteAll();
+        categoryRepository.deleteAll();
     }
 
     @Test
