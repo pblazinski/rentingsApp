@@ -18,6 +18,7 @@ import pl.lodz.p.edu.grs.model.Category;
 import pl.lodz.p.edu.grs.repository.CategoryRepository;
 import pl.lodz.p.edu.grs.repository.GameRepository;
 import pl.lodz.p.edu.grs.service.CategoryService;
+import pl.lodz.p.edu.grs.util.CategoryUtil;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -83,8 +84,9 @@ public class CategoryPUTUpdateNameEndpointTest {
     @Test
     public void shouldReturnBadRequestWhenUpdateCategoryNameWithBlankName() throws Exception {
         //given
+        CategoryDto categoryDto1 = CategoryUtil.mockCategoryDto();
         CategoryDto categoryDto = new CategoryDto(BLANK_VALUE);
-        Category category = categoryService.addCategory(categoryDto);
+        Category category = categoryService.addCategory(categoryDto1);
 
         String content = objectMapper.writeValueAsString(categoryDto);
 
