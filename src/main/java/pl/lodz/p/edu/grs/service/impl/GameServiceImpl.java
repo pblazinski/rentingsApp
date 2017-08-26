@@ -1,67 +1,142 @@
 package pl.lodz.p.edu.grs.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import pl.lodz.p.edu.grs.exceptions.NotFoundException;
+import pl.lodz.p.edu.grs.controller.game.GameDto;
+import pl.lodz.p.edu.grs.factory.GameFactory;
+import pl.lodz.p.edu.grs.model.Category;
 import pl.lodz.p.edu.grs.model.Game;
 import pl.lodz.p.edu.grs.repository.GameRepository;
 import pl.lodz.p.edu.grs.service.CategoryService;
 import pl.lodz.p.edu.grs.service.GameService;
 
-import java.util.List;
+import javax.transaction.Transactional;
 
+@Slf4j
 @Service
+@Transactional
 public class GameServiceImpl implements GameService {
 
-    private GameRepository gameRepository;
+    private final GameRepository gameRepository;
 
-    private CategoryService categoryService;
+    private final CategoryService categoryService;
+
+    private final GameFactory gameFactory;
 
     @Autowired
-    public GameServiceImpl(GameRepository gameRepository,
-                           CategoryService categoryService) {
+    public GameServiceImpl(final GameRepository gameRepository,
+                           final CategoryService categoryService,
+                           final GameFactory gameFactory) {
         this.gameRepository = gameRepository;
         this.categoryService = categoryService;
+        this.gameFactory = gameFactory;
     }
 
     @Override
-    public Page<Game> findAll(Pageable pageable) {
-        return gameRepository.findAll(pageable);
+    public Page<Game> findAll(final Pageable pageable) {
+        Page<Game> games = gameRepository.findAll(pageable);
+
+        log.info("Found <{}> users page", games.getTotalElements());
+
+        return games;
     }
 
     @Override
-    public List<Game> findAll() {
-        return gameRepository.findAll();
+    public Game addGame(final GameDto game) {
+        Category category = categoryService.findOne(game.getCategoryId());
+
+        Game result = gameFactory.create(game);
+
+        result.setCategory(category);
+
+        result = gameRepository.save(result);
+
+//        log.info("Add game <{}> with title <{}> , price <{}> , availability <{}> and category <{}>",
+//                result.getId(),
+//                result.getTitle(),
+//                result.getPrice(),
+//                result.isAvailable(),
+//                result.getCategory().getName());
+
+        return result;
     }
 
     @Override
-    public Game addGame(Game game, Long categoryId) {
-        game.setCategory(categoryService.findOne(categoryId));
-        return gameRepository.saveAndFlush(game);
+    public Game updateTitleAndDescription(final Long id,
+                                          final String title,
+                                          final String description) {
+        Game game = gameRepository.getOne(id);
+
+        game.updateTitleAndDescription(title, description);
+
+        game = gameRepository.save(game);
+
+        log.info("Updated game <{}> with name <{}> and description <{}>",
+                game.getId(),
+                game.getTitle(),
+                game.getDescription());
+
+        return game;
     }
 
     @Override
-    public Game updateGame(Game game, Long categoryId, Long gameId) {
-        Game result = gameRepository.findOne(gameId);
-        if (result == null) {
-            throw new NotFoundException(String.format("Game with id=[%d] not found!", game.getId()));
-        }
-        result.setId(game.getId());
-        result.setCategory(categoryService.findOne(categoryId));
-        result.setDescription(game.getDescription());
-        result.setPrice(game.getPrice());
-        result.setTitle(game.getTitle());
-        result.setAvailable(game.isAvailable());
+    public Game updatePrice(final Long id, final double price) {
+        Game game = gameRepository.getOne(id);
 
-        return gameRepository.save(result);
+        game.updatePrice(price);
+
+        game = gameRepository.save(game);
+
+        log.info("Updated game <{}> with price <{}>",
+                game.getId(),
+                game.getPrice());
+
+        return game;
     }
 
     @Override
-    public void deleteGame(Long id) {
-        Game result = gameRepository.findOne(id);
-        gameRepository.delete(result);
+    public Game updateAvailability(final Long id, final boolean available) {
+        Game game = gameRepository.getOne(id);
+
+        game.updateAvailability(available);
+
+        game = gameRepository.save(game);
+
+        log.info("Updated game <{}> with availability <{}>",
+                game.getId(),
+                game.isAvailable());
+
+        return game;
+    }
+
+    @Override
+    public Game updateCategory(final Long id, final Long categoryId) {
+        Game game = gameRepository.getOne(id);
+
+        Category category = categoryService.findOne(categoryId);
+
+        game.updateCategory(category);
+
+        game = gameRepository.save(game);
+
+        log.info("Updated game <{}> with category <{}>",
+                game.getId(),
+                game.getCategory().getName());
+
+        return game;
+    }
+
+    @Override
+    public void remove(Long id) {
+        Game game = gameRepository.getOne(id);
+
+        gameRepository.delete(game);
+
+        log.info("Removed game with id <{}> ",
+                game.getId());
     }
 
     @Override

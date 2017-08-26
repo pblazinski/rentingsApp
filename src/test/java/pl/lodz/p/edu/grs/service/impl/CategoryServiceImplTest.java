@@ -123,19 +123,18 @@ public class CategoryServiceImplTest {
     @Test
     public void shouldFindOne() throws Exception {
         //given
-        Long categoryId = 1L;
         Category category = CategoryUtil.mockCategory();
 
-        when(categoryRepository.getOne(category.getId()))
+        when(categoryRepository.findOne(category.getId()))
                 .thenReturn(category);
 
         //when
-        Category result = categoryService.findOne(categoryId);
+        Category result = categoryService.findOne(category.getId());
 
 
         //then
         verify(categoryRepository)
-                .getOne(categoryId);
+                .findOne(category.getId());
         assertThat(result)
                 .isNotNull()
                 .isEqualTo(category);

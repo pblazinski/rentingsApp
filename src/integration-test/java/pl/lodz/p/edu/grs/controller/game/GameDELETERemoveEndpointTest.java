@@ -1,22 +1,25 @@
-package pl.lodz.p.edu.grs.controller.category;
+package pl.lodz.p.edu.grs.controller.game;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import pl.lodz.p.edu.grs.model.Category;
+import pl.lodz.p.edu.grs.model.Game;
 import pl.lodz.p.edu.grs.repository.CategoryRepository;
 import pl.lodz.p.edu.grs.repository.GameRepository;
 import pl.lodz.p.edu.grs.service.CategoryService;
+import pl.lodz.p.edu.grs.service.GameService;
 import pl.lodz.p.edu.grs.util.CategoryUtil;
+import pl.lodz.p.edu.grs.util.GameUtil;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -24,13 +27,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
-public class CategoryDELETERemoveEndpointTest {
+public class GameDELETERemoveEndpointTest {
 
     @Autowired
-    private CategoryRepository categoryRepository;
-
-    @Autowired
-    private GameRepository gameRepository;
+    private GameService gameService;
 
     @Autowired
     private CategoryService categoryService;
@@ -39,32 +39,38 @@ public class CategoryDELETERemoveEndpointTest {
     private MockMvc mockMvc;
 
     @Autowired
-    private ObjectMapper objectMapper;
+    private GameRepository gameRepository;
 
-    private static final String BLANK_VALUE = "  ";
+    @Autowired
+    private CategoryRepository categoryRepository;
+
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         gameRepository.deleteAll();
         categoryRepository.deleteAll();
     }
 
-
     @Test
-    public void shouldReturnOkWhenRemoveCategory() throws Exception {
+    public void shouldDeleteGameWithSpecifiedId() throws Exception {
         //given
-        CategoryDto categoryDto = CategoryUtil.mockCategoryDto();
-        Category category = categoryService.addCategory(categoryDto);
+        Category category = categoryService.addCategory(CategoryUtil.mockCategoryDto());
 
-        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.delete(String.format("/api/category/%d", category.getId()));
+        GameDto gameDto = GameUtil.mockGameDto();
+        gameDto.setCategoryId(category.getId());
+        Game game = gameService.addGame(gameDto);
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.delete(String.format("/api/games/%d", game.getId()))
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .contentType(MediaType.APPLICATION_JSON_UTF8);
 
         //when
         ResultActions result = mockMvc.perform(requestBuilder);
 
         //then
-        category = categoryRepository.findOne(category.getId());
+        game = gameRepository.findOne(game.getId());
 
-        assertThat(category)
+        assertThat(game)
                 .isNull();
 
         result.andExpect(status().isOk());

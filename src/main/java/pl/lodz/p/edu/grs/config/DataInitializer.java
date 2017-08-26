@@ -3,9 +3,8 @@ package pl.lodz.p.edu.grs.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.lodz.p.edu.grs.controller.category.CategoryDto;
+import pl.lodz.p.edu.grs.controller.game.GameDto;
 import pl.lodz.p.edu.grs.controller.user.RegisterUserDTO;
-import pl.lodz.p.edu.grs.model.Category;
-import pl.lodz.p.edu.grs.model.Game;
 import pl.lodz.p.edu.grs.service.CategoryService;
 import pl.lodz.p.edu.grs.service.GameService;
 import pl.lodz.p.edu.grs.service.UserService;
@@ -39,14 +38,11 @@ public class DataInitializer {
     }
 
     private void mockGames() {
-        Game game = new Game("Quake", "FPS bestseller", true, 80);
-        Game game1 = new Game("H1Z1: King Of The Kill", "Battle Royale", true, 120);
+        GameDto game = new GameDto("Quake", "FPS bestseller", true, 80, 1L);
+        GameDto game1 = new GameDto("H1Z1: King Of The Kill", "Battle Royale", true, 120, 2L);
 
-        game.setCategory(categoryService.findOne(1L));
-        game1.setCategory(categoryService.findOne(1L));
-
-        gameService.addGame(game, 1L);
-        gameService.addGame(game1, 1L);
+        gameService.addGame(game);
+        gameService.addGame(game1);
     }
 
     private void mockUsers() {
