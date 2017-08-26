@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,7 +27,6 @@ import javax.validation.Valid;
 @RequestMapping(value = "api/users")
 public class UserController {
     //TODO handle not found for update method and remove
-    //TODO handle authorization etc
     //TODO add remove integration test
 
     private final UserService userService;
@@ -50,6 +50,7 @@ public class UserController {
 
     @PutMapping("{id}/email")
     @ApiOperation("Update user email")
+    @PreAuthorize("@userModifyPermissionResolver.hasAuthorityToModifyUser(principal, #id)")
     public HttpEntity updateEmail(@PathVariable final long id,
                                   @RequestBody @Valid final UpdateUserEmailDto updateUserEmailDto) {
         User user = userService.updateEmail(id, updateUserEmailDto.getEmail());
@@ -59,6 +60,7 @@ public class UserController {
 
     @PutMapping("{id}/password")
     @ApiOperation("Update user password")
+    @PreAuthorize("@userModifyPermissionResolver.hasAuthorityToModifyUser(principal, #id)")
     public HttpEntity updatePassword(@PathVariable final long id,
                                      @RequestBody @Valid final UpdateUserPasswordDto updateUserPasswordDto) {
         User user = userService.updatePassword(id, updateUserPasswordDto.getPassword());
@@ -68,6 +70,7 @@ public class UserController {
 
     @PutMapping("{id}/names")
     @ApiOperation("Update user names")
+    @PreAuthorize("@userModifyPermissionResolver.hasAuthorityToModifyUser(principal, #id)")
     public HttpEntity updateNames(@PathVariable final long id,
                                   @RequestBody @Valid final UpdateUserNamesDto updateUserNamesDto) {
         User user = userService.updateNames(id, updateUserNamesDto.getFirstName(), updateUserNamesDto.getLastName());
@@ -77,6 +80,7 @@ public class UserController {
 
     @DeleteMapping("{id}")
     @ApiOperation("Remove user")
+    @PreAuthorize("@userModifyPermissionResolver.hasAuthorityToModifyUser(principal, #id)")
     public HttpEntity removeUser(@PathVariable final long id) {
         userService.remove(id);
 

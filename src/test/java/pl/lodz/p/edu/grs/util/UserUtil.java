@@ -20,6 +20,7 @@ public class UserUtil {
 
     public static final String PASSWORD = "password";
 
+
     private UserUtil() {
 
     }
@@ -35,7 +36,7 @@ public class UserUtil {
                 FIRST_NAME,
                 LAST_NAME,
                 null,
-                new HashSet<>(Collections.singletonList(Role.USER))
+                new HashSet<>(Arrays.asList(Role.USER))
         );
     }
 

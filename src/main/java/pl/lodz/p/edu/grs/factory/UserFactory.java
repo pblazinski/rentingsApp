@@ -5,6 +5,8 @@ import org.springframework.stereotype.Component;
 import pl.lodz.p.edu.grs.controller.user.RegisterUserDTO;
 import pl.lodz.p.edu.grs.model.user.User;
 
+import java.util.HashSet;
+
 @Component
 public class UserFactory {
 
@@ -20,6 +22,7 @@ public class UserFactory {
                 .lastName(registerUserDTO.getLastName())
                 .email(registerUserDTO.getEmail())
                 .password(passwordEncoder.encode(registerUserDTO.getPassword()))
+                .roles(new HashSet<>())
                 .build();
     }
 }

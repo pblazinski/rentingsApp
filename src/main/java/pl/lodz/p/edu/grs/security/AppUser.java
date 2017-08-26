@@ -3,6 +3,7 @@ package pl.lodz.p.edu.grs.security;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import pl.lodz.p.edu.grs.model.user.Authority;
 import pl.lodz.p.edu.grs.model.user.User;
 
 import java.util.Collection;
@@ -17,7 +18,7 @@ public class AppUser
 
     private Collection<GrantedAuthority> authorities;
 
-    AppUser(final User user) {
+    public AppUser(final User user) {
         this.user = user;
         Set<SimpleGrantedAuthority> simpleGrantedAuthorities = this.user.getRoles()
                 .stream()
@@ -25,6 +26,11 @@ public class AppUser
                 .map(authority -> new SimpleGrantedAuthority(authority.name()))
                 .collect(Collectors.toSet());
         this.authorities = Collections.unmodifiableSet(simpleGrantedAuthorities);
+    }
+
+    public boolean hasAuthority(final Authority authority) {
+        SimpleGrantedAuthority grantedAuthority = new SimpleGrantedAuthority(authority.name());
+        return this.authorities.contains(grantedAuthority);
     }
 
     @Override

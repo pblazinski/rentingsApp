@@ -75,6 +75,20 @@ public class User {
         this.lastName = lastName;
     }
 
+    public void grant(final Role role) {
+        if (this.roles.contains(role)) {
+            //TODO throw exception
+        }
+        this.roles.add(role);
+    }
+
+    public void revoke(final Role role) {
+        if (!this.roles.contains(role)) {
+            //TODO throw exception
+        }
+        this.roles.remove(role);
+    }
+
     public void updateEmail(final String email) {
         this.email = email;
     }
