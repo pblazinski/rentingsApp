@@ -1,5 +1,6 @@
 package pl.lodz.p.edu.grs.service.impl;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,6 +28,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.validation.ConstraintViolationException;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class)
@@ -256,8 +258,8 @@ public class GameServiceIT {
                 .isEqualTo(category1.getId());
     }
 
-    @Test(expected = TransactionSystemException.class)
-    public void shouldThrowTransactionSystemExceptionWhenUpdateTitleAndDescriptionWithBlankValues() {
+    @Test
+    public void shouldThrowConstraintViolationExceptionWhenUpdateTitleAndDescriptionWithBlankValues() {
         //given
         Category category = categoryService.addCategory(CategoryUtil.mockCategoryDto());
         GameDto gameDto = GameUtil.mockGameDto();
@@ -266,12 +268,16 @@ public class GameServiceIT {
         Long id = game.getId();
 
         //when
-        gameService.updateTitleAndDescription(id, BLANK_VALUE, BLANK_VALUE);
+        Throwable throwable = catchThrowable(() -> gameService.updateTitleAndDescription(id, BLANK_VALUE, BLANK_VALUE));
+
         //then
+        Throwable rootCause = ExceptionUtils.getRootCause(throwable);
+        assertThat(rootCause)
+                .isInstanceOf(ConstraintViolationException.class);
     }
 
-    @Test(expected = TransactionSystemException.class)
-    public void shouldThrowTransactionSystemExceptionWhenUpdatePriceBelowZero() {
+    @Test
+    public void shouldThrowConstraintViolationExceptionWhenUpdatePriceBelowZero() {
         //given
         Category category = categoryService.addCategory(CategoryUtil.mockCategoryDto());
         GameDto gameDto = GameUtil.mockGameDto();
@@ -280,8 +286,12 @@ public class GameServiceIT {
         Long id = game.getId();
 
         //when
-        gameService.updatePrice(id, BELOW_ZERO);
+        Throwable throwable = catchThrowable(() -> gameService.updatePrice(id, BELOW_ZERO));
+
         //then
+        Throwable rootCause = ExceptionUtils.getRootCause(throwable);
+        assertThat(rootCause)
+                .isInstanceOf(ConstraintViolationException.class);
     }
 
     @Test(expected = EntityNotFoundException.class)
