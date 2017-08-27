@@ -1,6 +1,5 @@
 package pl.lodz.p.edu.grs.controller.category;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,14 +10,19 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import pl.lodz.p.edu.grs.model.Category;
+import pl.lodz.p.edu.grs.model.user.User;
 import pl.lodz.p.edu.grs.repository.CategoryRepository;
 import pl.lodz.p.edu.grs.repository.GameRepository;
+import pl.lodz.p.edu.grs.repository.UserRepository;
+import pl.lodz.p.edu.grs.security.AppUser;
 import pl.lodz.p.edu.grs.service.CategoryService;
 import pl.lodz.p.edu.grs.util.CategoryUtil;
+import pl.lodz.p.edu.grs.util.StubHelper;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
@@ -28,25 +32,23 @@ public class CategoryDELETERemoveEndpointTest {
 
     @Autowired
     private CategoryRepository categoryRepository;
-
     @Autowired
     private GameRepository gameRepository;
-
     @Autowired
     private CategoryService categoryService;
-
     @Autowired
     private MockMvc mockMvc;
-
     @Autowired
-    private ObjectMapper objectMapper;
+    private UserRepository userRepository;
 
-    private static final String BLANK_VALUE = "  ";
+    private User user;
 
     @Before
     public void setUp() throws Exception {
         gameRepository.deleteAll();
         categoryRepository.deleteAll();
+        userRepository.deleteAll();
+        user = StubHelper.stubUser();
     }
 
 
@@ -56,7 +58,8 @@ public class CategoryDELETERemoveEndpointTest {
         CategoryDto categoryDto = CategoryUtil.mockCategoryDto();
         Category category = categoryService.addCategory(categoryDto);
 
-        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.delete(String.format("/api/category/%d", category.getId()));
+        MockHttpServletRequestBuilder requestBuilder = delete(String.format("/api/category/%d", category.getId()))
+                .with(user(new AppUser(user)));
 
         //when
         ResultActions result = mockMvc.perform(requestBuilder);

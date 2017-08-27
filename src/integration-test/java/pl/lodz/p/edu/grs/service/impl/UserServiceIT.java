@@ -11,7 +11,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.TransactionSystemException;
 import pl.lodz.p.edu.grs.Application;
 import pl.lodz.p.edu.grs.controller.user.RegisterUserDTO;
-import pl.lodz.p.edu.grs.model.User;
+import pl.lodz.p.edu.grs.model.user.User;
 import pl.lodz.p.edu.grs.repository.UserRepository;
 import pl.lodz.p.edu.grs.service.UserService;
 import pl.lodz.p.edu.grs.util.UserUtil;

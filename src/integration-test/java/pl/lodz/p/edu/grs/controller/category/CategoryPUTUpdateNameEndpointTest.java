@@ -15,12 +15,17 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import pl.lodz.p.edu.grs.model.Category;
+import pl.lodz.p.edu.grs.model.user.User;
 import pl.lodz.p.edu.grs.repository.CategoryRepository;
 import pl.lodz.p.edu.grs.repository.GameRepository;
+import pl.lodz.p.edu.grs.repository.UserRepository;
+import pl.lodz.p.edu.grs.security.AppUser;
 import pl.lodz.p.edu.grs.service.CategoryService;
 import pl.lodz.p.edu.grs.util.CategoryUtil;
+import pl.lodz.p.edu.grs.util.StubHelper;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -31,18 +36,18 @@ public class CategoryPUTUpdateNameEndpointTest {
 
     @Autowired
     private CategoryRepository categoryRepository;
-
     @Autowired
     private GameRepository gameRepository;
-
+    @Autowired
+    private UserRepository userRepository;
     @Autowired
     private CategoryService categoryService;
-
     @Autowired
     private MockMvc mockMvc;
-
     @Autowired
     private ObjectMapper objectMapper;
+
+    private User user;
 
     private static final String BLANK_VALUE = "  ";
 
@@ -50,6 +55,8 @@ public class CategoryPUTUpdateNameEndpointTest {
     public void setUp() throws Exception {
         gameRepository.deleteAll();
         categoryRepository.deleteAll();
+        userRepository.deleteAll();
+        user = StubHelper.stubUser();
     }
 
 
@@ -65,6 +72,7 @@ public class CategoryPUTUpdateNameEndpointTest {
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.put(String.format("/api/category/%d", category.getId()))
                 .accept(MediaType.APPLICATION_JSON_UTF8)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .with(user(new AppUser(user)))
                 .content(content);
 
         //when
@@ -93,6 +101,7 @@ public class CategoryPUTUpdateNameEndpointTest {
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.put(String.format("/api/category/%d", category.getId()))
                 .accept(MediaType.APPLICATION_JSON_UTF8)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .with(user(new AppUser(user)))
                 .content(content);
 
         //when

@@ -1,20 +1,27 @@
-package pl.lodz.p.edu.grs.model;
+package pl.lodz.p.edu.grs.model.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Singular;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
+import pl.lodz.p.edu.grs.model.Game;
 
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Entity
@@ -46,6 +53,10 @@ public class User {
     @OneToMany(fetch = FetchType.LAZY)
     private List<Game> borrowed;
 
+    @Enumerated(EnumType.STRING)
+    @ElementCollection(fetch = FetchType.EAGER)
+    private Set<Role> roles = new HashSet<>();
+
     public User() {
     }
 
@@ -62,6 +73,20 @@ public class User {
     public void updateNames(final String firstName, final String lastName) {
         this.firstName = firstName;
         this.lastName = lastName;
+    }
+
+    public void grant(final Role role) {
+        if (this.roles.contains(role)) {
+            //TODO throw exception
+        }
+        this.roles.add(role);
+    }
+
+    public void revoke(final Role role) {
+        if (!this.roles.contains(role)) {
+            //TODO throw exception
+        }
+        this.roles.remove(role);
     }
 
     public void updateEmail(final String email) {

@@ -7,7 +7,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import pl.lodz.p.edu.grs.controller.user.RegisterUserDTO;
-import pl.lodz.p.edu.grs.model.User;
+import pl.lodz.p.edu.grs.model.user.User;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;

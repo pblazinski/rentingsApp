@@ -1,6 +1,5 @@
 package pl.lodz.p.edu.grs.controller.game;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,17 +17,19 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import pl.lodz.p.edu.grs.model.Category;
 import pl.lodz.p.edu.grs.model.Game;
+import pl.lodz.p.edu.grs.model.user.User;
 import pl.lodz.p.edu.grs.repository.CategoryRepository;
 import pl.lodz.p.edu.grs.repository.GameRepository;
+import pl.lodz.p.edu.grs.repository.UserRepository;
+import pl.lodz.p.edu.grs.security.AppUser;
 import pl.lodz.p.edu.grs.service.CategoryService;
-import pl.lodz.p.edu.grs.service.GameService;
 import pl.lodz.p.edu.grs.util.CategoryUtil;
 import pl.lodz.p.edu.grs.util.GameUtil;
+import pl.lodz.p.edu.grs.util.StubHelper;
 
-import java.io.IOException;
-import java.util.HashMap;
 import java.util.Iterator;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -38,27 +39,26 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class GamePOSTAddGameEndpointTest {
 
     @Autowired
-    private GameService gameService;
-
-    @Autowired
     private CategoryService categoryService;
-
     @Autowired
     private MockMvc mockMvc;
-
     @Autowired
     private GameRepository gameRepository;
-
+    @Autowired
+    private UserRepository userRepository;
     @Autowired
     private CategoryRepository categoryRepository;
-
     @Autowired
     private ObjectMapper objectMapper;
+
+    private User user;
 
     @Before
     public void setUp() {
         gameRepository.deleteAll();
         categoryRepository.deleteAll();
+        userRepository.deleteAll();
+        user = StubHelper.stubUser();
     }
 
     @Test
@@ -75,6 +75,7 @@ public class GamePOSTAddGameEndpointTest {
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/api/games/")
                 .accept(MediaType.APPLICATION_JSON_UTF8)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .with(user(new AppUser(user)))
                 .content(content);
 
         //when

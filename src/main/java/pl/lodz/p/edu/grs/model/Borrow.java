@@ -4,6 +4,7 @@ package pl.lodz.p.edu.grs.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pl.lodz.p.edu.grs.model.user.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;

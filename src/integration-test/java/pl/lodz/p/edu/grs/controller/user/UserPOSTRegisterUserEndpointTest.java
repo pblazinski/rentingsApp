@@ -2,7 +2,6 @@ package pl.lodz.p.edu.grs.controller.user;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,12 +14,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import pl.lodz.p.edu.grs.model.User;
+import pl.lodz.p.edu.grs.model.user.User;
 import pl.lodz.p.edu.grs.repository.UserRepository;
 import pl.lodz.p.edu.grs.util.UserUtil;
 
 import java.io.IOException;
-import java.util.HashMap;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -61,13 +59,14 @@ public class UserPOSTRegisterUserEndpointTest {
         ResultActions result = mockMvc.perform(requestBuilder);
 
         //then
+        result.andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").exists());
+
         String body = result.andReturn().getResponse().getContentAsString();
         long id = getIdFromContentBody(body);
         User user = userRepository.findOne(id);
 
-        result.andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").exists())
-                .andExpect(jsonPath("$.id").value(user.getId()))
+        result.andExpect(jsonPath("$.id").value(user.getId()))
                 .andExpect(jsonPath("$.firstName").exists())
                 .andExpect(jsonPath("$.firstName").value(user.getFirstName()))
                 .andExpect(jsonPath("$.lastName").exists())
@@ -154,11 +153,11 @@ public class UserPOSTRegisterUserEndpointTest {
     }
 
     private long getIdFromContentBody(final String content) throws IOException {
-        TypeReference<HashMap<String, String>> typeRef
-                = new TypeReference<HashMap<String, String>>() {
+        TypeReference<User> typeRef
+                = new TypeReference<User>() {
         };
 
-        HashMap<String, Object> map = objectMapper.readValue(content, typeRef);
-        return Long.valueOf((String) map.get("id"));
+        User user = objectMapper.readValue(content, typeRef);
+        return user.getId();
     }
 }

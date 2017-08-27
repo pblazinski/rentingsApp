@@ -12,7 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import pl.lodz.p.edu.grs.controller.user.RegisterUserDTO;
 import pl.lodz.p.edu.grs.factory.UserFactory;
-import pl.lodz.p.edu.grs.model.User;
+import pl.lodz.p.edu.grs.model.user.User;
 import pl.lodz.p.edu.grs.repository.UserRepository;
 import pl.lodz.p.edu.grs.service.UserService;
 import pl.lodz.p.edu.grs.util.UserUtil;

@@ -14,13 +14,18 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import pl.lodz.p.edu.grs.controller.category.CategoryDto;
 import pl.lodz.p.edu.grs.model.Category;
 import pl.lodz.p.edu.grs.model.Game;
+import pl.lodz.p.edu.grs.model.user.User;
 import pl.lodz.p.edu.grs.repository.CategoryRepository;
 import pl.lodz.p.edu.grs.repository.GameRepository;
+import pl.lodz.p.edu.grs.repository.UserRepository;
+import pl.lodz.p.edu.grs.security.AppUser;
 import pl.lodz.p.edu.grs.service.CategoryService;
 import pl.lodz.p.edu.grs.service.GameService;
 import pl.lodz.p.edu.grs.util.CategoryUtil;
 import pl.lodz.p.edu.grs.util.GameUtil;
+import pl.lodz.p.edu.grs.util.StubHelper;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -31,23 +36,25 @@ public class GameGETGetGamesEndpointTest {
 
     @Autowired
     private GameService gameService;
-
     @Autowired
     private CategoryService categoryService;
-
     @Autowired
     private MockMvc mockMvc;
-
     @Autowired
     private GameRepository gameRepository;
-
+    @Autowired
+    private UserRepository userRepository;
     @Autowired
     private CategoryRepository categoryRepository;
+
+    private User user;
 
     @Before
     public void setUp() {
         gameRepository.deleteAll();
         categoryRepository.deleteAll();
+        userRepository.deleteAll();
+        user = StubHelper.stubUser();
     }
 
     @Test
@@ -59,7 +66,8 @@ public class GameGETGetGamesEndpointTest {
         gameDto.setCategoryId(category.getId());
         Game game = gameService.addGame(gameDto);
 
-        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.get("/api/games/");
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.get("/api/games/")
+                .with(user(new AppUser(user)));
 
         //when
         ResultActions result = mockMvc.perform(requestBuilder);

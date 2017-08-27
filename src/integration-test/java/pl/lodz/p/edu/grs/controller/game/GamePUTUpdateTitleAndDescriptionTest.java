@@ -15,14 +15,19 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import pl.lodz.p.edu.grs.model.Category;
 import pl.lodz.p.edu.grs.model.Game;
+import pl.lodz.p.edu.grs.model.user.User;
 import pl.lodz.p.edu.grs.repository.CategoryRepository;
 import pl.lodz.p.edu.grs.repository.GameRepository;
+import pl.lodz.p.edu.grs.repository.UserRepository;
+import pl.lodz.p.edu.grs.security.AppUser;
 import pl.lodz.p.edu.grs.service.CategoryService;
 import pl.lodz.p.edu.grs.service.GameService;
 import pl.lodz.p.edu.grs.util.CategoryUtil;
 import pl.lodz.p.edu.grs.util.GameUtil;
+import pl.lodz.p.edu.grs.util.StubHelper;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -33,32 +38,33 @@ public class GamePUTUpdateTitleAndDescriptionTest {
 
     @Autowired
     private GameService gameService;
-
     @Autowired
     private CategoryService categoryService;
-
     @Autowired
     private MockMvc mockMvc;
-
+    @Autowired
+    private UserRepository userRepository;
     @Autowired
     private GameRepository gameRepository;
-
     @Autowired
     private CategoryRepository categoryRepository;
-
     @Autowired
     private ObjectMapper objectMapper;
 
-    public static final String CORRECT_TITLE = "Title";
+    private User user;
 
-    public static final String CORRECT_DESCRIPTION = "Description";
+    private static final String CORRECT_TITLE = "Title";
 
-    public static final String BLANK_VALUE = "   ";
+    private static final String CORRECT_DESCRIPTION = "Description";
+
+    private static final String BLANK_VALUE = "   ";
 
     @Before
     public void setUp() {
+        userRepository.deleteAll();
         gameRepository.deleteAll();
         categoryRepository.deleteAll();
+        user = StubHelper.stubUser();
     }
 
     @Test
@@ -76,6 +82,7 @@ public class GamePUTUpdateTitleAndDescriptionTest {
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.put(String.format("/api/games/%d/info", game.getId()))
                 .accept(MediaType.APPLICATION_JSON_UTF8)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .with(user(new AppUser(user)))
                 .content(content);
 
         //when
@@ -121,6 +128,7 @@ public class GamePUTUpdateTitleAndDescriptionTest {
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.put(String.format("/api/games/%d/info", game.getId()))
                 .accept(MediaType.APPLICATION_JSON_UTF8)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .with(user(new AppUser(user)))
                 .content(content);
 
         //when

@@ -7,7 +7,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.lodz.p.edu.grs.controller.user.RegisterUserDTO;
 import pl.lodz.p.edu.grs.factory.UserFactory;
-import pl.lodz.p.edu.grs.model.User;
+import pl.lodz.p.edu.grs.model.user.Role;
+import pl.lodz.p.edu.grs.model.user.User;
 import pl.lodz.p.edu.grs.repository.UserRepository;
 import pl.lodz.p.edu.grs.service.UserService;
 
@@ -44,6 +45,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public User registerUser(final RegisterUserDTO registerUserDTO) {
         User user = userFactory.createUser(registerUserDTO);
+
+        user.grant(Role.USER);
 
         user = userRepository.save(user);
 

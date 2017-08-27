@@ -12,11 +12,16 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import pl.lodz.p.edu.grs.model.Category;
+import pl.lodz.p.edu.grs.model.user.User;
 import pl.lodz.p.edu.grs.repository.CategoryRepository;
 import pl.lodz.p.edu.grs.repository.GameRepository;
+import pl.lodz.p.edu.grs.repository.UserRepository;
+import pl.lodz.p.edu.grs.security.AppUser;
 import pl.lodz.p.edu.grs.service.CategoryService;
 import pl.lodz.p.edu.grs.util.CategoryUtil;
+import pl.lodz.p.edu.grs.util.StubHelper;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -27,20 +32,23 @@ public class CategoryGETGetCategoryEndpointTest {
 
     @Autowired
     private CategoryService categoryService;
-
     @Autowired
     private MockMvc mockMvc;
-
     @Autowired
     private CategoryRepository categoryRepository;
-
     @Autowired
     private GameRepository gameRepository;
+    @Autowired
+    private UserRepository userRepository;
+
+    private User user;
 
     @Before
     public void setUp() throws Exception {
         gameRepository.deleteAll();
         categoryRepository.deleteAll();
+        userRepository.deleteAll();
+        user = StubHelper.stubUser();
     }
 
     @Test
@@ -49,7 +57,8 @@ public class CategoryGETGetCategoryEndpointTest {
         CategoryDto categoryDto = CategoryUtil.mockCategoryDto();
         Category category = categoryService.addCategory(categoryDto);
 
-        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.get(String.format("/api/category/%s", category.getName()));
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.get(String.format("/api/category/%s", category.getName()))
+                .with(user(new AppUser(user)));
 
         //when
         ResultActions result = mockMvc.perform(requestBuilder);

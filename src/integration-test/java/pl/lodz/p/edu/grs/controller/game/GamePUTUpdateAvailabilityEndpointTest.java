@@ -15,14 +15,19 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import pl.lodz.p.edu.grs.model.Category;
 import pl.lodz.p.edu.grs.model.Game;
+import pl.lodz.p.edu.grs.model.user.User;
 import pl.lodz.p.edu.grs.repository.CategoryRepository;
 import pl.lodz.p.edu.grs.repository.GameRepository;
+import pl.lodz.p.edu.grs.repository.UserRepository;
+import pl.lodz.p.edu.grs.security.AppUser;
 import pl.lodz.p.edu.grs.service.CategoryService;
 import pl.lodz.p.edu.grs.service.GameService;
 import pl.lodz.p.edu.grs.util.CategoryUtil;
 import pl.lodz.p.edu.grs.util.GameUtil;
+import pl.lodz.p.edu.grs.util.StubHelper;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -33,29 +38,29 @@ public class GamePUTUpdateAvailabilityEndpointTest {
 
     @Autowired
     private GameService gameService;
-
     @Autowired
     private CategoryService categoryService;
-
     @Autowired
     private MockMvc mockMvc;
-
     @Autowired
     private GameRepository gameRepository;
-
+    @Autowired
+    private UserRepository userRepository;
     @Autowired
     private CategoryRepository categoryRepository;
-
     @Autowired
     private ObjectMapper objectMapper;
 
-    public static final Boolean AVAILABLE = false;
+    private User user;
 
+    private static final Boolean AVAILABLE = false;
 
     @Before
     public void setUp() {
         gameRepository.deleteAll();
         categoryRepository.deleteAll();
+        userRepository.deleteAll();
+        user = StubHelper.stubUser();
     }
 
     @Test
@@ -73,6 +78,7 @@ public class GamePUTUpdateAvailabilityEndpointTest {
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.put(String.format("/api/games/%d/available", game.getId()))
                 .accept(MediaType.APPLICATION_JSON_UTF8)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .with(user(new AppUser(user)))
                 .content(content);
 
         //when
