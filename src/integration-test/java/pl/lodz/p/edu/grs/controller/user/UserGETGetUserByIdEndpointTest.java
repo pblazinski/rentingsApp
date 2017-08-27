@@ -10,7 +10,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import pl.lodz.p.edu.grs.model.user.User;
 import pl.lodz.p.edu.grs.repository.UserRepository;
 import pl.lodz.p.edu.grs.service.UserService;
@@ -20,18 +19,17 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
-public class UserGETGetUsersEndpointTest {
+public class UserGETGetUserByIdEndpointTest {
+
+    //TODO add test for not found, after add handler for entityNotFoundException
 
     @Autowired
     private UserService userService;
-
     @Autowired
     private MockMvc mockMvc;
-
     @Autowired
     private UserRepository userRepository;
 
@@ -41,25 +39,25 @@ public class UserGETGetUsersEndpointTest {
     }
 
     @Test
-    public void shouldReturnPageOfUsers() throws Exception {
+    public void shouldReturnUserByIdWhenUserExists() throws Exception {
         //given
         RegisterUserDTO userDTO = UserUtil.mockRegisterUserDTO();
         User user = userService.registerUser(userDTO);
 
-        MockHttpServletRequestBuilder requestBuilder = get("/api/users/");
+        MockHttpServletRequestBuilder requestBuilder = get(String.format("/api/users/%d" , user.getId()));
 
         //when
         ResultActions result = mockMvc.perform(requestBuilder);
 
         //then
         result.andExpect(status().isOk())
-                .andExpect(jsonPath("$.content[0].firstName").exists())
-                .andExpect(jsonPath("$.content[0].firstName").value(user.getFirstName()))
-                .andExpect(jsonPath("$.content[0].lastName").exists())
-                .andExpect(jsonPath("$.content[0].lastName").value(user.getLastName()))
-                .andExpect(jsonPath("$.content[0].email").exists())
-                .andExpect(jsonPath("$.content[0].email").value(user.getEmail()))
-                .andExpect(jsonPath("$.content[0].password").doesNotExist());
-    }
+                .andExpect(jsonPath("$.firstName").exists())
+                .andExpect(jsonPath("$.firstName").value(user.getFirstName()))
+                .andExpect(jsonPath("$.lastName").exists())
+                .andExpect(jsonPath("$.lastName").value(user.getLastName()))
+                .andExpect(jsonPath("$.email").exists())
+                .andExpect(jsonPath("$.email").value(user.getEmail()))
+                .andExpect(jsonPath("$.password").doesNotExist());
 
+    }
 }

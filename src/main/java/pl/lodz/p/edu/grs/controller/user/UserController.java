@@ -46,6 +46,12 @@ public class UserController {
         return userService.findAll(pageable);
     }
 
+    @GetMapping("/{userId}")
+    @ApiOperation("Get user by id")
+    public User getUserById(@PathVariable final long userId) {
+        return userService.findOne(userId);
+    }
+
     @PutMapping("{id}/email")
     @ApiOperation("Update user email")
     @PreAuthorize("@userModifyPermissionResolver.hasAuthorityToModifyUser(principal, #id)")

@@ -10,6 +10,8 @@ public interface UserService {
 
     Page<User> findAll(Pageable pageable);
 
+    User findOne(long userId);
+
     User registerUser(RegisterUserDTO registerUserDTO);
 
     void remove(long userId);

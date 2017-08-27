@@ -269,5 +269,35 @@ public class UserServiceIT {
         //then
     }
 
+    @Test(expected = EntityNotFoundException.class)
+    public void shouldThrowEntityNotFoundExceptionWhenNotFoundEntity() {
+        //given
+
+        //when
+        userService.findOne(1L);
+
+        //then
+    }
+
+    @Test
+    public void shouldReturnUserWhenExists() {
+        //given
+        RegisterUserDTO userDTO = UserUtil.mockRegisterUserDTO();
+        User user = userService.registerUser(userDTO);
+
+        //when
+        User result = userService.findOne(user.getId());
+
+        //then
+        assertThat(result)
+                .isNotNull();
+        assertThat(result.getId())
+                .isNotNull()
+                .isEqualTo(user.getId());
+        assertThat(result.getEmail())
+                .isNotEmpty()
+                .isEqualTo(user.getEmail());
+    }
+
 }
 
