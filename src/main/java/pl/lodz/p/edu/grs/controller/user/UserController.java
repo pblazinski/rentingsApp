@@ -27,8 +27,6 @@ import javax.validation.Valid;
 @RequestMapping(value = "api/users")
 public class UserController {
     //TODO handle not found for update method and remove
-    //TODO add remove integration test
-
     private final UserService userService;
 
     @Autowired
