@@ -1,5 +1,6 @@
 package pl.lodz.p.edu.grs.service.impl;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,6 +24,7 @@ import javax.validation.ConstraintViolationException;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 
 
 @RunWith(SpringRunner.class)
@@ -132,16 +134,20 @@ public class CategoryServiceIT {
                 .isEqualTo(updated);
     }
 
-    @Test(expected = TransactionSystemException.class)
-    public void shouldThrowTransactionSystemExceptionWhenUpdateCateogryNameWithBlankValue() {
+    @Test
+    public void shouldThrowConstraintViolationExceptionWhenUpdateCategoryNameWithBlankValue() {
         //given
         CategoryDto categoryDto = CategoryUtil.mockCategoryDto();
         Category category = categoryService.addCategory(categoryDto);
         Long id = category.getId();
+
         //when
-        categoryService.updateCategory(BLANK_VALUE, id);
+        Throwable throwable = catchThrowable(() -> categoryService.updateCategory(BLANK_VALUE, id));
 
         //then
+        Throwable rootCause = ExceptionUtils.getRootCause(throwable);
+        assertThat(rootCause)
+                .isInstanceOf(ConstraintViolationException.class);
     }
 
     @Test(expected = EntityNotFoundException.class)

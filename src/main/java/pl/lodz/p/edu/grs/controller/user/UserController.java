@@ -27,8 +27,6 @@ import javax.validation.Valid;
 @RequestMapping(value = "api/users")
 public class UserController {
     //TODO handle not found for update method and remove
-    //TODO add remove integration test
-
     private final UserService userService;
 
     @Autowired
@@ -46,6 +44,12 @@ public class UserController {
     @ApiOperation("Get users page")
     public Page<User> getUsers(@PageableDefault final Pageable pageable) {
         return userService.findAll(pageable);
+    }
+
+    @GetMapping("/{userId}")
+    @ApiOperation("Get user by id")
+    public User getUserById(@PathVariable final long userId) {
+        return userService.findOne(userId);
     }
 
     @PutMapping("{id}/email")

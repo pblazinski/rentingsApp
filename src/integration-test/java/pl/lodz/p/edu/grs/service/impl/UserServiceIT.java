@@ -1,5 +1,6 @@
 package pl.lodz.p.edu.grs.service.impl;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -8,7 +9,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.TransactionSystemException;
 import pl.lodz.p.edu.grs.Application;
 import pl.lodz.p.edu.grs.controller.user.RegisterUserDTO;
 import pl.lodz.p.edu.grs.model.user.User;
@@ -20,6 +20,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.validation.ConstraintViolationException;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 
 
 @RunWith(SpringRunner.class)
@@ -182,15 +183,15 @@ public class UserServiceIT {
         String newPassword = "First";
 
         //when
-        User result = userService.updatePassword(userId, password);
+        User result = userService.updatePassword(userId, newPassword);
 
         //then
         assertThat(result.getPassword())
                 .isNotSameAs(password);
     }
 
-    @Test(expected = TransactionSystemException.class)
-    public void shouldThrowTransactionSystemExceptionWhenUpdateEmailWithNotValidEmail() {
+    @Test
+    public void shouldThrowConstraintViolationExceptionWhenUpdateEmailWithNotValidEmail() {
         //given
         RegisterUserDTO userDTO = UserUtil.mockRegisterUserDTO();
         User user = userService.registerUser(userDTO);
@@ -198,35 +199,44 @@ public class UserServiceIT {
         String email = "new@";
 
         //when
-        userService.updateEmail(userId, email);
+        Throwable throwable = catchThrowable(() -> userService.updateEmail(userId, email));
 
         //then
+        Throwable rootCause = ExceptionUtils.getRootCause(throwable);
+        assertThat(rootCause)
+                .isInstanceOf(ConstraintViolationException.class);
     }
 
-    @Test(expected = TransactionSystemException.class)
-    public void shouldThrowTransactionSystemExceptionWhenUpdateNamesWithBlankFirstName() {
+    @Test
+    public void shouldThrowConstraintViolationExceptionWhenUpdateNamesWithBlankFirstName() {
         //given
         RegisterUserDTO userDTO = UserUtil.mockRegisterUserDTO();
         User user = userService.registerUser(userDTO);
         Long userId = user.getId();
 
         //when
-        userService.updateNames(userId, BLANK_VALUE, user.getLastName());
+        Throwable throwable = catchThrowable(() -> userService.updateNames(userId, BLANK_VALUE, user.getLastName()));
 
         //then
+        Throwable rootCause = ExceptionUtils.getRootCause(throwable);
+        assertThat(rootCause)
+                .isInstanceOf(ConstraintViolationException.class);
     }
 
-    @Test(expected = TransactionSystemException.class)
-    public void shouldThrowTransactionSystemExceptionWhenUpdateNamesWithBlankLastName() {
+    @Test
+    public void shouldThrowConstraintViolationExceptionWhenUpdateNamesWithBlankLastName() {
         //given
         RegisterUserDTO userDTO = UserUtil.mockRegisterUserDTO();
         User user = userService.registerUser(userDTO);
         Long userId = user.getId();
 
         //when
-        userService.updateNames(userId, user.getFirstName(), BLANK_VALUE);
+        Throwable throwable = catchThrowable(() -> userService.updateNames(userId, user.getFirstName(), BLANK_VALUE));
 
         //then
+        Throwable rootCause = ExceptionUtils.getRootCause(throwable);
+        assertThat(rootCause)
+                .isInstanceOf(ConstraintViolationException.class);
     }
 
     @Test(expected = EntityNotFoundException.class)
@@ -257,6 +267,36 @@ public class UserServiceIT {
         userService.updatePassword(1L, UserUtil.PASSWORD);
 
         //then
+    }
+
+    @Test(expected = EntityNotFoundException.class)
+    public void shouldThrowEntityNotFoundExceptionWhenNotFoundEntity() {
+        //given
+
+        //when
+        userService.findOne(1L);
+
+        //then
+    }
+
+    @Test
+    public void shouldReturnUserWhenExists() {
+        //given
+        RegisterUserDTO userDTO = UserUtil.mockRegisterUserDTO();
+        User user = userService.registerUser(userDTO);
+
+        //when
+        User result = userService.findOne(user.getId());
+
+        //then
+        assertThat(result)
+                .isNotNull();
+        assertThat(result.getId())
+                .isNotNull()
+                .isEqualTo(user.getId());
+        assertThat(result.getEmail())
+                .isNotEmpty()
+                .isEqualTo(user.getEmail());
     }
 
 }

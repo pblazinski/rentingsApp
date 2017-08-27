@@ -18,10 +18,12 @@ import pl.lodz.p.edu.grs.service.UserService;
 import pl.lodz.p.edu.grs.util.UserUtil;
 
 
+import javax.persistence.EntityNotFoundException;
 import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -207,5 +209,38 @@ public class UserServiceImplTest {
         assertThat(result.getLastName())
                 .isNotBlank()
                 .isEqualTo(lastName);
+    }
+
+    @Test
+    public void shouldReturnUserWhenFoundById() {
+        //given
+        User user = mock(User.class);
+
+        when(userRepository.exists(UserUtil.USER_ID))
+                .thenReturn(true);
+        when(userRepository.findOne(UserUtil.USER_ID))
+                .thenReturn(user);
+
+        //when
+        User result = userService.findOne(UserUtil.USER_ID);
+
+        //then
+        assertThat(result)
+                .isNotNull()
+                .isEqualTo(user);
+    }
+
+    @Test(expected = EntityNotFoundException.class)
+    public void shouldThrowEntityNotFoundExceptionWhenUserNotExist() {
+        //given
+        User user = mock(User.class);
+
+        when(user.getId())
+                .thenReturn(UserUtil.USER_ID);
+        when(userRepository.exists(UserUtil.USER_ID))
+                .thenReturn(false);
+
+        //when
+        userService.findOne(UserUtil.USER_ID);
     }
 }

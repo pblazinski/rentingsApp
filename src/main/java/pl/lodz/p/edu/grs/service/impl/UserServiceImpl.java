@@ -12,6 +12,7 @@ import pl.lodz.p.edu.grs.model.user.User;
 import pl.lodz.p.edu.grs.repository.UserRepository;
 import pl.lodz.p.edu.grs.service.UserService;
 
+import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 
 @Slf4j
@@ -40,6 +41,19 @@ public class UserServiceImpl implements UserService {
         log.info("Found <{}> users", users.getTotalElements());
 
         return users;
+    }
+
+    @Override
+    public User findOne(final long userId) {
+        if (!userRepository.exists(userId)) {
+            throw new EntityNotFoundException();
+        }
+
+        User user = userRepository.findOne(userId);
+
+        log.info("Found user with id <{}>", user.getId());
+
+        return user;
     }
 
     @Override

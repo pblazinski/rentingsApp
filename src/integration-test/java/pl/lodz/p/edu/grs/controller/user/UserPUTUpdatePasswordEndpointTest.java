@@ -32,13 +32,10 @@ public class UserPUTUpdatePasswordEndpointTest {
 
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private MockMvc mockMvc;
-
     @Autowired
     private UserService userService;
-
     @Autowired
     private ObjectMapper objectMapper;
 
