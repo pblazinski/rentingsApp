@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.Singular;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
@@ -23,9 +24,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@Data
 @Entity
 @Builder
+@Getter
 @AllArgsConstructor
 public class User {
 
@@ -75,6 +76,10 @@ public class User {
         this.lastName = lastName;
     }
 
+    public void updateEmail(final String email) {
+        this.email = email;
+    }
+
     public void grant(final Role role) {
         if (this.roles.contains(role)) {
             //TODO throw exception
@@ -87,9 +92,5 @@ public class User {
             //TODO throw exception
         }
         this.roles.remove(role);
-    }
-
-    public void updateEmail(final String email) {
-        this.email = email;
     }
 }
