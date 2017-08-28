@@ -16,7 +16,7 @@ import pl.lodz.p.edu.grs.service.BorrowService;
 import java.security.Principal;
 
 @RestController
-@RequestMapping("api/borrow")
+@RequestMapping(value = "api/borrow")
 @Api(value = "api/borrow", description = "Endpoints for game borrow management")
 public class BorrowController {
 

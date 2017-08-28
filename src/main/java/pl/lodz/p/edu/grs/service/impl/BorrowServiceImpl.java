@@ -5,8 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import pl.lodz.p.edu.grs.controller.borrow.BorrowDto;
-import pl.lodz.p.edu.grs.exceptions.NotFoundException;
 import pl.lodz.p.edu.grs.model.Borrow;
 import pl.lodz.p.edu.grs.model.Game;
 import pl.lodz.p.edu.grs.model.user.User;
@@ -17,7 +15,6 @@ import pl.lodz.p.edu.grs.service.UserService;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,7 +50,7 @@ public class BorrowServiceImpl implements BorrowService {
 
     @Override
     public Page<Borrow> findUserBorrows(final Pageable pageable, final String principal) {
-        Page<Borrow> userBorrows = borrowRepository.findBorrowsByUser_Email(principal);
+        Page<Borrow> userBorrows = borrowRepository.findBorrowsByUser_Email(pageable, principal);
 
         log.info("Found <{}> borrows page borrowed by ", userBorrows.getTotalElements(), principal);
 
