@@ -22,11 +22,9 @@ public class Borrow {
     private Long id;
 
     @OneToMany
-    @Column(nullable = false)
     private List<Game> borrowedGames;
 
     @ManyToOne
-    @Column(nullable = false)
     private User user;
 
     @Column(nullable = false)
