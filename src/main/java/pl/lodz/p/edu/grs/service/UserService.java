@@ -23,4 +23,6 @@ public interface UserService {
     User updateNames(long userId, String firstName, String lastName);
 
     User updateEmail(long userId, String email);
+
+    User findByEmail(String email);
 }

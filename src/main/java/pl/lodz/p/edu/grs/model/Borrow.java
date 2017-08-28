@@ -7,6 +7,7 @@ import lombok.Setter;
 import pl.lodz.p.edu.grs.model.user.User;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -21,9 +22,11 @@ public class Borrow {
     private Long id;
 
     @OneToMany
+    @Column(nullable = false)
     private List<Game> borrowedGames;
 
     @ManyToOne
+    @Column(nullable = false)
     private User user;
 
     @Column(nullable = false)
@@ -32,9 +35,11 @@ public class Borrow {
     @Column(nullable = false)
     private LocalDateTime deadline;
 
+    @Min(0)
     @Column(nullable = false)
     private double totalPrice;
 
+    @Min(0)
     @Column
     private double penalties;
 
@@ -42,7 +47,6 @@ public class Borrow {
         this.borrowedGames = borrowedGames;
         this.user = user;
     }
-
 
     @PrePersist
     public void setDate() {

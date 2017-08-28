@@ -54,12 +54,12 @@ public class GameServiceImpl implements GameService {
 
         result = gameRepository.save(result);
 
-//        log.info("Add game <{}> with title <{}> , price <{}> , availability <{}> and category <{}>",
-//                result.getId(),
-//                result.getTitle(),
-//                result.getPrice(),
-//                result.isAvailable(),
-//                result.getCategory().getName());
+        log.info("Add game <{}> with title <{}> , price <{}> , availability <{}> and category <{}>",
+                result.getId(),
+                result.getTitle(),
+                result.getPrice(),
+                result.isAvailable(),
+                result.getCategory().getName());
 
         return result;
     }
@@ -129,7 +129,7 @@ public class GameServiceImpl implements GameService {
         return game;
     }
 
-    @Override
+    @Override //TODO final
     public void remove(Long id) {
         Game game = gameRepository.getOne(id);
 
@@ -139,7 +139,7 @@ public class GameServiceImpl implements GameService {
                 game.getId());
     }
 
-    @Override
+    @Override //TODO final log.info
     public Game getGame(Long id) {
         return gameRepository.findOne(id);
     }
