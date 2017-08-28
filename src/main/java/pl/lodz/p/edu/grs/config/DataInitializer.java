@@ -1,6 +1,5 @@
 package pl.lodz.p.edu.grs.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.lodz.p.edu.grs.controller.category.CategoryDto;
 import pl.lodz.p.edu.grs.controller.game.GameDto;
@@ -14,13 +13,10 @@ import javax.annotation.PostConstruct;
 @Component
 public class DataInitializer {
 
-    GameService gameService;
+    private final GameService gameService;
+    private final UserService userService;
+    private final CategoryService categoryService;
 
-    UserService userService;
-
-    CategoryService categoryService;
-
-    @Autowired
     public DataInitializer(final GameService gameService,
                            final UserService userService,
                            final CategoryService categoryService) {
@@ -35,6 +31,7 @@ public class DataInitializer {
         mockCategories();
         mockGames();
         mockUsers();
+        mockAdminUser();
     }
 
     private void mockGames() {
@@ -51,6 +48,12 @@ public class DataInitializer {
 
         userService.registerUser(firstUser);
         userService.registerUser(secondUser);
+    }
+
+    private void mockAdminUser() {
+        RegisterUserDTO registerUserDTO = new RegisterUserDTO("admin@admin.com", "system", "admin", "password");
+
+        userService.createSystemAdmin(registerUserDTO);
     }
 
     private void mockCategories() {

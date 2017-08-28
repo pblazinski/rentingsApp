@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import pl.lodz.p.edu.grs.controller.SystemAdminPermissionResolver;
 import pl.lodz.p.edu.grs.model.user.Authority;
 import pl.lodz.p.edu.grs.model.user.User;
 import pl.lodz.p.edu.grs.repository.UserRepository;
@@ -22,6 +23,8 @@ public class UserModifyPermissionResolverTest {
 
     @Mock
     private UserRepository userRepository;
+    @Mock
+    private SystemAdminPermissionResolver systemAdminPermissionResolver;
 
     private UserModifyPermissionResolver userModifyPermissionResolver;
 
@@ -30,7 +33,7 @@ public class UserModifyPermissionResolverTest {
 
     @Before
     public void setUp() throws Exception {
-        this.userModifyPermissionResolver = new UserModifyPermissionResolver(userRepository);
+        this.userModifyPermissionResolver = new UserModifyPermissionResolver(userRepository, systemAdminPermissionResolver);
     }
 
     @Test
@@ -43,6 +46,8 @@ public class UserModifyPermissionResolverTest {
                 .thenReturn(EMAIL);
         when(userRepository.findByEmail(EMAIL))
                 .thenReturn(Optional.of(user));
+        when(systemAdminPermissionResolver.isSystemAdmin(user))
+                .thenReturn(false);
         when(appUser.hasAuthority(Authority.MODIFY_USER))
                 .thenReturn(true);
         when(user.getId())
@@ -98,6 +103,8 @@ public class UserModifyPermissionResolverTest {
                 .thenReturn(EMAIL);
         when(userRepository.findByEmail(EMAIL))
                 .thenReturn(Optional.of(user));
+        when(systemAdminPermissionResolver.isSystemAdmin(user))
+                .thenReturn(false);
         when(appUser.hasAuthority(Authority.MODIFY_USER))
                 .thenReturn(false);
 
@@ -126,6 +133,8 @@ public class UserModifyPermissionResolverTest {
                 .thenReturn(EMAIL);
         when(userRepository.findByEmail(EMAIL))
                 .thenReturn(Optional.of(user));
+        when(systemAdminPermissionResolver.isSystemAdmin(user))
+                .thenReturn(false);
         when(appUser.hasAuthority(Authority.MODIFY_USER))
                 .thenReturn(true);
         when(user.getId())

@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit4.SpringRunner;
 import pl.lodz.p.edu.grs.Application;
 import pl.lodz.p.edu.grs.controller.user.RegisterUserDTO;
+import pl.lodz.p.edu.grs.model.user.Role;
 import pl.lodz.p.edu.grs.model.user.User;
 import pl.lodz.p.edu.grs.repository.UserRepository;
 import pl.lodz.p.edu.grs.service.UserService;
@@ -82,6 +83,34 @@ public class UserServiceIT {
         assertThat(result.getLastName())
                 .isNotEmpty()
                 .isEqualTo(UserUtil.LAST_NAME);
+        assertThat(result.getRoles())
+                .isNotEmpty()
+                .containsOnlyOnce(Role.USER);
+    }
+
+    @Test
+    public void shouldCreateSystemAdmin() {
+        //given
+        RegisterUserDTO userDTO = UserUtil.mockRegisterUserDTO();
+
+        //when
+        User result = userService.createSystemAdmin(userDTO);
+
+        //then
+        assertThat(result)
+                .isNotNull();
+        assertThat(result.getEmail())
+                .isNotEmpty()
+                .isEqualTo(UserUtil.EMAIL);
+        assertThat(result.getFirstName())
+                .isNotEmpty()
+                .isEqualTo(UserUtil.FIRST_NAME);
+        assertThat(result.getLastName())
+                .isNotEmpty()
+                .isEqualTo(UserUtil.LAST_NAME);
+        assertThat(result.getRoles())
+                .isNotEmpty()
+                .containsOnlyOnce(Role.SYSTEM_ADMIN);
     }
 
     @Test(expected = ConstraintViolationException.class)

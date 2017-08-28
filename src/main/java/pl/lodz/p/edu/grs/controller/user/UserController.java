@@ -64,7 +64,7 @@ public class UserController {
 
     @PutMapping("{id}/password")
     @ApiOperation("Update user password")
-    @PreAuthorize("@userModifyPermissionResolver.hasAuthorityToModifyUser(principal, #id)")
+    @PreAuthorize("@userModifyPermissionResolver.hasAuthorityToModifyUser(principal, #id) ")
     public HttpEntity updatePassword(@PathVariable final long id,
                                      @RequestBody @Valid final UpdateUserPasswordDto updateUserPasswordDto) {
         User user = userService.updatePassword(id, updateUserPasswordDto.getPassword());

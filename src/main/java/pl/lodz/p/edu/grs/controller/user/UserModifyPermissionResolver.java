@@ -1,6 +1,7 @@
 package pl.lodz.p.edu.grs.controller.user;
 
 import org.springframework.stereotype.Component;
+import pl.lodz.p.edu.grs.controller.SystemAdminPermissionResolver;
 import pl.lodz.p.edu.grs.model.user.Authority;
 import pl.lodz.p.edu.grs.model.user.User;
 import pl.lodz.p.edu.grs.repository.UserRepository;
@@ -13,8 +14,12 @@ public class UserModifyPermissionResolver {
 
     private final UserRepository userRepository;
 
-    public UserModifyPermissionResolver(final UserRepository userRepository) {
+    private final SystemAdminPermissionResolver systemAdminPermissionResolver;
+
+    public UserModifyPermissionResolver(final UserRepository userRepository,
+                                        final SystemAdminPermissionResolver systemAdminPermissionResolver) {
         this.userRepository = userRepository;
+        this.systemAdminPermissionResolver = systemAdminPermissionResolver;
     }
 
     public boolean hasAuthorityToModifyUser(final AppUser userDetails, final long userId) {
@@ -26,6 +31,7 @@ public class UserModifyPermissionResolver {
 
         User user = optional.get();
 
-        return userDetails.hasAuthority(Authority.MODIFY_USER) && user.getId() == userId;
+        return systemAdminPermissionResolver.isSystemAdmin(user) ||
+                userDetails.hasAuthority(Authority.MODIFY_USER) && user.getId() == userId;
     }
 }
