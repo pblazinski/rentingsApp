@@ -14,6 +14,8 @@ public interface UserService {
 
     User registerUser(RegisterUserDTO registerUserDTO);
 
+    User createSystemAdmin(RegisterUserDTO registerUserDTO);
+
     void remove(long userId);
 
     User updatePassword(long userId, String password);

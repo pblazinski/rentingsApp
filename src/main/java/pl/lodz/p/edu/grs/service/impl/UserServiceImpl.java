@@ -70,6 +70,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User createSystemAdmin(final RegisterUserDTO registerUserDTO) {
+        User user = userFactory.createUser(registerUserDTO);
+
+        user.grant(Role.SYSTEM_ADMIN);
+
+        user = userRepository.save(user);
+
+        log.info("Register system admin <{}> with email <{}>", user.getId(), user.getEmail());
+
+        return user;
+    }
+
+    @Override
     public void remove(final long userId) {
         User user = userRepository.getOne(userId);
 

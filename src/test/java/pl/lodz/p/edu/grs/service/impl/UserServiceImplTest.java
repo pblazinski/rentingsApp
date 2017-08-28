@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import pl.lodz.p.edu.grs.controller.user.RegisterUserDTO;
 import pl.lodz.p.edu.grs.factory.UserFactory;
+import pl.lodz.p.edu.grs.model.user.Role;
 import pl.lodz.p.edu.grs.model.user.User;
 import pl.lodz.p.edu.grs.repository.UserRepository;
 import pl.lodz.p.edu.grs.service.UserService;
@@ -32,10 +33,8 @@ public class UserServiceImplTest {
 
     @Mock
     private UserRepository userRepository;
-
     @Mock
     private PasswordEncoder passwordEncoder;
-
     @Mock
     private UserFactory userFactory;
 
@@ -106,6 +105,44 @@ public class UserServiceImplTest {
         assertThat(result.getPassword())
                 .isNotBlank()
                 .isEqualTo(UserUtil.PASSWORD);
+    }
+
+    @Test
+    public void shouldCreateAdminUser() throws Exception {
+        //given
+        RegisterUserDTO registerDTO = UserUtil.mockRegisterUserDTO();
+        User user = UserUtil.mockUser();
+
+        when(userFactory.createUser(registerDTO))
+                .thenReturn(user);
+        when(userRepository.save(user))
+                .thenReturn(user);
+
+        //when
+        User result = userService.createSystemAdmin(registerDTO);
+
+        //then
+        verify(userFactory)
+                .createUser(registerDTO);
+        verify(userRepository)
+                .save(user);
+
+        assertThat(result)
+                .isNotNull();
+        assertThat(result.getFirstName())
+                .isNotBlank()
+                .isEqualTo(UserUtil.FIRST_NAME);
+        assertThat(result.getLastName())
+                .isNotBlank()
+                .isEqualTo(UserUtil.LAST_NAME);
+        assertThat(result.getEmail())
+                .isNotBlank()
+                .isEqualTo(UserUtil.EMAIL);
+        assertThat(result.getPassword())
+                .isNotBlank()
+                .isEqualTo(UserUtil.PASSWORD);
+        assertThat(result.getRoles())
+                .containsOnlyOnce(Role.SYSTEM_ADMIN);
     }
 
     @Test
