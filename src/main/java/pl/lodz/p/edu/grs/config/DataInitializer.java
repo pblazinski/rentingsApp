@@ -82,6 +82,6 @@ public class DataInitializer {
     private void mockBorrows() {
         BorrowDto borrowDto = new BorrowDto(Arrays.asList(1L, 2L));
 
-        borrowService.addBorrow(borrowDto.getGames(), "rafal@koper");
+        borrowService.addBorrow(borrowDto, "rafal@koper");
     }
 }

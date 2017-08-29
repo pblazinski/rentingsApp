@@ -50,7 +50,7 @@ public class BorrowController {
     @ApiOperation(value = "Create borrow")
     public HttpEntity addBorrow(@RequestBody final BorrowDto borrowDto,
                                 final Principal principal) {
-        Borrow borrow = borrowService.addBorrow(borrowDto.getGames(), principal.getName());
+        Borrow borrow = borrowService.addBorrow(borrowDto, principal.getName());
 
         return ResponseEntity.ok(borrow);
     }

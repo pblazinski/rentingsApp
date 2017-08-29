@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import pl.lodz.p.edu.grs.controller.borrow.BorrowDto;
 import pl.lodz.p.edu.grs.model.Borrow;
 import pl.lodz.p.edu.grs.model.Game;
 import pl.lodz.p.edu.grs.model.user.User;
@@ -87,9 +88,9 @@ public class BorrowServiceImpl implements BorrowService {
     }
 
     @Override
-    public Borrow addBorrow(final List<Long> borrows, final String principal) {
+    public Borrow addBorrow(final BorrowDto borrowDto, final String principal) {
         List<Game> borrowedGames = new ArrayList<>();
-        borrows.forEach(id -> borrowedGames.add(gameService.getGame(id)));
+        borrowDto.getGames().forEach(id -> borrowedGames.add(gameService.getGame(id)));
 
         User user = userService.findByEmail(principal);
 
@@ -102,7 +103,7 @@ public class BorrowServiceImpl implements BorrowService {
 
         borrow = borrowRepository.save(borrow);
 
-        //log.info("Add borrow <{}> with <{}> games", borrow.getId(), borrow.getBorrowedGames().size());
+        log.info("Add borrow <{}> with <{}> games", borrow.getId(), borrow.getBorrowedGames().size());
 
         return borrow;
     }

@@ -2,6 +2,7 @@ package pl.lodz.p.edu.grs.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import pl.lodz.p.edu.grs.controller.borrow.BorrowDto;
 import pl.lodz.p.edu.grs.model.Borrow;
 
 import java.security.Principal;
@@ -18,7 +19,7 @@ public interface BorrowService {
 
     Borrow updatePenalties(double value, Long id);
 
-    Borrow addBorrow(List<Long> borrow, String principal);
+    Borrow addBorrow(BorrowDto borrowDto, String principal);
 
     void removeBorrow(Long id);
 }

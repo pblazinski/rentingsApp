@@ -2,10 +2,12 @@ package pl.lodz.p.edu.grs.model;
 
 
 import lombok.*;
+import org.hibernate.validator.constraints.NotEmpty;
 import pl.lodz.p.edu.grs.model.user.User;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -21,9 +23,11 @@ public class Borrow {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany
+    @NotEmpty
+    @OneToMany(fetch = FetchType.EAGER)
     private List<Game> borrowedGames;
 
+    @NotNull
     @ManyToOne
     private User user;
 
