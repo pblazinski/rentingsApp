@@ -54,7 +54,7 @@ public class UserGETGetUserByIdEndpointTest {
     @Test
     public void shouldReturnUserByIdWhenUserExists() throws Exception {
         //given
-        RegisterUserDTO userDTO = UserUtil.mockRegisterUserDTO();
+        RegisterUserDto userDTO = UserUtil.mockRegisterUserDTO();
         User user = userService.registerUser(userDTO);
 
         MockHttpServletRequestBuilder requestBuilder = get(String.format("/api/users/%d" , user.getId()));

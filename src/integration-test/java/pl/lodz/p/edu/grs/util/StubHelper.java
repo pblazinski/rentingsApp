@@ -1,7 +1,7 @@
 package pl.lodz.p.edu.grs.util;
 
 import org.springframework.stereotype.Component;
-import pl.lodz.p.edu.grs.controller.user.RegisterUserDTO;
+import pl.lodz.p.edu.grs.controller.user.RegisterUserDto;
 import pl.lodz.p.edu.grs.model.user.User;
 import pl.lodz.p.edu.grs.service.UserService;
 
@@ -16,7 +16,7 @@ public class StubHelper {
 
 
     public static User stubUser() {
-        RegisterUserDTO userDTO = UserUtil.mockRegisterUserDTO();
+        RegisterUserDto userDTO = UserUtil.mockRegisterUserDTO();
         return userService.registerUser(userDTO);
     }
 

@@ -3,7 +3,7 @@ package pl.lodz.p.edu.grs.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import pl.lodz.p.edu.grs.controller.user.RegisterUserDTO;
+import pl.lodz.p.edu.grs.controller.user.RegisterUserDto;
 import pl.lodz.p.edu.grs.model.user.User;
 
 public interface UserService {
@@ -12,9 +12,9 @@ public interface UserService {
 
     User findOne(long userId);
 
-    User registerUser(RegisterUserDTO registerUserDTO);
+    User registerUser(RegisterUserDto registerUserDto);
 
-    User createSystemAdmin(RegisterUserDTO registerUserDTO);
+    User createSystemAdmin(RegisterUserDto registerUserDto);
 
     void remove(long userId);
 

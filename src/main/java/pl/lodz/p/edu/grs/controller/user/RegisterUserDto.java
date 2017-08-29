@@ -9,7 +9,7 @@ import org.hibernate.validator.constraints.NotBlank;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegisterUserDTO {
+public class RegisterUserDto {
 
     @Email
     @NotBlank

@@ -10,7 +10,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import pl.lodz.p.edu.grs.controller.user.RegisterUserDTO;
+import pl.lodz.p.edu.grs.controller.user.RegisterUserDto;
 import pl.lodz.p.edu.grs.factory.UserFactory;
 import pl.lodz.p.edu.grs.model.user.Role;
 import pl.lodz.p.edu.grs.model.user.User;
@@ -74,7 +74,7 @@ public class UserServiceImplTest {
     @Test
     public void shouldRegisterUser() throws Exception {
         //given
-        RegisterUserDTO registerDTO = UserUtil.mockRegisterUserDTO();
+        RegisterUserDto registerDTO = UserUtil.mockRegisterUserDTO();
         User user = UserUtil.mockUser();
 
         when(userFactory.createUser(registerDTO))
@@ -110,7 +110,7 @@ public class UserServiceImplTest {
     @Test
     public void shouldCreateAdminUser() throws Exception {
         //given
-        RegisterUserDTO registerDTO = UserUtil.mockRegisterUserDTO();
+        RegisterUserDto registerDTO = UserUtil.mockRegisterUserDTO();
         User user = UserUtil.mockUser();
 
         when(userFactory.createUser(registerDTO))
