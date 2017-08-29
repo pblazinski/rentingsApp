@@ -1,9 +1,7 @@
 package pl.lodz.p.edu.grs.model;
 
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import pl.lodz.p.edu.grs.model.user.User;
 
 import javax.persistence.*;
@@ -11,10 +9,12 @@ import javax.validation.constraints.Min;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Builder
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class Borrow {
 
     @Id
@@ -44,6 +44,11 @@ public class Borrow {
     public Borrow(List<Game> borrowedGames, User user) {
         this.borrowedGames = borrowedGames;
         this.user = user;
+    }
+
+
+    public void updatePrice(double price) {
+        this.totalPrice = price;
     }
 
     @PrePersist

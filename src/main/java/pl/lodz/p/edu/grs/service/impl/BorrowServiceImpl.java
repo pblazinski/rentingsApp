@@ -52,7 +52,7 @@ public class BorrowServiceImpl implements BorrowService {
     public Page<Borrow> findUserBorrows(final Pageable pageable, final String principal) {
         Page<Borrow> userBorrows = borrowRepository.findBorrowsByUser_Email(pageable, principal);
 
-        log.info("Found <{}> borrows page borrowed by ", userBorrows.getTotalElements(), principal);
+        log.info("Found <{}> borrows page borrowed by <{}>", userBorrows.getTotalElements(), principal);
 
         return userBorrows;
     }
@@ -102,7 +102,7 @@ public class BorrowServiceImpl implements BorrowService {
 
         borrow = borrowRepository.save(borrow);
 
-        log.info("Add borrow <{}> with <{}> games and price <{}>", borrow.getId(), borrow.getBorrowedGames().size(), borrow.getTotalPrice());
+        //log.info("Add borrow <{}> with <{}> games", borrow.getId(), borrow.getBorrowedGames().size());
 
         return borrow;
     }
