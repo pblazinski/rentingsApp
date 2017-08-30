@@ -7,5 +7,5 @@ import pl.lodz.p.edu.grs.model.Game;
 
 public interface SearchService {
 
-    Page<Game> searchGames(SearchDto searchDto, Pageable pageable);
+    Page<Game> searchGames(SearchDto searchDto, final Long categoryId, Pageable pageable);
 }
