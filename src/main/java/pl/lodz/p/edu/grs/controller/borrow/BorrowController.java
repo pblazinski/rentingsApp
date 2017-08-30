@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.edu.grs.model.Borrow;
 import pl.lodz.p.edu.grs.service.BorrowService;
@@ -29,11 +30,12 @@ public class BorrowController {
 
     @GetMapping
     @ApiOperation(value = "Find all borrows")
+    @PreAuthorize("@borrowPermissionResolver.hasAuthorityToGetBorrowsList(principal)")
     public Page<Borrow> getAllBorrows(@PageableDefault final Pageable pageable) {
         return borrowService.findAll(pageable);
     }
 
-    @GetMapping("/borrows")
+    @GetMapping("/my")
     @ApiOperation(value = "Find user borrows")
     public Page<Borrow> getAllUserBorrows(@PageableDefault final Pageable pageable,
                                           final Principal principal) {

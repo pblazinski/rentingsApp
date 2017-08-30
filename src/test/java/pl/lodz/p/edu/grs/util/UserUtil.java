@@ -20,6 +20,16 @@ public class UserUtil {
 
     public static final String PASSWORD = "password";
 
+    public static final Long USER_ID2 = 2L;
+
+    public static final String EMAIL2 = "correct2@email.com";
+
+    public static final String FIRST_NAME2 = "first";
+
+    public static final String LAST_NAME2 = "last";
+
+    public static final String PASSWORD2 = "password";
+
 
     private UserUtil() {
 
@@ -37,6 +47,17 @@ public class UserUtil {
                 LAST_NAME,
                 null,
                 new HashSet<>(Arrays.asList(Role.USER))
+        );
+    }
+
+    public static User mockAdminUser() {
+        return new User(USER_ID2,
+                EMAIL2,
+                PASSWORD2,
+                FIRST_NAME2,
+                LAST_NAME2,
+                null,
+                new HashSet<>(Arrays.asList(Role.SYSTEM_ADMIN))
         );
     }
 
