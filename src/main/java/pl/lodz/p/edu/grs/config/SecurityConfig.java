@@ -34,7 +34,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .httpBasic().authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
                 .and().authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/api/users/").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/users/", "/api/users/*").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/users/", "/api/users/*", "/api/search/*").permitAll()
                 .antMatchers("/api/**").authenticated()
                 .anyRequest().permitAll();
 
