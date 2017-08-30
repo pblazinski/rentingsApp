@@ -2,8 +2,10 @@ package pl.lodz.p.edu.grs.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import pl.lodz.p.edu.grs.controller.borrow.BorrowDto;
 import pl.lodz.p.edu.grs.model.Borrow;
 
+import java.security.Principal;
 import java.util.List;
 
 
@@ -11,7 +13,15 @@ public interface BorrowService {
 
     Page<Borrow> findAll(Pageable pageable);
 
-    List<Borrow> findAll();
+    Page<Borrow> findUserBorrows(Pageable pageable, String principal);
 
-    Borrow addBorrow(Borrow borrow);
+    Borrow getBorrow(Long id);
+
+    Borrow updatePenalties(double value, Long id);
+
+    Borrow addBorrow(BorrowDto borrowDto, String principal);
+
+    void removeBorrow(Long id);
+
+    Borrow updateReturnTime(Long id);
 }

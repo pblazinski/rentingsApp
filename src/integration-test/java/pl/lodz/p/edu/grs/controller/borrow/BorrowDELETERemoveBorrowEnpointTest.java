@@ -1,7 +1,7 @@
-package pl.lodz.p.edu.grs.controller.category;
+package pl.lodz.p.edu.grs.controller.borrow;
 
-
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,18 +14,29 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import pl.lodz.p.edu.grs.controller.game.GameDto;
+import pl.lodz.p.edu.grs.model.Borrow;
 import pl.lodz.p.edu.grs.model.Category;
+import pl.lodz.p.edu.grs.model.Game;
 import pl.lodz.p.edu.grs.model.user.User;
 import pl.lodz.p.edu.grs.repository.BorrowRepository;
 import pl.lodz.p.edu.grs.repository.CategoryRepository;
 import pl.lodz.p.edu.grs.repository.GameRepository;
 import pl.lodz.p.edu.grs.repository.UserRepository;
 import pl.lodz.p.edu.grs.security.AppUser;
+import pl.lodz.p.edu.grs.service.BorrowService;
 import pl.lodz.p.edu.grs.service.CategoryService;
+import pl.lodz.p.edu.grs.service.GameService;
+import pl.lodz.p.edu.grs.service.UserService;
 import pl.lodz.p.edu.grs.util.CategoryUtil;
+import pl.lodz.p.edu.grs.util.GameUtil;
 import pl.lodz.p.edu.grs.util.StubHelper;
 
+import java.util.Collections;
+import java.util.Iterator;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -33,26 +44,27 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
-public class CategoryPUTUpdateNameEndpointTest {
-
+public class BorrowDELETERemoveBorrowEnpointTest {
     @Autowired
-    private CategoryRepository categoryRepository;
+    private UserService userService;
     @Autowired
-    private GameRepository gameRepository;
+    private BorrowService borrowService;
     @Autowired
-    private UserRepository userRepository;
+    private GameService gameService;
     @Autowired
     private CategoryService categoryService;
     @Autowired
+    private GameRepository gameRepository;
+    @Autowired
     private MockMvc mockMvc;
     @Autowired
-    private ObjectMapper objectMapper;
+    private UserRepository userRepository;
+    @Autowired
+    private CategoryRepository categoryRepository;
     @Autowired
     private BorrowRepository borrowRepository;
 
     private User user;
-
-    private static final String BLANK_VALUE = "  ";
 
     @Before
     public void setUp() throws Exception {
@@ -63,60 +75,40 @@ public class CategoryPUTUpdateNameEndpointTest {
         user = StubHelper.stubUser();
     }
 
-
     @Test
-    public void shouldReturnOkStatusWhenUpdateCategoryName() throws Exception {
+    public void shouldRemoveBorrowWithSpecifiedId() throws Exception {
         //given
-        String UPDATED = "UPDATED";
-        CategoryDto categoryDto = new CategoryDto(UPDATED);
-        Category category = categoryService.addCategory(categoryDto);
+        Category category = categoryService.addCategory(CategoryUtil.mockCategoryDto());
+        GameDto gameDto = GameUtil.mockGameDto();
+        gameDto.setCategoryId(category.getId());
 
-        String content = objectMapper.writeValueAsString(categoryDto);
+        Game game = gameService.addGame(gameDto);
 
-        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.put(String.format("/api/category/%d", category.getId()))
+        Borrow borrow = borrowService.addBorrow(new BorrowDto(Collections.singletonList(game.getId())), user.getEmail());
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.delete(String.format("/api/borrow/%d", borrow.getId()))
                 .accept(MediaType.APPLICATION_JSON_UTF8)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .with(user(new AppUser(user)))
-                .content(content);
-
+                .with(user(new AppUser(user)));
         //when
         ResultActions result = mockMvc.perform(requestBuilder);
 
         //then
-        category = categoryRepository.findOne(category.getId());
-
-
-        result.andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").exists())
-                .andExpect(jsonPath("$.id").value(category.getId()))
-                .andExpect(jsonPath("$.name").exists())
-                .andExpect(jsonPath("$.name").value(UPDATED));
+        boolean exists = borrowRepository.exists(borrow.getId());
+        assertThat(exists)
+                .isEqualTo(false);
     }
 
-    @Test
-    public void shouldReturnBadRequestWhenUpdateCategoryNameWithBlankName() throws Exception {
-        //given
-        CategoryDto categoryDto1 = CategoryUtil.mockCategoryDto();
-        CategoryDto categoryDto = new CategoryDto(BLANK_VALUE);
-        Category category = categoryService.addCategory(categoryDto1);
+    private long getIdFromContentBodyJson(final String content) throws JSONException {
+        JSONObject jsonObject = new JSONObject(content);
 
-        String content = objectMapper.writeValueAsString(categoryDto);
+        Iterator<?> keys = jsonObject.keys();
 
-        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.put(String.format("/api/category/%d", category.getId()))
-                .accept(MediaType.APPLICATION_JSON_UTF8)
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .with(user(new AppUser(user)))
-                .content(content);
-
-        //when
-        ResultActions result = mockMvc.perform(requestBuilder);
-
-        //then
-        category = categoryRepository.findOne(category.getId());
-
-        assertThat(category.getName())
-                .isNotEmpty();
-
-        result.andExpect(status().isBadRequest());
+        while (keys.hasNext()) {
+            String key = (String) keys.next();
+            if (key.equals("id")) {
+                return (Integer) jsonObject.get(key);
+            }
+        }
+        return 1L;
     }
 }

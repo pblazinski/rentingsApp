@@ -3,6 +3,7 @@ package pl.lodz.p.edu.grs.service.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.lodz.p.edu.grs.controller.user.RegisterUserDTO;
@@ -136,6 +137,16 @@ public class UserServiceImpl implements UserService {
         log.info("Updated user email to <{}> for user with id <{}>",
                 email,
                 userId);
+
+        return user;
+    }
+
+    @Override
+    public User findByEmail(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException(String.format("Email: %s not found.", email)));
+
+        log.info("Found user with email <{}>", user.getEmail());
 
         return user;
     }

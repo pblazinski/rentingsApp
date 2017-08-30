@@ -118,6 +118,8 @@ public class GameServiceImplTest {
         String title = "New title";
         String description = "New description";
 
+        when(gameRepository.exists(game.getId()))
+                .thenReturn(true);
         when(gameRepository.getOne(game.getId()))
                 .thenReturn(game);
         when(gameRepository.save(game))
@@ -144,7 +146,8 @@ public class GameServiceImplTest {
         Game game = GameUtil.mockGame();
 
         double price = 0.99;
-
+        when(gameRepository.exists(game.getId()))
+                .thenReturn(true);
         when(gameRepository.getOne(game.getId()))
                 .thenReturn(game);
         when(gameRepository.save(game))
@@ -167,7 +170,8 @@ public class GameServiceImplTest {
         Game game = GameUtil.mockGame();
 
         boolean availability = false;
-
+        when(gameRepository.exists(game.getId()))
+                .thenReturn(true);
         when(gameRepository.getOne(game.getId()))
                 .thenReturn(game);
         when(gameRepository.save(game))
@@ -190,7 +194,8 @@ public class GameServiceImplTest {
         Game game = GameUtil.mockGame();
 
         Category category = new Category(1L, "UPDATED");
-
+        when(gameRepository.exists(game.getId()))
+                .thenReturn(true);
         when(gameRepository.getOne(game.getId()))
                 .thenReturn(game);
         when(gameRepository.save(game))
@@ -214,7 +219,8 @@ public class GameServiceImplTest {
         //given
         long gameId = 1L;
         Game game = GameUtil.mockGame();
-
+        when(gameRepository.exists(game.getId()))
+                .thenReturn(true);
         when(gameRepository.getOne(gameId))
                 .thenReturn(game);
 

@@ -11,6 +11,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import pl.lodz.p.edu.grs.model.user.User;
+import pl.lodz.p.edu.grs.repository.BorrowRepository;
+import pl.lodz.p.edu.grs.repository.CategoryRepository;
+import pl.lodz.p.edu.grs.repository.GameRepository;
 import pl.lodz.p.edu.grs.repository.UserRepository;
 import pl.lodz.p.edu.grs.service.UserService;
 import pl.lodz.p.edu.grs.util.UserUtil;
@@ -32,9 +35,19 @@ public class UserGETGetUserByIdEndpointTest {
     private MockMvc mockMvc;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private CategoryRepository categoryRepository;
+    @Autowired
+    private GameRepository gameRepository;
+    @Autowired
+    private BorrowRepository borrowRepository;;
 
     @Before
     public void setUp() throws Exception {
+        borrowRepository.deleteAll();
+        gameRepository.deleteAll();
+        categoryRepository.deleteAll();
+        userRepository.deleteAll();
         userRepository.deleteAll();
     }
 

@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import pl.lodz.p.edu.grs.model.Category;
 import pl.lodz.p.edu.grs.model.Game;
 import pl.lodz.p.edu.grs.model.user.User;
+import pl.lodz.p.edu.grs.repository.BorrowRepository;
 import pl.lodz.p.edu.grs.repository.CategoryRepository;
 import pl.lodz.p.edu.grs.repository.GameRepository;
 import pl.lodz.p.edu.grs.repository.UserRepository;
@@ -50,13 +51,15 @@ public class GamePUTUpdateAvailabilityEndpointTest {
     private CategoryRepository categoryRepository;
     @Autowired
     private ObjectMapper objectMapper;
-
+    @Autowired
+    private BorrowRepository borrowRepository;
     private User user;
 
     private static final Boolean AVAILABLE = false;
 
     @Before
     public void setUp() {
+        borrowRepository.deleteAll();
         gameRepository.deleteAll();
         categoryRepository.deleteAll();
         userRepository.deleteAll();

@@ -20,6 +20,16 @@ public class UserUtil {
 
     public static final String PASSWORD = "password";
 
+    public static final Long USER_ID2 = 2L;
+
+    public static final String EMAIL2 = "correct2@email.com";
+
+    public static final String FIRST_NAME2 = "first";
+
+    public static final String LAST_NAME2 = "last";
+
+    public static final String PASSWORD2 = "password";
+
 
     private UserUtil() {
 
@@ -39,5 +49,6 @@ public class UserUtil {
                 new HashSet<>(Arrays.asList(Role.USER))
         );
     }
-
 }
+
+

@@ -14,9 +14,14 @@ import org.springframework.transaction.TransactionSystemException;
 import pl.lodz.p.edu.grs.Application;
 import pl.lodz.p.edu.grs.controller.category.CategoryDto;
 import pl.lodz.p.edu.grs.model.Category;
+import pl.lodz.p.edu.grs.repository.BorrowRepository;
 import pl.lodz.p.edu.grs.repository.CategoryRepository;
 import pl.lodz.p.edu.grs.repository.GameRepository;
+import pl.lodz.p.edu.grs.repository.UserRepository;
+import pl.lodz.p.edu.grs.service.BorrowService;
 import pl.lodz.p.edu.grs.service.CategoryService;
+import pl.lodz.p.edu.grs.service.GameService;
+import pl.lodz.p.edu.grs.service.UserService;
 import pl.lodz.p.edu.grs.util.CategoryUtil;
 
 import javax.persistence.EntityNotFoundException;
@@ -34,25 +39,36 @@ public class CategoryServiceIT {
     private static final String BLANK_VALUE = "     ";
 
     @Autowired
+    private BorrowRepository borrowRepository;
+
+
+    @Autowired
     private GameRepository gameRepository;
 
     @Autowired
-    private CategoryService categoryService;
+    private UserRepository userRepository;
 
     @Autowired
     private CategoryRepository categoryRepository;
 
-    @Before
-    public void tearDown() throws Exception {
-        gameRepository.deleteAll();
-        categoryRepository.deleteAll();
-    }
+    @Autowired
+    private CategoryService categoryService;
 
     @After
     public void setUp() throws Exception {
+        borrowRepository.deleteAll();
         gameRepository.deleteAll();
         categoryRepository.deleteAll();
+        userRepository.deleteAll();
     }
+    @Before
+    public void tearDown() throws Exception {
+        borrowRepository.deleteAll();
+        gameRepository.deleteAll();
+        categoryRepository.deleteAll();
+        userRepository.deleteAll();
+    }
+
 
     @Test
     public void shouldReturnListWithOneCategory() {

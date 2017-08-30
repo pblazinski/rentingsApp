@@ -25,7 +25,7 @@ public class GameController {
     private final GameService gameService;
 
     private final Validator category;
-
+    //TODO Pre authorize on controllers methods !important
     @Autowired
     public GameController(final GameService gameService,
                           @Qualifier("categoryValidator") final Validator category) {

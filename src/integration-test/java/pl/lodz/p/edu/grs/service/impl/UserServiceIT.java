@@ -13,7 +13,13 @@ import pl.lodz.p.edu.grs.Application;
 import pl.lodz.p.edu.grs.controller.user.RegisterUserDTO;
 import pl.lodz.p.edu.grs.model.user.Role;
 import pl.lodz.p.edu.grs.model.user.User;
+import pl.lodz.p.edu.grs.repository.BorrowRepository;
+import pl.lodz.p.edu.grs.repository.CategoryRepository;
+import pl.lodz.p.edu.grs.repository.GameRepository;
 import pl.lodz.p.edu.grs.repository.UserRepository;
+import pl.lodz.p.edu.grs.service.BorrowService;
+import pl.lodz.p.edu.grs.service.CategoryService;
+import pl.lodz.p.edu.grs.service.GameService;
 import pl.lodz.p.edu.grs.service.UserService;
 import pl.lodz.p.edu.grs.util.UserUtil;
 
@@ -31,12 +37,27 @@ public class UserServiceIT {
     private static final String BLANK_VALUE = "     ";
 
     @Autowired
-    private UserService userService;
+    private BorrowRepository borrowRepository;
+
+
+    @Autowired
+    private GameRepository gameRepository;
+
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private CategoryRepository categoryRepository;
+
+
     @After
     public void tearDown() throws Exception {
+        borrowRepository.deleteAll();
+        gameRepository.deleteAll();
+        categoryRepository.deleteAll();
         userRepository.deleteAll();
     }
 

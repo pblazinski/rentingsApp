@@ -17,10 +17,14 @@ import pl.lodz.p.edu.grs.controller.game.GameDto;
 import pl.lodz.p.edu.grs.exceptions.NotFoundException;
 import pl.lodz.p.edu.grs.model.Category;
 import pl.lodz.p.edu.grs.model.Game;
+import pl.lodz.p.edu.grs.repository.BorrowRepository;
 import pl.lodz.p.edu.grs.repository.CategoryRepository;
 import pl.lodz.p.edu.grs.repository.GameRepository;
+import pl.lodz.p.edu.grs.repository.UserRepository;
+import pl.lodz.p.edu.grs.service.BorrowService;
 import pl.lodz.p.edu.grs.service.CategoryService;
 import pl.lodz.p.edu.grs.service.GameService;
+import pl.lodz.p.edu.grs.service.UserService;
 import pl.lodz.p.edu.grs.util.CategoryUtil;
 import pl.lodz.p.edu.grs.util.GameUtil;
 
@@ -35,15 +39,22 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 public class GameServiceIT {
 
     @Autowired
-    private GameRepository gameRepository;
+    private BorrowRepository borrowRepository;
+
     @Autowired
     private GameService gameService;
 
     @Autowired
-    private CategoryService categoryService;
+    private GameRepository gameRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private CategoryRepository categoryRepository;
+
+    @Autowired
+    private CategoryService categoryService;
 
     private static final String BLANK_VALUE = "     ";
 
@@ -51,14 +62,18 @@ public class GameServiceIT {
 
     @After
     public void tearDown() throws Exception {
+        borrowRepository.deleteAll();
         gameRepository.deleteAll();
         categoryRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     @Before
     public void setUp() throws Exception {
+        borrowRepository.deleteAll();
         gameRepository.deleteAll();
         categoryRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     @Test
