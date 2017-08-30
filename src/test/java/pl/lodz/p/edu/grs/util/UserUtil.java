@@ -49,16 +49,6 @@ public class UserUtil {
                 new HashSet<>(Arrays.asList(Role.USER))
         );
     }
-
-    public static User mockAdminUser() {
-        return new User(USER_ID2,
-                EMAIL2,
-                PASSWORD2,
-                FIRST_NAME2,
-                LAST_NAME2,
-                null,
-                new HashSet<>(Arrays.asList(Role.SYSTEM_ADMIN))
-        );
-    }
-
 }
+
+

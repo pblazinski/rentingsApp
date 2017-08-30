@@ -15,11 +15,6 @@ public class StubHelper {
     }
 
 
-    public static User stubAdminUser() {
-        RegisterUserDTO adminUserDto = UserUtil.mockRegisterUserDTO();
-        return userService.registerUser(adminUserDto);
-    }
-
     public static User stubUser() {
         RegisterUserDTO userDTO = UserUtil.mockRegisterUserDTO();
         return userService.registerUser(userDTO);

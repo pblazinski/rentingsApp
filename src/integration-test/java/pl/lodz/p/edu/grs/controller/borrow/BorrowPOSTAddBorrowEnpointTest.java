@@ -1,11 +1,15 @@
 package pl.lodz.p.edu.grs.controller.borrow;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -29,7 +33,9 @@ import pl.lodz.p.edu.grs.util.CategoryUtil;
 import pl.lodz.p.edu.grs.util.GameUtil;
 import pl.lodz.p.edu.grs.util.StubHelper;
 
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Iterator;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -38,7 +44,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
-public class BorrowGETGetBorrowsEndpointTest {
+public class BorrowPOSTAddBorrowEnpointTest {
     @Autowired
     private UserService userService;
     @Autowired
@@ -57,6 +63,8 @@ public class BorrowGETGetBorrowsEndpointTest {
     private CategoryRepository categoryRepository;
     @Autowired
     private BorrowRepository borrowRepository;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     private User user;
 
@@ -70,7 +78,7 @@ public class BorrowGETGetBorrowsEndpointTest {
     }
 
     @Test
-    public void shouldReturnPageOfBorrows() throws Exception {
+    public void shouldAddNewBorrow() throws Exception {
         //given
         Category category = categoryService.addCategory(CategoryUtil.mockCategoryDto());
         GameDto gameDto = GameUtil.mockGameDto();
@@ -78,26 +86,50 @@ public class BorrowGETGetBorrowsEndpointTest {
 
         Game game = gameService.addGame(gameDto);
 
-        Borrow borrow = borrowService.addBorrow(new BorrowDto(Collections.singletonList(game.getId())), user.getEmail());
+        String content = "   {\n" +
+                "   \t\"games\": [" + game.getId() + "]\n" +
+                "   }";
 
-        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.get("/api/borrow/")
-                .with(user(new AppUser(user)));
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/api/borrow/")
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .with(user(new AppUser(user)))
+                .content(content);
         //when
         ResultActions result = mockMvc.perform(requestBuilder);
 
+        String body = result.andReturn().getResponse().getContentAsString();
+        long id = getIdFromContentBodyJson(body);
+        Borrow borrow = borrowRepository.findOne(id);
+
         //then
         result.andExpect(status().isOk())
-                .andExpect(jsonPath("$.content[0].borrowedGames[0].title").exists())
-                .andExpect(jsonPath("$.content[0].borrowedGames[0].title").value(game.getTitle()))
-                .andExpect(jsonPath("$.content[0].borrowedGames[0].description").exists())
-                .andExpect(jsonPath("$.content[0].borrowedGames[0].description").value(game.getDescription()))
-                .andExpect(jsonPath("$.content[0].borrowedGames[0].available").exists())
-                .andExpect(jsonPath("$.content[0].borrowedGames[0].available").value(borrow.getBorrowedGames().get(0).isAvailable()))
-                .andExpect(jsonPath("$.content[0].borrowedGames[0].price").exists())
-                .andExpect(jsonPath("$.content[0].borrowedGames[0].price").value(game.getPrice()))
-                .andExpect(jsonPath("$.content[0].borrowedGames[0].category.name").exists())
-                .andExpect(jsonPath("$.content[0].borrowedGames[0].category.name").value(game.getCategory().getName()))
-                .andExpect(jsonPath("$.content[0].totalPrice").exists())
-                .andExpect(jsonPath("$.content[0].totalPrice").value(borrow.getTotalPrice()));
+                .andExpect(jsonPath("$.borrowedGames[0].title").exists())
+                .andExpect(jsonPath("$.borrowedGames[0].title").value(game.getTitle()))
+                .andExpect(jsonPath("$..borrowedGames[0].description").exists())
+                .andExpect(jsonPath("$.borrowedGames[0].description").value(game.getDescription()))
+                .andExpect(jsonPath("$.borrowedGames[0].available").exists())
+                .andExpect(jsonPath("$.borrowedGames[0].available").value(borrow.getBorrowedGames().get(0).isAvailable()))
+                .andExpect(jsonPath("$.borrowedGames[0].price").exists())
+                .andExpect(jsonPath("$.borrowedGames[0].price").value(game.getPrice()))
+                .andExpect(jsonPath("$.borrowedGames[0].category.name").exists())
+                .andExpect(jsonPath("$.borrowedGames[0].category.name").value(game.getCategory().getName()))
+                .andExpect(jsonPath("$.totalPrice").exists())
+                .andExpect(jsonPath("$.totalPrice").value(borrow.getTotalPrice()));
+    }
+
+
+    private long getIdFromContentBodyJson(final String content) throws JSONException {
+        JSONObject jsonObject = new JSONObject(content);
+
+        Iterator<?> keys = jsonObject.keys();
+
+        while (keys.hasNext()) {
+            String key = (String) keys.next();
+            if (key.equals("id")) {
+                return (Integer) jsonObject.get(key);
+            }
+        }
+        return 1L;
     }
 }

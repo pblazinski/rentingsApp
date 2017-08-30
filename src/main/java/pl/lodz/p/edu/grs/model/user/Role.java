@@ -6,7 +6,7 @@ import java.util.List;
 
 public enum Role {
 
-    SYSTEM_ADMIN(Authority.LIST_USER, Authority.MODIFY_USER, Authority.LIST_BORROWS),
+    SYSTEM_ADMIN(Authority.LIST_USER, Authority.MODIFY_USER),
 
     USER(Authority.MODIFY_USER, Authority.GET_USER);
 
