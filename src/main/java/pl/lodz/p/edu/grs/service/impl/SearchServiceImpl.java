@@ -5,10 +5,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import pl.lodz.p.edu.grs.controller.search.SearchDto;
-import pl.lodz.p.edu.grs.model.Category;
 import pl.lodz.p.edu.grs.model.Game;
 import pl.lodz.p.edu.grs.repository.GameRepository;
-import pl.lodz.p.edu.grs.service.CategoryService;
 import pl.lodz.p.edu.grs.service.SearchService;
 
 import javax.transaction.Transactional;
@@ -19,12 +17,9 @@ import javax.transaction.Transactional;
 public class SearchServiceImpl implements SearchService {
 
     private final GameRepository gameRepository;
-    private final CategoryService categoryService;
 
-    public SearchServiceImpl(final GameRepository gameRepository,
-                             final CategoryService categoryService) {
+    public SearchServiceImpl(final GameRepository gameRepository) {
         this.gameRepository = gameRepository;
-        this.categoryService = categoryService;
     }
 
     @Override
@@ -36,8 +31,7 @@ public class SearchServiceImpl implements SearchService {
         if (categoryId == null) {
             games = gameRepository.searchGamesWithoutCategory(searchDto, pageable);
         } else {
-            Category category = categoryService.findOne(categoryId);
-            games = gameRepository.searchGames(searchDto, category, pageable);
+            games = gameRepository.searchGames(searchDto, categoryId, pageable);
         }
 
         return games;
