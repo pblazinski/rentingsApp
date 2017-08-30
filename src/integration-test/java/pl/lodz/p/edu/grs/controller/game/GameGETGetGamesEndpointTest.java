@@ -15,6 +15,7 @@ import pl.lodz.p.edu.grs.controller.category.CategoryDto;
 import pl.lodz.p.edu.grs.model.Category;
 import pl.lodz.p.edu.grs.model.Game;
 import pl.lodz.p.edu.grs.model.user.User;
+import pl.lodz.p.edu.grs.repository.BorrowRepository;
 import pl.lodz.p.edu.grs.repository.CategoryRepository;
 import pl.lodz.p.edu.grs.repository.GameRepository;
 import pl.lodz.p.edu.grs.repository.UserRepository;
@@ -46,11 +47,14 @@ public class GameGETGetGamesEndpointTest {
     private UserRepository userRepository;
     @Autowired
     private CategoryRepository categoryRepository;
+    @Autowired
+    private BorrowRepository borrowRepository;
 
     private User user;
 
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
+        borrowRepository.deleteAll();
         gameRepository.deleteAll();
         categoryRepository.deleteAll();
         userRepository.deleteAll();

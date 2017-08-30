@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import pl.lodz.p.edu.grs.model.Category;
 import pl.lodz.p.edu.grs.model.Game;
 import pl.lodz.p.edu.grs.model.user.User;
+import pl.lodz.p.edu.grs.repository.BorrowRepository;
 import pl.lodz.p.edu.grs.repository.CategoryRepository;
 import pl.lodz.p.edu.grs.repository.GameRepository;
 import pl.lodz.p.edu.grs.repository.UserRepository;
@@ -50,6 +51,8 @@ public class GamePUTUpdatePriceEndpointTest {
     private CategoryRepository categoryRepository;
     @Autowired
     private ObjectMapper objectMapper;
+    @Autowired
+    private BorrowRepository borrowRepository;
 
     private User user;
 
@@ -59,9 +62,10 @@ public class GamePUTUpdatePriceEndpointTest {
 
     @Before
     public void setUp() {
-        userRepository.deleteAll();
+        borrowRepository.deleteAll();
         gameRepository.deleteAll();
         categoryRepository.deleteAll();
+        userRepository.deleteAll();
         user = StubHelper.stubUser();
     }
 

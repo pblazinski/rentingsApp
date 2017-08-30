@@ -1,17 +1,16 @@
 package pl.lodz.p.edu.grs.service.impl;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import pl.lodz.p.edu.grs.controller.borrow.BorrowDto;
+import pl.lodz.p.edu.grs.factory.BorrowFactory;
 import pl.lodz.p.edu.grs.model.Borrow;
 import pl.lodz.p.edu.grs.model.Game;
 import pl.lodz.p.edu.grs.model.user.User;
@@ -23,14 +22,12 @@ import pl.lodz.p.edu.grs.util.BorrowUtil;
 import pl.lodz.p.edu.grs.util.GameUtil;
 import pl.lodz.p.edu.grs.util.UserUtil;
 
-import java.util.Arrays;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BorrowServiceImplTest {
@@ -44,12 +41,15 @@ public class BorrowServiceImplTest {
     @Mock
     private UserService userService;
 
+    @Mock
+    private BorrowFactory borrowFactory;
+
     private BorrowService borrowService;
 
     @Before
     public void setUp() throws Exception {
         borrowRepository = mock(BorrowRepository.class);
-        this.borrowService = new BorrowServiceImpl(borrowRepository, gameService, userService);
+        this.borrowService = new BorrowServiceImpl(borrowRepository, gameService, userService, borrowFactory);
     }
 
 
@@ -105,15 +105,15 @@ public class BorrowServiceImplTest {
     }
 
     @Test
-    @Ignore //TODO fix this
-    public void shouldAddBorrow() throws Exception {
+    public void shouldAddBorrowAndSetGamesNotAvailable() throws Exception {
         //given
         Borrow borrow = BorrowUtil.mockBorrow();
         User user = UserUtil.mockUser();
         Game game = GameUtil.mockGame();
         borrow.setBorrowedGames(Collections.singletonList(game));
         borrow.setUser(user);
-
+        when(borrowFactory.create(Collections.singletonList(game), user))
+                .thenReturn(borrow);
         when(userService.findByEmail(UserUtil.EMAIL))
                 .thenReturn(user);
         when(gameService.getGame(1L))
@@ -127,6 +127,10 @@ public class BorrowServiceImplTest {
         //then
         verify(borrowRepository)
                 .save(borrow);
+
+        assertThat(result.getBorrowedGames().get(0).isAvailable())
+                .isEqualTo(false);
+
     }
 
     @Test
@@ -157,7 +161,7 @@ public class BorrowServiceImplTest {
     }
 
     @Test
-    public void shouldUpdatePenaltu() throws Exception {
+    public void shouldUpdatePenalty() throws Exception {
         //given
         double price = 99;
         Borrow borrow = BorrowUtil.mockBorrow();
@@ -175,7 +179,7 @@ public class BorrowServiceImplTest {
         verify(borrowRepository)
                 .findOne(borrow.getId());
 
-        assertThat(result.getTotalPrice())
+        assertThat(result.getPenalties())
                 .isNotNull()
                 .isEqualTo(price)
                 .isNotSameAs(borrow.getTotalPrice());
@@ -199,5 +203,31 @@ public class BorrowServiceImplTest {
         //then
         verify(borrowRepository)
                 .delete(borrow.getId());
+    }
+
+
+    @Test
+    public void shouldGiveBackGamesAndSetThemToAvailable() throws Exception {
+        //given
+        Borrow borrow = BorrowUtil.mockBorrow();
+
+        LocalDateTime now = LocalDateTime.now();
+
+        when(borrowRepository.exists(borrow.getId()))
+                .thenReturn(true);
+        when(borrowRepository.findOne(borrow.getId()))
+                .thenReturn(borrow);
+        when(borrowRepository.save(borrow))
+                .thenReturn(borrow);
+
+        //when
+        Borrow result = borrowService.updateReturnTime(borrow.getId());
+
+        //then
+        assertThat(result.getBorrowedGames().get(0).isAvailable())
+                .isEqualTo(true);
+        assertThat(result.getTimeBack())
+                .isNotNull()
+                .isGreaterThan(now);
     }
 }

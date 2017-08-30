@@ -2,10 +2,13 @@ package pl.lodz.p.edu.grs.model;
 
 
 import lombok.*;
+import org.hibernate.annotations.*;
+import org.hibernate.annotations.CascadeType;
 import org.hibernate.validator.constraints.NotEmpty;
 import pl.lodz.p.edu.grs.model.user.User;
 
 import javax.persistence.*;
+import javax.persistence.Entity;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
@@ -24,12 +27,16 @@ public class Borrow {
     private Long id;
 
     @NotEmpty
+    @Cascade(CascadeType.PERSIST)
     @OneToMany(fetch = FetchType.EAGER)
     private List<Game> borrowedGames;
 
     @NotNull
     @ManyToOne
     private User user;
+
+    @Column
+    private LocalDateTime timeBack;
 
     @Column(nullable = false)
     private LocalDateTime timeBorrowed;

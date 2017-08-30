@@ -22,4 +22,6 @@ public interface BorrowService {
     Borrow addBorrow(BorrowDto borrowDto, String principal);
 
     void removeBorrow(Long id);
+
+    Borrow updateReturnTime(Long id);
 }

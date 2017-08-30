@@ -62,4 +62,12 @@ public class BorrowController {
 
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/{id}")
+    @ApiOperation(value = "Return game back")
+    public HttpEntity returnGame(@PathVariable final Long id) {
+       Borrow borrow = borrowService.updateReturnTime(id);
+
+       return ResponseEntity.ok(borrow);
+    }
 }
