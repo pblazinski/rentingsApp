@@ -30,7 +30,7 @@ public class BorrowController {
 
     @GetMapping
     @ApiOperation(value = "Find all borrows")
-    @PreAuthorize("@borrowPermissionResolver.hasAuthorityToGetBorrowsList(principal)")
+    @PreAuthorize("hasAuthority('LIST_BORROWS')")
     public Page<Borrow> getAllBorrows(@PageableDefault final Pageable pageable) {
         return borrowService.findAll(pageable);
     }
