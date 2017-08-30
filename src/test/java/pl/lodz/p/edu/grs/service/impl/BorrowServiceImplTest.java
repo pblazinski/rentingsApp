@@ -211,8 +211,6 @@ public class BorrowServiceImplTest {
         //given
         Borrow borrow = BorrowUtil.mockBorrow();
 
-        LocalDateTime now = LocalDateTime.now();
-
         when(borrowRepository.exists(borrow.getId()))
                 .thenReturn(true);
         when(borrowRepository.findOne(borrow.getId()))
@@ -227,7 +225,6 @@ public class BorrowServiceImplTest {
         assertThat(result.getBorrowedGames().get(0).isAvailable())
                 .isEqualTo(true);
         assertThat(result.getTimeBack())
-                .isNotNull()
-                .isGreaterThan(now);
+                .isNotNull();
     }
 }

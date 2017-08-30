@@ -135,7 +135,7 @@ public class BorrowServiceImpl implements BorrowService {
         borrow.setTimeBack(localDateTime);
 
         borrow = borrowRepository.save(borrow);
-        log.info("Returned borrow <{}> with <{}>  at", id , borrow.getBorrowedGames().size(), localDateTime);
+        log.info("Returned borrow <{}> with <{}>  at", id , borrow.getBorrowedGames().size(), borrow.getTimeBack());
 
         return borrow;
     }
