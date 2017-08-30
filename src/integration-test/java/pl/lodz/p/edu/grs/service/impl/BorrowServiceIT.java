@@ -29,11 +29,11 @@ import pl.lodz.p.edu.grs.util.CategoryUtil;
 import pl.lodz.p.edu.grs.util.GameUtil;
 import pl.lodz.p.edu.grs.util.UserUtil;
 
+import javax.persistence.EntityNotFoundException;
 import javax.validation.ConstraintViolationException;
 import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowable;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class)
@@ -192,7 +192,141 @@ public class BorrowServiceIT {
         //then
     }
 
+    @Test
+    public void shouldGetOneBorrow() throws Exception {
+        //given
+        Category category = categoryService.addCategory(CategoryUtil.mockCategoryDto());
 
+        RegisterUserDTO registerUserDTO = UserUtil.mockRegisterUserDTO();
 
+        User user = userService.registerUser(registerUserDTO);
 
+        GameDto gameDto = GameUtil.mockGameDto();
+        gameDto.setCategoryId(category.getId());
+
+        Game game = gameService.addGame(gameDto);
+        Borrow borrow = borrowService.addBorrow(new BorrowDto(Collections.singletonList(game.getId())), registerUserDTO.getEmail());
+
+        //when
+        Borrow result = borrowService.getBorrow(borrow.getId());
+
+        //
+        assertThat(borrow.getBorrowedGames().get(0).getId())
+                .isSameAs(result.getBorrowedGames().get(0).getId());
+        assertThat(borrow.getTimeBorrowed())
+                .isEqualByComparingTo(result.getTimeBorrowed());
+        assertThat(borrow.getDeadline())
+                .isEqualByComparingTo(result.getDeadline());
+        assertThat(borrow.getTotalPrice())
+                .isEqualTo(result.getTotalPrice());
+    }
+
+    @Test(expected = EntityNotFoundException.class)
+    public void shouldThrowEntityNotFoundExceptionWhenGetNonExistingBorrow() throws Exception {
+        //given
+
+        //when
+        borrowService.getBorrow(1L);
+
+        //then
+    }
+
+    @Test
+    public void shouldUpdatePenalty() throws Exception {
+        //given
+        double penalty = 10;
+        Category category = categoryService.addCategory(CategoryUtil.mockCategoryDto());
+
+        RegisterUserDTO registerUserDTO = UserUtil.mockRegisterUserDTO();
+
+        User user = userService.registerUser(registerUserDTO);
+
+        GameDto gameDto = GameUtil.mockGameDto();
+        gameDto.setCategoryId(category.getId());
+
+        Game game = gameService.addGame(gameDto);
+        Borrow borrow = borrowService.addBorrow(new BorrowDto(Collections.singletonList(game.getId())), registerUserDTO.getEmail());
+
+        //when
+        Borrow result = borrowService.updatePenalties(penalty, borrow.getId());
+
+        //then
+        assertThat(result.getId())
+                .isEqualTo(borrow.getId());
+        assertThat(borrow.getPenalties())
+                .isNotSameAs(result.getPenalties());
+    }
+
+    @Test(expected = EntityNotFoundException.class)
+    public void shouldThrowEntityNotFoundExceptionWhenUpdatePenaltyForNotExistingBorrow() {
+        //given
+        //when
+        borrowService.updatePenalties(10, 1L);
+        //then
+    }
+
+    @Test
+    public void shouldRemoveBorrow() throws Exception {
+        //given
+        Category category = categoryService.addCategory(CategoryUtil.mockCategoryDto());
+
+        RegisterUserDTO registerUserDTO = UserUtil.mockRegisterUserDTO();
+
+        User user = userService.registerUser(registerUserDTO);
+
+        GameDto gameDto = GameUtil.mockGameDto();
+        gameDto.setCategoryId(category.getId());
+
+        Game game = gameService.addGame(gameDto);
+        Borrow borrow = borrowService.addBorrow(new BorrowDto(Collections.singletonList(game.getId())), registerUserDTO.getEmail());
+
+        //when
+        borrowService.removeBorrow(borrow.getId());
+
+        boolean exists = borrowRepository.exists(borrow.getId());
+        assertThat(exists)
+                .isEqualTo(false);
+    }
+
+    @Test(expected = EntityNotFoundException.class)
+    public void shouldThrowEntityNotFoundExceptionWhenRemoveNotExistingBorrow() throws Exception {
+        //given
+        //when
+        borrowService.removeBorrow(1L);
+        //then
+    }
+
+    @Test
+    public void shouldUpdateReturnTimeAndSetGamesToAvaiable() throws Exception {
+        //given
+        Category category = categoryService.addCategory(CategoryUtil.mockCategoryDto());
+
+        RegisterUserDTO registerUserDTO = UserUtil.mockRegisterUserDTO();
+
+        User user = userService.registerUser(registerUserDTO);
+
+        GameDto gameDto = GameUtil.mockGameDto();
+        gameDto.setCategoryId(category.getId());
+
+        Game game = gameService.addGame(gameDto);
+        Borrow borrow = borrowService.addBorrow(new BorrowDto(Collections.singletonList(game.getId())), registerUserDTO.getEmail());
+        //when
+        Borrow result = borrowService.updateReturnTime(borrow.getId());
+
+        //then
+        assertThat(borrow.getTimeBack())
+                .isNull();
+        assertThat(result.getTimeBack())
+                .isNotSameAs(borrow.getTimeBack());
+        assertThat(result.getBorrowedGames().get(0).isAvailable())
+                .isEqualTo(true);
+    }
+
+    @Test(expected = EntityNotFoundException.class)
+    public void shouldThrowEntityNotFoundExceptionUpdateBackTimeForNotExistingBorrow() throws Exception {
+        //given
+        //when
+        borrowService.updateReturnTime(1L);
+        //then
+    }
 }

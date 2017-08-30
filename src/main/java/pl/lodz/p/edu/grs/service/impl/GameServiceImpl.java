@@ -13,6 +13,7 @@ import pl.lodz.p.edu.grs.repository.GameRepository;
 import pl.lodz.p.edu.grs.service.CategoryService;
 import pl.lodz.p.edu.grs.service.GameService;
 
+import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 
 @Slf4j
@@ -68,6 +69,9 @@ public class GameServiceImpl implements GameService {
     public Game updateTitleAndDescription(final Long id,
                                           final String title,
                                           final String description) {
+        if(!gameRepository.exists(id)) {
+            throw new EntityNotFoundException(); //TODO add tests veryfing that
+        }
         Game game = gameRepository.getOne(id);
 
         game.updateTitleAndDescription(title, description);
@@ -84,6 +88,9 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public Game updatePrice(final Long id, final double price) {
+        if(!gameRepository.exists(id)) {
+            throw new EntityNotFoundException();
+        }
         Game game = gameRepository.getOne(id);
 
         game.updatePrice(price);
@@ -99,6 +106,9 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public Game updateAvailability(final Long id, final boolean available) {
+        if(!gameRepository.exists(id)) {
+            throw new EntityNotFoundException();
+        }
         Game game = gameRepository.getOne(id);
 
         game.updateAvailability(available);
@@ -114,6 +124,9 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public Game updateCategory(final Long id, final Long categoryId) {
+        if(!gameRepository.exists(id)) {
+            throw new EntityNotFoundException();
+        }
         Game game = gameRepository.getOne(id);
 
         Category category = categoryService.findOne(categoryId);
@@ -129,8 +142,11 @@ public class GameServiceImpl implements GameService {
         return game;
     }
 
-    @Override //TODO final
-    public void remove(Long id) {
+    @Override
+    public void remove(final Long id) {
+        if(!gameRepository.exists(id)) {
+            throw new EntityNotFoundException();
+        }
         Game game = gameRepository.getOne(id);
 
         gameRepository.delete(game);
@@ -139,8 +155,15 @@ public class GameServiceImpl implements GameService {
                 game.getId());
     }
 
-    @Override //TODO final log.info
-    public Game getGame(Long id) {
+    @Override
+    public Game getGame(final Long id) {
+        if(!gameRepository.exists(id)) {
+            throw new EntityNotFoundException();
+        }
+        Game game = gameRepository.findOne(id);
+
+        log.info("Got game with id <{}> ", game.getId());
+
         return gameRepository.findOne(id);
     }
 
