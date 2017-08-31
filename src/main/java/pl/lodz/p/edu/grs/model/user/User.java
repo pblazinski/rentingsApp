@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
-import pl.lodz.p.edu.grs.model.Game;
+import pl.lodz.p.edu.grs.model.game.Game;
 
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;

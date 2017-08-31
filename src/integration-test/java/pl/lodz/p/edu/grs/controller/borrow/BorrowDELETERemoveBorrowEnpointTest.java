@@ -17,7 +17,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import pl.lodz.p.edu.grs.controller.game.GameDto;
 import pl.lodz.p.edu.grs.model.Borrow;
 import pl.lodz.p.edu.grs.model.Category;
-import pl.lodz.p.edu.grs.model.Game;
+import pl.lodz.p.edu.grs.model.game.Game;
 import pl.lodz.p.edu.grs.model.user.User;
 import pl.lodz.p.edu.grs.repository.BorrowRepository;
 import pl.lodz.p.edu.grs.repository.CategoryRepository;
@@ -36,10 +36,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)

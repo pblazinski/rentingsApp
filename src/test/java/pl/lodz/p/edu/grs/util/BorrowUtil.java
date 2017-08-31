@@ -2,13 +2,10 @@ package pl.lodz.p.edu.grs.util;
 
 import pl.lodz.p.edu.grs.controller.borrow.BorrowDto;
 import pl.lodz.p.edu.grs.model.Borrow;
-import pl.lodz.p.edu.grs.model.Game;
+import pl.lodz.p.edu.grs.model.game.Game;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
 
 public class BorrowUtil {

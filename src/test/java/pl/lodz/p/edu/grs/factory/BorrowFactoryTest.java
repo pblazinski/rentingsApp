@@ -5,7 +5,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 import pl.lodz.p.edu.grs.model.Borrow;
-import pl.lodz.p.edu.grs.model.Game;
+import pl.lodz.p.edu.grs.model.game.Game;
 import pl.lodz.p.edu.grs.model.user.User;
 import pl.lodz.p.edu.grs.util.GameUtil;
 import pl.lodz.p.edu.grs.util.UserUtil;

@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Validator;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
-import pl.lodz.p.edu.grs.model.Game;
+import pl.lodz.p.edu.grs.model.game.Game;
 import pl.lodz.p.edu.grs.service.GameService;
 
 import javax.validation.Valid;

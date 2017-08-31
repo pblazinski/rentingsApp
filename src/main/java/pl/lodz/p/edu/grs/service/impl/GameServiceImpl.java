@@ -9,7 +9,8 @@ import pl.lodz.p.edu.grs.controller.game.GameDto;
 import pl.lodz.p.edu.grs.factory.GameFactory;
 import pl.lodz.p.edu.grs.model.Borrow;
 import pl.lodz.p.edu.grs.model.Category;
-import pl.lodz.p.edu.grs.model.Game;
+import pl.lodz.p.edu.grs.model.game.Game;
+import pl.lodz.p.edu.grs.model.game.Rate;
 import pl.lodz.p.edu.grs.repository.BorrowRepository;
 import pl.lodz.p.edu.grs.repository.GameRepository;
 import pl.lodz.p.edu.grs.service.CategoryService;
@@ -80,7 +81,7 @@ public class GameServiceImpl implements GameService {
 
         Game result = gameFactory.create(game);
 
-        result.setCategory(category);
+        result.updateCategory(category);
 
         result = gameRepository.save(result);
 

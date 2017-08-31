@@ -5,7 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import pl.lodz.p.edu.grs.controller.search.SearchDto;
-import pl.lodz.p.edu.grs.model.Game;
+import pl.lodz.p.edu.grs.model.game.Game;
 import pl.lodz.p.edu.grs.repository.GameRepository;
 import pl.lodz.p.edu.grs.service.SearchService;
 

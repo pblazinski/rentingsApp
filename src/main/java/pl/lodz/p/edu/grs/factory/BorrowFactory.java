@@ -2,7 +2,7 @@ package pl.lodz.p.edu.grs.factory;
 
 import org.springframework.stereotype.Component;
 import pl.lodz.p.edu.grs.model.Borrow;
-import pl.lodz.p.edu.grs.model.Game;
+import pl.lodz.p.edu.grs.model.game.Game;
 import pl.lodz.p.edu.grs.model.user.User;
 
 import java.util.List;

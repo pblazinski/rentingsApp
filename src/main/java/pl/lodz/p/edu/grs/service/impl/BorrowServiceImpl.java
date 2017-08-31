@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import pl.lodz.p.edu.grs.controller.borrow.BorrowDto;
 import pl.lodz.p.edu.grs.factory.BorrowFactory;
 import pl.lodz.p.edu.grs.model.Borrow;
-import pl.lodz.p.edu.grs.model.Game;
+import pl.lodz.p.edu.grs.model.game.Game;
 import pl.lodz.p.edu.grs.model.user.User;
 import pl.lodz.p.edu.grs.repository.BorrowRepository;
 import pl.lodz.p.edu.grs.service.BorrowService;

@@ -5,6 +5,7 @@ import lombok.*;
 import org.hibernate.annotations.*;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.validator.constraints.NotEmpty;
+import pl.lodz.p.edu.grs.model.game.Game;
 import pl.lodz.p.edu.grs.model.user.User;
 
 import javax.persistence.*;
