@@ -13,10 +13,15 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.TransactionSystemException;
 import pl.lodz.p.edu.grs.Application;
+import pl.lodz.p.edu.grs.controller.borrow.BorrowDto;
+import pl.lodz.p.edu.grs.controller.category.CategoryDto;
 import pl.lodz.p.edu.grs.controller.game.GameDto;
+import pl.lodz.p.edu.grs.controller.user.RegisterUserDTO;
 import pl.lodz.p.edu.grs.exceptions.NotFoundException;
+import pl.lodz.p.edu.grs.model.Borrow;
 import pl.lodz.p.edu.grs.model.Category;
 import pl.lodz.p.edu.grs.model.Game;
+import pl.lodz.p.edu.grs.model.user.User;
 import pl.lodz.p.edu.grs.repository.BorrowRepository;
 import pl.lodz.p.edu.grs.repository.CategoryRepository;
 import pl.lodz.p.edu.grs.repository.GameRepository;
@@ -27,9 +32,13 @@ import pl.lodz.p.edu.grs.service.GameService;
 import pl.lodz.p.edu.grs.service.UserService;
 import pl.lodz.p.edu.grs.util.CategoryUtil;
 import pl.lodz.p.edu.grs.util.GameUtil;
+import pl.lodz.p.edu.grs.util.UserUtil;
 
 import javax.persistence.EntityNotFoundException;
 import javax.validation.ConstraintViolationException;
+
+import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
@@ -42,6 +51,9 @@ public class GameServiceIT {
     private BorrowRepository borrowRepository;
 
     @Autowired
+    private BorrowService borrowService;
+
+    @Autowired
     private GameService gameService;
 
     @Autowired
@@ -49,6 +61,9 @@ public class GameServiceIT {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private CategoryRepository categoryRepository;
@@ -75,6 +90,41 @@ public class GameServiceIT {
         categoryRepository.deleteAll();
         userRepository.deleteAll();
     }
+
+
+
+    @Test
+    public void shouldReturnMostPopularGame() {
+        //
+        RegisterUserDTO userDTO = UserUtil.mockRegisterUserDTO();
+        User user = userService.registerUser(userDTO);
+
+        Category category = categoryService.addCategory(new CategoryDto("1"));
+
+        Game game = gameService.addGame(new GameDto("1","1",true,10,category.getId()));
+        Game game1 = gameService.addGame(new GameDto("2","1",true,10,category.getId()));
+        Game game2 = gameService.addGame(new GameDto("3","1",true,10,category.getId()));
+        Game game3 = gameService.addGame(new GameDto("4","1",true,10,category.getId()));
+        Game game4 = gameService.addGame(new GameDto("5","1",true,10,category.getId()));
+
+        Borrow borrow = borrowService.addBorrow(new BorrowDto(Arrays.asList(game4.getId(),game1.getId(),game2.getId())), user.getEmail());
+        Borrow borrow2 = borrowService.addBorrow(new BorrowDto(Arrays.asList(game4.getId(),game1.getId(),game3.getId(),game.getId())), user.getEmail());
+        Borrow borrow3 = borrowService.addBorrow(new BorrowDto(Arrays.asList(game4.getId())), user.getEmail());
+
+
+        //when
+        List<Game> games = gameService.getMostPopular(2L);
+
+        //
+        assertThat(games.size())
+                .isEqualTo(2);
+        assertThat(games.get(0).getId())
+                .isEqualTo(game4.getId());
+        assertThat(games.get(1).getId())
+                .isEqualTo(game1.getId());
+    }
+
+
 
     @Test
     public void shouldReturnPageWithOneGame() {
