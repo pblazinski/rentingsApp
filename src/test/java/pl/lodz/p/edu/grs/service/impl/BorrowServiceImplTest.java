@@ -91,7 +91,7 @@ public class BorrowServiceImplTest {
         List<Borrow> borrows = Collections.singletonList(borrow);
         PageImpl<Borrow> borrowsPage = new PageImpl<>(borrows);
 
-        when(borrowRepository.findBorrowsByUser_Email(pageable, user.getEmail()))
+        when(borrowRepository.findBorrowsByUserEmail(pageable, user.getEmail()))
                 .thenReturn(borrowsPage);
 
 

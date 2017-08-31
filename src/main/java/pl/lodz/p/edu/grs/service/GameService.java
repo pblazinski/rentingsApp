@@ -3,6 +3,7 @@ package pl.lodz.p.edu.grs.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import pl.lodz.p.edu.grs.controller.game.GameDto;
+import pl.lodz.p.edu.grs.controller.game.RateDto;
 import pl.lodz.p.edu.grs.model.game.Game;
 
 import java.util.List;
@@ -26,4 +27,6 @@ public interface GameService {
     void remove(Long id);
 
     Game getGame(Long id);
+
+    Game addRate(long userId, RateDto rateDto, final String email);
 }

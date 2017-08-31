@@ -4,8 +4,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
+import pl.lodz.p.edu.grs.exceptions.RateAddException;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 
 @RunWith(MockitoJUnitRunner.class)
 public class GameTest {
@@ -146,17 +148,20 @@ public class GameTest {
     }
 
     @Test
-    public void shouldNotAddRateWhenOneExist() {
+    public void shouldThrowRateAddExceptionWhenUserTryToAddSecondRate() {
         //given
         game.addRate(new Rate(10L, 10L));
 
         //when
-        game.addRate(RATE);
+        Throwable throwable = catchThrowable(() -> game.addRate(RATE));
 
         //then
         RatingSummary ratingSummary = game.getRatingSummary();
         assertThat(ratingSummary.getRates())
                 .hasSize(1);
+        assertThat(throwable)
+                .isInstanceOf(RateAddException.class)
+                .hasMessage("User can add only one rate for one game");
     }
 
     @Test

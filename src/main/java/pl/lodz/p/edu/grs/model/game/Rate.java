@@ -9,7 +9,6 @@ import javax.validation.constraints.NotNull;
 
 @Embeddable
 @Getter
-@EqualsAndHashCode
 public class Rate {
 
     @NotNull
@@ -31,4 +30,18 @@ public class Rate {
         this.comment = comment;
     }
 
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Rate rate = (Rate) o;
+
+        return userId != null ? userId.equals(rate.userId) : rate.userId == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return userId != null ? userId.hashCode() : 0;
+    }
 }

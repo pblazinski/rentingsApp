@@ -1,6 +1,7 @@
 package pl.lodz.p.edu.grs.model.game;
 
 import lombok.Getter;
+import pl.lodz.p.edu.grs.exceptions.RateAddException;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.Embeddable;
@@ -21,8 +22,9 @@ public class RatingSummary {
 
     public void addRate(final Rate rate) {
         if (this.rates.contains(rate)) {
-            //TODO throw exception
+            throw new RateAddException("User can add only one rate for one game");
         }
+
         this.rates.add(rate);
         this.updateAverage();
     }
@@ -30,7 +32,7 @@ public class RatingSummary {
     private void updateAverage() {
         if (this.rates.size() > 0) {
             long sum = this.rates.stream().mapToLong(Rate::getRate).sum();
-            this.average = sum / this.rates.size();
+            this.average = sum / (this.rates.size() * 1.0);
         }
     }
 }

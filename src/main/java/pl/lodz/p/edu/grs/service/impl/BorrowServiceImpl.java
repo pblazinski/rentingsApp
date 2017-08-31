@@ -60,7 +60,7 @@ public class BorrowServiceImpl implements BorrowService {
 
     @Override
     public Page<Borrow> findUserBorrows(final Pageable pageable, final String principal) {
-        Page<Borrow> userBorrows = borrowRepository.findBorrowsByUser_Email(pageable, principal);
+        Page<Borrow> userBorrows = borrowRepository.findBorrowsByUserEmail(pageable, principal);
 
         log.info("Found <{}> borrows page borrowed by <{}>", userBorrows.getTotalElements(), principal);
 
