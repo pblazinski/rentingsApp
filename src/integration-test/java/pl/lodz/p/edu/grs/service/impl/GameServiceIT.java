@@ -5,18 +5,16 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.omg.CosNaming.NamingContextPackage.NotFound;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.TransactionSystemException;
 import pl.lodz.p.edu.grs.Application;
 import pl.lodz.p.edu.grs.controller.borrow.BorrowDto;
 import pl.lodz.p.edu.grs.controller.category.CategoryDto;
 import pl.lodz.p.edu.grs.controller.game.GameDto;
-import pl.lodz.p.edu.grs.controller.user.RegisterUserDTO;
+import pl.lodz.p.edu.grs.controller.user.RegisterUserDto;
 import pl.lodz.p.edu.grs.exceptions.NotFoundException;
 import pl.lodz.p.edu.grs.model.Borrow;
 import pl.lodz.p.edu.grs.model.Category;
@@ -36,7 +34,6 @@ import pl.lodz.p.edu.grs.util.UserUtil;
 
 import javax.persistence.EntityNotFoundException;
 import javax.validation.ConstraintViolationException;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -96,7 +93,7 @@ public class GameServiceIT {
     @Test
     public void shouldReturnMostPopularGame() {
         //
-        RegisterUserDTO userDTO = UserUtil.mockRegisterUserDTO();
+        RegisterUserDto userDTO = UserUtil.mockRegisterUserDTO();
         User user = userService.registerUser(userDTO);
 
         Category category = categoryService.addCategory(new CategoryDto("1"));
