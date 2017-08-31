@@ -30,14 +30,13 @@ public class SearchServiceIT {
     @Autowired
     private GameRepository gameRepository;
 
-    private List<GameDto> games;
     private List<Category> categories;
 
     @Before
     public void setUp() throws Exception {
         gameRepository.deleteAll();
         categories = StubHelper.stubCategories();
-        games = StubHelper.stubGames();
+        List<GameDto> games = StubHelper.stubGames();
     }
 
     @Test
@@ -51,6 +50,25 @@ public class SearchServiceIT {
 
         //when
         Page<Game> result = searchService.searchGames(searchDto, Long.MAX_VALUE, new PageRequest(0, 10));
+
+        //then
+        assertThat(result)
+                .isNotNull();
+        assertThat(result.getContent())
+                .hasSize(0);
+    }
+
+    @Test
+    public void shouldReturnEmptyPageWhenNotFoundGamesForNotMatchingTitle() throws Exception {
+        //given
+        SearchDto searchDto = SearchDto.builder()
+                .title("asdasdasczxdasd sad asd asd asdasdsa")
+                .maxPrice(Double.MAX_VALUE)
+                .minPrice(0.0)
+                .build();
+
+        //when
+        Page<Game> result = searchService.searchGames(searchDto, categories.get(0).getId(), new PageRequest(0, 10));
 
         //then
         assertThat(result)

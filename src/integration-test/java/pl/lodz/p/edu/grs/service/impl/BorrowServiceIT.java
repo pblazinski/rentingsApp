@@ -12,7 +12,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import pl.lodz.p.edu.grs.Application;
 import pl.lodz.p.edu.grs.controller.borrow.BorrowDto;
 import pl.lodz.p.edu.grs.controller.game.GameDto;
-import pl.lodz.p.edu.grs.controller.user.RegisterUserDTO;
+import pl.lodz.p.edu.grs.controller.user.RegisterUserDto;
 import pl.lodz.p.edu.grs.model.Borrow;
 import pl.lodz.p.edu.grs.model.Category;
 import pl.lodz.p.edu.grs.model.Game;
@@ -84,7 +84,7 @@ public class BorrowServiceIT {
         //given
         Category category = categoryService.addCategory(CategoryUtil.mockCategoryDto());
 
-        RegisterUserDTO registerUserDTO = UserUtil.mockRegisterUserDTO();
+        RegisterUserDto registerUserDTO = UserUtil.mockRegisterUserDTO();
 
         User user = userService.registerUser(registerUserDTO);
 
@@ -117,7 +117,7 @@ public class BorrowServiceIT {
         //given
         Category category = categoryService.addCategory(CategoryUtil.mockCategoryDto());
 
-        RegisterUserDTO registerUserDTO = UserUtil.mockRegisterUserDTO();
+        RegisterUserDto registerUserDTO = UserUtil.mockRegisterUserDTO();
 
         User user = userService.registerUser(registerUserDTO);
 
@@ -150,7 +150,7 @@ public class BorrowServiceIT {
         //given
         Category category = categoryService.addCategory(CategoryUtil.mockCategoryDto());
 
-        RegisterUserDTO registerUserDTO = UserUtil.mockRegisterUserDTO();
+        RegisterUserDto registerUserDTO = UserUtil.mockRegisterUserDTO();
 
         User user = userService.registerUser(registerUserDTO);
 
@@ -176,7 +176,7 @@ public class BorrowServiceIT {
         //given
         Category category = categoryService.addCategory(CategoryUtil.mockCategoryDto());
 
-        RegisterUserDTO registerUserDTO = UserUtil.mockRegisterUserDTO();
+        RegisterUserDto registerUserDTO = UserUtil.mockRegisterUserDTO();
 
         User user = userService.registerUser(registerUserDTO);
 
@@ -197,7 +197,7 @@ public class BorrowServiceIT {
         //given
         Category category = categoryService.addCategory(CategoryUtil.mockCategoryDto());
 
-        RegisterUserDTO registerUserDTO = UserUtil.mockRegisterUserDTO();
+        RegisterUserDto registerUserDTO = UserUtil.mockRegisterUserDTO();
 
         User user = userService.registerUser(registerUserDTO);
 
@@ -237,7 +237,7 @@ public class BorrowServiceIT {
         double penalty = 10;
         Category category = categoryService.addCategory(CategoryUtil.mockCategoryDto());
 
-        RegisterUserDTO registerUserDTO = UserUtil.mockRegisterUserDTO();
+        RegisterUserDto registerUserDTO = UserUtil.mockRegisterUserDTO();
 
         User user = userService.registerUser(registerUserDTO);
 
@@ -270,7 +270,7 @@ public class BorrowServiceIT {
         //given
         Category category = categoryService.addCategory(CategoryUtil.mockCategoryDto());
 
-        RegisterUserDTO registerUserDTO = UserUtil.mockRegisterUserDTO();
+        RegisterUserDto registerUserDTO = UserUtil.mockRegisterUserDTO();
 
         User user = userService.registerUser(registerUserDTO);
 
@@ -301,7 +301,7 @@ public class BorrowServiceIT {
         //given
         Category category = categoryService.addCategory(CategoryUtil.mockCategoryDto());
 
-        RegisterUserDTO registerUserDTO = UserUtil.mockRegisterUserDTO();
+        RegisterUserDto registerUserDTO = UserUtil.mockRegisterUserDTO();
 
         User user = userService.registerUser(registerUserDTO);
 
