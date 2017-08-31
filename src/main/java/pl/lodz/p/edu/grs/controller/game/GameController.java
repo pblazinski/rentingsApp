@@ -16,6 +16,7 @@ import pl.lodz.p.edu.grs.model.Game;
 import pl.lodz.p.edu.grs.service.GameService;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "api/games")
@@ -42,6 +43,13 @@ public class GameController {
     @ApiOperation(value = "Get games pageable")
     public Page<Game> getGames(@PageableDefault final Pageable pageable) {
         return gameService.findAll(pageable);
+    }
+
+
+    @GetMapping("/popular/{amount}")
+    @ApiOperation(value = "Get most popular games")
+    public List<Game> getGames(@PathVariable Long amount) {
+        return gameService.getMostPopular(amount);
     }
 
     @PostMapping

@@ -5,9 +5,13 @@ import org.springframework.data.domain.Pageable;
 import pl.lodz.p.edu.grs.controller.game.GameDto;
 import pl.lodz.p.edu.grs.model.Game;
 
+import java.util.List;
+
 public interface GameService {
 
     Page<Game> findAll(Pageable pageable);
+
+    List<Game> getMostPopular(Long amount);
 
     Game addGame(GameDto gameDto);
 

@@ -11,12 +11,15 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import pl.lodz.p.edu.grs.controller.game.GameDto;
 import pl.lodz.p.edu.grs.factory.GameFactory;
+import pl.lodz.p.edu.grs.model.Borrow;
 import pl.lodz.p.edu.grs.model.Category;
 import pl.lodz.p.edu.grs.model.Game;
+import pl.lodz.p.edu.grs.repository.BorrowRepository;
 import pl.lodz.p.edu.grs.repository.CategoryRepository;
 import pl.lodz.p.edu.grs.repository.GameRepository;
 import pl.lodz.p.edu.grs.service.CategoryService;
 import pl.lodz.p.edu.grs.service.GameService;
+import pl.lodz.p.edu.grs.util.BorrowUtil;
 import pl.lodz.p.edu.grs.util.CategoryUtil;
 import pl.lodz.p.edu.grs.util.GameUtil;
 
@@ -31,6 +34,9 @@ import static org.mockito.Mockito.when;
 public class GameServiceImplTest {
 
     @Mock
+    private BorrowRepository borrowRepository;
+
+    @Mock
     private GameRepository gameRepository;
 
     @Mock
@@ -43,8 +49,35 @@ public class GameServiceImplTest {
 
     @Before
     public void setUp() throws Exception {
-        this.gameService = new GameServiceImpl(gameRepository, categoryService, gameFactory);
+        this.gameService = new GameServiceImpl(gameRepository, categoryService, gameFactory, borrowRepository);
     }
+
+
+    @Test
+    public void shouldReturnMostPopularGame() throws Exception {
+        //given
+        List<Borrow> borrows = Collections.singletonList(BorrowUtil.mockBorrow());
+
+        when(borrowRepository.findAll())
+                .thenReturn(borrows);
+        when(gameRepository.getOne(borrows.get(0).getBorrowedGames().get(0).getId()))
+                .thenReturn(borrows.get(0).getBorrowedGames().get(0));
+
+        //when
+        List<Game> result = gameService.getMostPopular(1L);
+
+
+        //then
+        assertThat(result)
+                .isNotNull();
+        assertThat(result.size())
+                .isEqualTo(1);
+        assertThat(result.get(0))
+                .isEqualTo(borrows.get(0).getBorrowedGames().get(0));
+    }
+
+
+
 
     @Test
     public void shouldReturnPageOfGames() throws Exception {

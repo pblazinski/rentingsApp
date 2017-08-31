@@ -28,7 +28,7 @@ public class Borrow {
 
     @NotEmpty
     @Cascade(CascadeType.PERSIST)
-    @OneToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     private List<Game> borrowedGames;
 
     @NotNull

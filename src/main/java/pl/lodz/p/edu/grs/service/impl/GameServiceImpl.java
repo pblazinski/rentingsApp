@@ -7,19 +7,29 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import pl.lodz.p.edu.grs.controller.game.GameDto;
 import pl.lodz.p.edu.grs.factory.GameFactory;
+import pl.lodz.p.edu.grs.model.Borrow;
 import pl.lodz.p.edu.grs.model.Category;
 import pl.lodz.p.edu.grs.model.Game;
+import pl.lodz.p.edu.grs.repository.BorrowRepository;
 import pl.lodz.p.edu.grs.repository.GameRepository;
 import pl.lodz.p.edu.grs.service.CategoryService;
 import pl.lodz.p.edu.grs.service.GameService;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.*;
 
 @Slf4j
 @Service
 @Transactional
 public class GameServiceImpl implements GameService {
+
+    private final BorrowRepository borrowRepository;
 
     private final GameRepository gameRepository;
 
@@ -30,10 +40,29 @@ public class GameServiceImpl implements GameService {
     @Autowired
     public GameServiceImpl(final GameRepository gameRepository,
                            final CategoryService categoryService,
-                           final GameFactory gameFactory) {
+                           final GameFactory gameFactory,
+                           final BorrowRepository borrowRepository) {
         this.gameRepository = gameRepository;
         this.categoryService = categoryService;
         this.gameFactory = gameFactory;
+        this.borrowRepository = borrowRepository;
+    }
+
+    @Override
+    public List<Game> getMostPopular(final Long amount) {
+        List<Borrow> borrows = borrowRepository.findAll();
+        List<Long> gamesIds = new ArrayList<>();
+        borrows.forEach(borrow -> borrow.getBorrowedGames().forEach(game -> gamesIds.add(game.getId())));
+
+
+        return gamesIds.stream()
+                .collect(groupingBy(identity(), counting()))
+                .entrySet().stream()
+                .sorted(Map.Entry.<Long, Long>comparingByValue().reversed().thenComparing(Map.Entry.comparingByKey()))
+                .limit(amount)
+                .map(Map.Entry::getKey)
+                .map(gameRepository::getOne)
+                .collect(toList());
     }
 
     @Override
@@ -69,7 +98,7 @@ public class GameServiceImpl implements GameService {
     public Game updateTitleAndDescription(final Long id,
                                           final String title,
                                           final String description) {
-        if(!gameRepository.exists(id)) {
+        if (!gameRepository.exists(id)) {
             throw new EntityNotFoundException(); //TODO add tests veryfing that
         }
         Game game = gameRepository.getOne(id);
@@ -88,7 +117,7 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public Game updatePrice(final Long id, final double price) {
-        if(!gameRepository.exists(id)) {
+        if (!gameRepository.exists(id)) {
             throw new EntityNotFoundException();
         }
         Game game = gameRepository.getOne(id);
@@ -106,7 +135,7 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public Game updateAvailability(final Long id, final boolean available) {
-        if(!gameRepository.exists(id)) {
+        if (!gameRepository.exists(id)) {
             throw new EntityNotFoundException();
         }
         Game game = gameRepository.getOne(id);
@@ -124,7 +153,7 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public Game updateCategory(final Long id, final Long categoryId) {
-        if(!gameRepository.exists(id)) {
+        if (!gameRepository.exists(id)) {
             throw new EntityNotFoundException();
         }
         Game game = gameRepository.getOne(id);
@@ -144,7 +173,7 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public void remove(final Long id) {
-        if(!gameRepository.exists(id)) {
+        if (!gameRepository.exists(id)) {
             throw new EntityNotFoundException();
         }
         Game game = gameRepository.getOne(id);
@@ -157,7 +186,7 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public Game getGame(final Long id) {
-        if(!gameRepository.exists(id)) {
+        if (!gameRepository.exists(id)) {
             throw new EntityNotFoundException();
         }
         Game game = gameRepository.findOne(id);
