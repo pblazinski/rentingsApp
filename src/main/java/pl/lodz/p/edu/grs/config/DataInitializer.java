@@ -4,9 +4,8 @@ import org.springframework.stereotype.Component;
 import pl.lodz.p.edu.grs.controller.borrow.BorrowDto;
 import pl.lodz.p.edu.grs.controller.category.CategoryDto;
 import pl.lodz.p.edu.grs.controller.game.GameDto;
-import pl.lodz.p.edu.grs.controller.user.RegisterUserDTO;
 import pl.lodz.p.edu.grs.service.BorrowService;
-import pl.lodz.p.edu.grs.service.BorrowService;
+import pl.lodz.p.edu.grs.controller.user.RegisterUserDto;
 import pl.lodz.p.edu.grs.service.CategoryService;
 import pl.lodz.p.edu.grs.service.GameService;
 import pl.lodz.p.edu.grs.service.UserService;
@@ -58,17 +57,17 @@ public class DataInitializer {
     }
 
     private void mockUsers() {
-        RegisterUserDTO firstUser = new RegisterUserDTO("rafal@koper", "rafal", "koper", "password");
-        RegisterUserDTO secondUser = new RegisterUserDTO("patryk@blazinski", "Patryk", "blazinski", "password");
+        RegisterUserDto firstUser = new RegisterUserDto("rafal@koper", "rafal", "koper", "password");
+        RegisterUserDto secondUser = new RegisterUserDto("patryk@blazinski", "Patryk", "blazinski", "password");
 
         userService.registerUser(firstUser);
         userService.registerUser(secondUser);
     }
 
     private void mockAdminUser() {
-        RegisterUserDTO registerUserDTO = new RegisterUserDTO("admin@admin.com", "system", "admin", "password");
+        RegisterUserDto registerUserDto = new RegisterUserDto("admin@admin.com", "system", "admin", "password");
 
-        userService.createSystemAdmin(registerUserDTO);
+        userService.createSystemAdmin(registerUserDto);
     }
 
     private void mockCategories() {

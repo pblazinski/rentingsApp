@@ -10,7 +10,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import pl.lodz.p.edu.grs.model.user.User;
 import pl.lodz.p.edu.grs.repository.BorrowRepository;
 import pl.lodz.p.edu.grs.repository.CategoryRepository;
@@ -55,7 +54,7 @@ public class UserGETGetUsersEndpointTest {
     @Test
     public void shouldReturnPageOfUsers() throws Exception {
         //given
-        RegisterUserDTO userDTO = UserUtil.mockRegisterUserDTO();
+        RegisterUserDto userDTO = UserUtil.mockRegisterUserDTO();
         User user = userService.registerUser(userDTO);
 
         MockHttpServletRequestBuilder requestBuilder = get("/api/users/");

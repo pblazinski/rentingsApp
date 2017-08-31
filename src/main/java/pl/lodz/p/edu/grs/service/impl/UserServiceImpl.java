@@ -6,7 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import pl.lodz.p.edu.grs.controller.user.RegisterUserDTO;
+import pl.lodz.p.edu.grs.controller.user.RegisterUserDto;
 import pl.lodz.p.edu.grs.factory.UserFactory;
 import pl.lodz.p.edu.grs.model.user.Role;
 import pl.lodz.p.edu.grs.model.user.User;
@@ -58,8 +58,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User registerUser(final RegisterUserDTO registerUserDTO) {
-        User user = userFactory.createUser(registerUserDTO);
+    public User registerUser(final RegisterUserDto registerUserDto) {
+        User user = userFactory.createUser(registerUserDto);
 
         user.grant(Role.USER);
 
@@ -71,8 +71,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User createSystemAdmin(final RegisterUserDTO registerUserDTO) {
-        User user = userFactory.createUser(registerUserDTO);
+    public User createSystemAdmin(final RegisterUserDto registerUserDto) {
+        User user = userFactory.createUser(registerUserDto);
 
         user.grant(Role.SYSTEM_ADMIN);
 

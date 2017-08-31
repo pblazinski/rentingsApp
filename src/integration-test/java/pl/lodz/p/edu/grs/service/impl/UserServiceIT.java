@@ -10,7 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit4.SpringRunner;
 import pl.lodz.p.edu.grs.Application;
-import pl.lodz.p.edu.grs.controller.user.RegisterUserDTO;
+import pl.lodz.p.edu.grs.controller.user.RegisterUserDto;
 import pl.lodz.p.edu.grs.model.user.Role;
 import pl.lodz.p.edu.grs.model.user.User;
 import pl.lodz.p.edu.grs.repository.BorrowRepository;
@@ -64,7 +64,7 @@ public class UserServiceIT {
     @Test
     public void shouldReturnPageWithOneUser() {
         //given
-        RegisterUserDTO userDTO = UserUtil.mockRegisterUserDTO();
+        RegisterUserDto userDTO = UserUtil.mockRegisterUserDTO();
         User user = userService.registerUser(userDTO);
 
         //when
@@ -87,7 +87,7 @@ public class UserServiceIT {
     @Test
     public void shouldRegisterNewUser() {
         //given
-        RegisterUserDTO userDTO = UserUtil.mockRegisterUserDTO();
+        RegisterUserDto userDTO = UserUtil.mockRegisterUserDTO();
 
         //when
         User result = userService.registerUser(userDTO);
@@ -112,7 +112,7 @@ public class UserServiceIT {
     @Test
     public void shouldCreateSystemAdmin() {
         //given
-        RegisterUserDTO userDTO = UserUtil.mockRegisterUserDTO();
+        RegisterUserDto userDTO = UserUtil.mockRegisterUserDTO();
 
         //when
         User result = userService.createSystemAdmin(userDTO);
@@ -137,7 +137,7 @@ public class UserServiceIT {
     @Test(expected = ConstraintViolationException.class)
     public void shouldThrowConstraintViolationExceptionWhenRegisterUserWithBlankFirstName() {
         //given
-        RegisterUserDTO userDTO = UserUtil.mockRegisterUserDTO();
+        RegisterUserDto userDTO = UserUtil.mockRegisterUserDTO();
         userDTO.setFirstName(BLANK_VALUE);
 
         //when
@@ -149,7 +149,7 @@ public class UserServiceIT {
     @Test(expected = ConstraintViolationException.class)
     public void shouldThrowConstraintViolationExceptionWhenRegisterUserWithBlankLastName() {
         //given
-        RegisterUserDTO userDTO = UserUtil.mockRegisterUserDTO();
+        RegisterUserDto userDTO = UserUtil.mockRegisterUserDTO();
         userDTO.setLastName(BLANK_VALUE);
 
         //when
@@ -161,7 +161,7 @@ public class UserServiceIT {
     @Test(expected = ConstraintViolationException.class)
     public void shouldThrowConstraintViolationExceptionWhenRegisterUserWithNotValidEmail() {
         //given
-        RegisterUserDTO userDTO = UserUtil.mockRegisterUserDTO();
+        RegisterUserDto userDTO = UserUtil.mockRegisterUserDTO();
         userDTO.setEmail("aaaa@");
 
         //when
@@ -172,7 +172,7 @@ public class UserServiceIT {
     @Test
     public void shouldRemoveUser() {
         //given
-        RegisterUserDTO userDTO = UserUtil.mockRegisterUserDTO();
+        RegisterUserDto userDTO = UserUtil.mockRegisterUserDTO();
         User user = userService.registerUser(userDTO);
         Long userId = user.getId();
 
@@ -188,7 +188,7 @@ public class UserServiceIT {
     @Test
     public void shouldUpdateEmail() {
         //given
-        RegisterUserDTO userDTO = UserUtil.mockRegisterUserDTO();
+        RegisterUserDto userDTO = UserUtil.mockRegisterUserDTO();
         User user = userService.registerUser(userDTO);
         Long userId = user.getId();
         String email = "new@email.com";
@@ -205,7 +205,7 @@ public class UserServiceIT {
     @Test
     public void shouldUpdateNames() {
         //given
-        RegisterUserDTO userDTO = UserUtil.mockRegisterUserDTO();
+        RegisterUserDto userDTO = UserUtil.mockRegisterUserDTO();
         User user = userService.registerUser(userDTO);
         Long userId = user.getId();
         String firstName = "First";
@@ -226,7 +226,7 @@ public class UserServiceIT {
     @Test
     public void shouldUpdatePassword() {
         //given
-        RegisterUserDTO userDTO = UserUtil.mockRegisterUserDTO();
+        RegisterUserDto userDTO = UserUtil.mockRegisterUserDTO();
         User user = userService.registerUser(userDTO);
         Long userId = user.getId();
         String password = user.getPassword();
@@ -243,7 +243,7 @@ public class UserServiceIT {
     @Test
     public void shouldThrowConstraintViolationExceptionWhenUpdateEmailWithNotValidEmail() {
         //given
-        RegisterUserDTO userDTO = UserUtil.mockRegisterUserDTO();
+        RegisterUserDto userDTO = UserUtil.mockRegisterUserDTO();
         User user = userService.registerUser(userDTO);
         Long userId = user.getId();
         String email = "new@";
@@ -260,7 +260,7 @@ public class UserServiceIT {
     @Test
     public void shouldThrowConstraintViolationExceptionWhenUpdateNamesWithBlankFirstName() {
         //given
-        RegisterUserDTO userDTO = UserUtil.mockRegisterUserDTO();
+        RegisterUserDto userDTO = UserUtil.mockRegisterUserDTO();
         User user = userService.registerUser(userDTO);
         Long userId = user.getId();
 
@@ -276,7 +276,7 @@ public class UserServiceIT {
     @Test
     public void shouldThrowConstraintViolationExceptionWhenUpdateNamesWithBlankLastName() {
         //given
-        RegisterUserDTO userDTO = UserUtil.mockRegisterUserDTO();
+        RegisterUserDto userDTO = UserUtil.mockRegisterUserDTO();
         User user = userService.registerUser(userDTO);
         Long userId = user.getId();
 
@@ -332,7 +332,7 @@ public class UserServiceIT {
     @Test
     public void shouldReturnUserWhenExists() {
         //given
-        RegisterUserDTO userDTO = UserUtil.mockRegisterUserDTO();
+        RegisterUserDto userDTO = UserUtil.mockRegisterUserDTO();
         User user = userService.registerUser(userDTO);
 
         //when

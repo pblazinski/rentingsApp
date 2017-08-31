@@ -122,7 +122,7 @@ public class UserPUTUpdatePasswordEndpointTest {
     @Test
     public void shouldReturnForbiddenWhenNotOwner() throws Exception {
         //given
-        RegisterUserDTO userDTO = UserUtil.mockRegisterUserDTO();
+        RegisterUserDto userDTO = UserUtil.mockRegisterUserDTO();
         userDTO.setEmail("other@email");
         User user = userService.registerUser(userDTO);
 

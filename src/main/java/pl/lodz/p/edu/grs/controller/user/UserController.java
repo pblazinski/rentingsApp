@@ -29,15 +29,14 @@ public class UserController {
     //TODO handle not found for update method and remove
     private final UserService userService;
 
-    @Autowired
     public UserController(final UserService userService) {
         this.userService = userService;
     }
 
     @PostMapping
     @ApiOperation("Register new user")
-    public User registerUser(@RequestBody @Valid final RegisterUserDTO registerUserDTO) {
-        return userService.registerUser(registerUserDTO);
+    public User registerUser(@RequestBody @Valid final RegisterUserDto registerUserDto) {
+        return userService.registerUser(registerUserDto);
     }
 
     @GetMapping

@@ -6,7 +6,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import pl.lodz.p.edu.grs.controller.user.RegisterUserDTO;
+import pl.lodz.p.edu.grs.controller.user.RegisterUserDto;
 import pl.lodz.p.edu.grs.model.user.User;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,12 +37,12 @@ public class UserFactoryTest {
     @Test
     public void shouldCreateUserObject() throws Exception {
         //given
-        RegisterUserDTO registerUserDTO = new RegisterUserDTO(EMAIL, FIRST_NAME, LAST_NAME, PASSWORD);
+        RegisterUserDto registerUserDto = new RegisterUserDto(EMAIL, FIRST_NAME, LAST_NAME, PASSWORD);
 
         when(passwordEncoder.encode(PASSWORD))
                 .thenReturn(PASSWORD);
         //when
-        User result = userFactory.createUser(registerUserDTO);
+        User result = userFactory.createUser(registerUserDto);
 
         //then
         verify(passwordEncoder)
@@ -66,14 +66,14 @@ public class UserFactoryTest {
     @Test
     public void shouldCreateTwoDifferentObject() throws Exception {
         //given
-        RegisterUserDTO registerUserDTO = new RegisterUserDTO(EMAIL, FIRST_NAME, LAST_NAME, PASSWORD);
+        RegisterUserDto registerUserDto = new RegisterUserDto(EMAIL, FIRST_NAME, LAST_NAME, PASSWORD);
 
         when(passwordEncoder.encode(PASSWORD))
                 .thenReturn(PASSWORD);
-        User user = userFactory.createUser(registerUserDTO);
+        User user = userFactory.createUser(registerUserDto);
 
         //when
-        User result = userFactory.createUser(registerUserDTO);
+        User result = userFactory.createUser(registerUserDto);
 
         //then
         assertThat(result)

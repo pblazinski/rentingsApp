@@ -1,11 +1,10 @@
 package pl.lodz.p.edu.grs.util;
 
-import pl.lodz.p.edu.grs.controller.user.RegisterUserDTO;
+import pl.lodz.p.edu.grs.controller.user.RegisterUserDto;
 import pl.lodz.p.edu.grs.model.user.Role;
 import pl.lodz.p.edu.grs.model.user.User;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 
 public class UserUtil {
@@ -35,8 +34,8 @@ public class UserUtil {
 
     }
 
-    public static RegisterUserDTO mockRegisterUserDTO() {
-        return new RegisterUserDTO(EMAIL, FIRST_NAME, LAST_NAME, PASSWORD);
+    public static RegisterUserDto mockRegisterUserDTO() {
+        return new RegisterUserDto(EMAIL, FIRST_NAME, LAST_NAME, PASSWORD);
     }
 
     public static User mockUser() {

@@ -59,7 +59,7 @@ public class UserPOSTRegisterUserEndpointTest {
     @Test
     public void shouldReturnOkStatusWhenRegisterUser() throws Exception {
         //given
-        RegisterUserDTO userDTO = UserUtil.mockRegisterUserDTO();
+        RegisterUserDto userDTO = UserUtil.mockRegisterUserDTO();
 
         String content = objectMapper.writeValueAsString(userDTO);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/api/users/")
@@ -91,7 +91,7 @@ public class UserPOSTRegisterUserEndpointTest {
     @Test
     public void shouldReturnBadRequestWhenRegisterUserWithInvalidEmail() throws Exception {
         //given
-        RegisterUserDTO userDTO = UserUtil.mockRegisterUserDTO();
+        RegisterUserDto userDTO = UserUtil.mockRegisterUserDTO();
         userDTO.setEmail("eee");
 
         String content = objectMapper.writeValueAsString(userDTO);
@@ -110,7 +110,7 @@ public class UserPOSTRegisterUserEndpointTest {
     @Test
     public void shouldReturnBadRequestWhenRegisterUserWithBlankFirstName() throws Exception {
         //given
-        RegisterUserDTO userDTO = UserUtil.mockRegisterUserDTO();
+        RegisterUserDto userDTO = UserUtil.mockRegisterUserDTO();
         userDTO.setFirstName(BLANK_VALUE);
 
         String content = objectMapper.writeValueAsString(userDTO);
@@ -129,7 +129,7 @@ public class UserPOSTRegisterUserEndpointTest {
     @Test
     public void shouldReturnBadRequestWhenRegisterUserWithBlankLastName() throws Exception {
         //given
-        RegisterUserDTO userDTO = UserUtil.mockRegisterUserDTO();
+        RegisterUserDto userDTO = UserUtil.mockRegisterUserDTO();
         userDTO.setLastName(BLANK_VALUE);
 
         String content = objectMapper.writeValueAsString(userDTO);
@@ -148,7 +148,7 @@ public class UserPOSTRegisterUserEndpointTest {
     @Test
     public void shouldReturnBadRequestWhenRegisterUserWithBlankPassword() throws Exception {
         //given
-        RegisterUserDTO userDTO = UserUtil.mockRegisterUserDTO();
+        RegisterUserDto userDTO = UserUtil.mockRegisterUserDTO();
         userDTO.setPassword(BLANK_VALUE);
 
         String content = objectMapper.writeValueAsString(userDTO);
