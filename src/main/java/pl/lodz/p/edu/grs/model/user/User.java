@@ -18,6 +18,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -49,6 +50,10 @@ public class User {
     @Column(nullable = false)
     private String lastName;
 
+    @NotNull
+    @Column(nullable = false)
+    public boolean active;
+
     @OneToMany(fetch = FetchType.LAZY)
     private List<Game> borrowed;
 
@@ -76,6 +81,10 @@ public class User {
 
     public void updateEmail(final String email) {
         this.email = email;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     public void grant(final Role role) {

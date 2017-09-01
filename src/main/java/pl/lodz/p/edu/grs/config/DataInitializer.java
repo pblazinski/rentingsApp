@@ -88,7 +88,6 @@ public class DataInitializer {
 
 
         Borrow borrow = borrowService.addBorrow(borrowDto, "rafal@koper");
-        borrowService.updateReturnTime(borrow.getId());
         borrowService.addBorrow(borrowDto2, "rafal@koper");
         borrowService.addBorrow(borrowDto3, "rafal@koper");
     }

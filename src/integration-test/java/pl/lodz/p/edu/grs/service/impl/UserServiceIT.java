@@ -349,5 +349,27 @@ public class UserServiceIT {
                 .isEqualTo(user.getEmail());
     }
 
+    @Test
+    public void shouldBlockUser() {
+        //given
+        RegisterUserDto userDTO = UserUtil.mockRegisterUserDTO();
+        User user = userService.registerUser(userDTO);
+
+        //when
+        userService.blockUser(user.getId());
+
+        //then
+        User check = userRepository.findOne(user.getId());
+
+        assertThat(user.getId())
+                .isEqualTo(check.getId());
+        assertThat(user.isActive())
+                .isNotNull()
+                .isTrue();
+        assertThat(check.isActive())
+                .isFalse();
+
+    }
+
 }
 

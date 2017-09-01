@@ -6,11 +6,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import pl.lodz.p.edu.grs.model.Borrow;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
 public interface BorrowRepository extends JpaRepository<Borrow, Long> {
 
     Page<Borrow> findBorrowsByUser_Email(Pageable pageable, String email);
+
+    List<Borrow> findBorrowsByTimeBack(LocalDateTime time);
 
 }
