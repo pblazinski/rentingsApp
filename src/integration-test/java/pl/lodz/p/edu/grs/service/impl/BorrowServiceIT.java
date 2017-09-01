@@ -31,6 +31,7 @@ import pl.lodz.p.edu.grs.util.UserUtil;
 
 import javax.persistence.EntityNotFoundException;
 import javax.validation.ConstraintViolationException;
+import java.util.Arrays;
 import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -62,6 +63,8 @@ public class BorrowServiceIT {
 
     @Autowired
     private CategoryService categoryService;
+
+    public static final double DISCOUNT = 0.9;
 
     @After
     public void setUp() throws Exception {
@@ -146,7 +149,7 @@ public class BorrowServiceIT {
     }
 
     @Test
-    public void shouldAddBorrow() throws Exception {
+    public void shouldAddBorrowAndSetGameNotAvailableAndDiscountPrice() throws Exception {
         //given
         Category category = categoryService.addCategory(CategoryUtil.mockCategoryDto());
 
@@ -158,17 +161,42 @@ public class BorrowServiceIT {
         gameDto.setCategoryId(category.getId());
 
         Game game = gameService.addGame(gameDto);
+        Game game1 = gameService.addGame(new GameDto("1","1",true,20.99,category.getId()));
+        Game game2 = gameService.addGame(new GameDto("2","1",true,20.99,category.getId()));
+        Game game3 = gameService.addGame(new GameDto("3","1",true,20.99,category.getId()));
+        Game game4 = gameService.addGame(new GameDto("4","1",true,20.99,category.getId()));
+        Game game5 = gameService.addGame(new GameDto("5","1",true,20.99,category.getId()));
+        Game game6 = gameService.addGame(new GameDto("6","1",true,20.99,category.getId()));
+        Game game7 = gameService.addGame(new GameDto("7","1",true,20.99,category.getId()));
+        Game game8 = gameService.addGame(new GameDto("8","1",true,20.99,category.getId()));
+        Game game9 = gameService.addGame(new GameDto("9","1",true,20.99,category.getId()));
+        Game game10 = gameService.addGame(new GameDto("10","1",true,20.99,category.getId()));
+
+        borrowService.addBorrow(new BorrowDto(Arrays.asList(game.getId())), registerUserDTO.getEmail());
+        borrowService.addBorrow(new BorrowDto(Arrays.asList(game1.getId())), registerUserDTO.getEmail());
+        borrowService.addBorrow(new BorrowDto(Arrays.asList(game2.getId())), registerUserDTO.getEmail());
+        borrowService.addBorrow(new BorrowDto(Arrays.asList(game3.getId())), registerUserDTO.getEmail());
+        borrowService.addBorrow(new BorrowDto(Arrays.asList(game4.getId())), registerUserDTO.getEmail());
+        borrowService.addBorrow(new BorrowDto(Arrays.asList(game5.getId())), registerUserDTO.getEmail());
+        borrowService.addBorrow(new BorrowDto(Arrays.asList(game6.getId())), registerUserDTO.getEmail());
+        borrowService.addBorrow(new BorrowDto(Arrays.asList(game7.getId())), registerUserDTO.getEmail());
+        borrowService.addBorrow(new BorrowDto(Arrays.asList(game8.getId())), registerUserDTO.getEmail());
+        borrowService.addBorrow(new BorrowDto(Arrays.asList(game9.getId())), registerUserDTO.getEmail());
+
 
         //when
-        Borrow result = borrowService.addBorrow(new BorrowDto(Collections.singletonList(game.getId())), registerUserDTO.getEmail());
+        Borrow result = borrowService
+                .addBorrow(new BorrowDto(Arrays.asList(game10.getId())), registerUserDTO.getEmail());
 
         //then
         assertThat(result.getBorrowedGames().get(0).getId())
-                .isEqualTo(game.getId());
+                .isEqualTo(game10.getId());
         assertThat(result.getUser().getEmail())
                 .isEqualTo(user.getEmail());
+        assertThat(result.getBorrowedGames().get(0).isAvailable())
+                .isEqualTo(false);
         assertThat(result.getTotalPrice())
-                .isEqualTo(game.getPrice());
+                .isEqualTo(game10.getPrice() * DISCOUNT);
     }
 
     @Test(expected = ConstraintViolationException.class)

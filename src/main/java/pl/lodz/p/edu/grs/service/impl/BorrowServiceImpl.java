@@ -3,6 +3,7 @@ package pl.lodz.p.edu.grs.service.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import pl.lodz.p.edu.grs.controller.borrow.BorrowDto;
@@ -33,6 +34,8 @@ public class BorrowServiceImpl implements BorrowService {
     private final UserService userService;
 
     private final BorrowFactory borrowFactory;
+
+    private static final double DISCOUNT = 0.9;
 
     @Autowired
     public BorrowServiceImpl(final BorrowRepository borrowRepository,
@@ -66,7 +69,7 @@ public class BorrowServiceImpl implements BorrowService {
 
     @Override
     public Borrow getBorrow(final Long id) {
-        if(!borrowRepository.exists(id)) {
+        if (!borrowRepository.exists(id)) {
             throw new EntityNotFoundException("Borrow entity not found");
         }
 
@@ -79,7 +82,7 @@ public class BorrowServiceImpl implements BorrowService {
 
     @Override
     public Borrow updatePenalties(final double value, final Long id) {
-        if(!borrowRepository.exists(id)) {
+        if (!borrowRepository.exists(id)) {
             throw new EntityNotFoundException("Borrow entity not found");
         }
         Borrow borrow = borrowRepository.findOne(id);
@@ -102,7 +105,12 @@ public class BorrowServiceImpl implements BorrowService {
 
         Borrow borrow = borrowFactory.create(borrowedGames, user);
 
-        borrow.getBorrowedGames().forEach( game -> game.updateAvailability(false));
+        borrow.getBorrowedGames().forEach(game -> game.updateAvailability(false));
+
+        if (borrowRepository.findBorrowsByUser_Email(new PageRequest(0, 20), user.getEmail()).getTotalElements() >= 10) {
+            borrow.setTotalPrice(borrow.getTotalPrice() * DISCOUNT);
+            log.info("Discount for user <{}> and borrow <{}>", user.getId(), borrow.getId());
+        }
 
         borrow = borrowRepository.save(borrow);
 
@@ -113,7 +121,7 @@ public class BorrowServiceImpl implements BorrowService {
 
     @Override
     public void removeBorrow(final Long id) {
-        if(!borrowRepository.exists(id)) {
+        if (!borrowRepository.exists(id)) {
             throw new EntityNotFoundException();
         }
         borrowRepository.delete(id);
@@ -123,19 +131,19 @@ public class BorrowServiceImpl implements BorrowService {
 
     @Override
     public Borrow updateReturnTime(Long id) {
-        if(!borrowRepository.exists(id)) {
+        if (!borrowRepository.exists(id)) {
             throw new EntityNotFoundException();
         }
         LocalDateTime localDateTime = LocalDateTime.now();
 
         Borrow borrow = borrowRepository.findOne(id);
 
-        borrow.getBorrowedGames().forEach( game -> game.updateAvailability(true));
+        borrow.getBorrowedGames().forEach(game -> game.updateAvailability(true));
 
         borrow.setTimeBack(localDateTime);
 
         borrow = borrowRepository.save(borrow);
-        log.info("Returned borrow <{}> with <{}>  at", id , borrow.getBorrowedGames().size(), borrow.getTimeBack());
+        log.info("Returned borrow <{}> with <{}>  at", id, borrow.getBorrowedGames().size(), borrow.getTimeBack());
 
         return borrow;
     }
