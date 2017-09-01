@@ -23,6 +23,7 @@ import pl.lodz.p.edu.grs.util.GameUtil;
 import pl.lodz.p.edu.grs.util.UserUtil;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -45,6 +46,8 @@ public class BorrowServiceImplTest {
     private BorrowFactory borrowFactory;
 
     private BorrowService borrowService;
+
+    private static final double DISCOUNT = 0.9;
 
     @Before
     public void setUp() throws Exception {
@@ -105,13 +108,19 @@ public class BorrowServiceImplTest {
     }
 
     @Test
-    public void shouldAddBorrowAndSetGamesNotAvailable() throws Exception {
+    public void shouldAddBorrowAndSetGamesNotAvailableAndDiscoutGames() throws Exception {
         //given
         Borrow borrow = BorrowUtil.mockBorrow();
         User user = UserUtil.mockUser();
         Game game = GameUtil.mockGame();
         borrow.setBorrowedGames(Collections.singletonList(game));
         borrow.setUser(user);
+
+        List<Borrow> borrows = Arrays.asList(borrow, borrow, borrow, borrow, borrow, borrow, borrow, borrow, borrow, borrow, borrow, borrow, borrow, borrow);
+        PageImpl<Borrow> borrowsPage = new PageImpl<>(borrows);
+
+        when(borrowRepository.findBorrowsByUser_Email(new PageRequest(0, 20), user.getEmail()))
+                .thenReturn(borrowsPage);
         when(borrowFactory.create(Collections.singletonList(game), user))
                 .thenReturn(borrow);
         when(userService.findByEmail(UserUtil.EMAIL))
@@ -130,6 +139,8 @@ public class BorrowServiceImplTest {
 
         assertThat(result.getBorrowedGames().get(0).isAvailable())
                 .isEqualTo(false);
+        assertThat(result.getTotalPrice())
+                .isEqualTo(BorrowUtil.mockBorrow().getTotalPrice() * DISCOUNT);
 
     }
 
