@@ -47,6 +47,8 @@ public class BorrowServiceImplTest {
 
     private BorrowService borrowService;
 
+    private static final double DISCOUNT = 0.9;
+
     @Before
     public void setUp() throws Exception {
         borrowRepository = mock(BorrowRepository.class);
@@ -138,7 +140,7 @@ public class BorrowServiceImplTest {
         assertThat(result.getBorrowedGames().get(0).isAvailable())
                 .isEqualTo(false);
         assertThat(result.getTotalPrice())
-                .isEqualTo(BorrowUtil.mockBorrow().getTotalPrice() * 0.9);
+                .isEqualTo(BorrowUtil.mockBorrow().getTotalPrice() * DISCOUNT);
 
     }
 

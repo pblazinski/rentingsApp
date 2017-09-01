@@ -66,6 +66,8 @@ public class BorrowPOSTAddBorrowEnpointTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    private static final double DISCOUNT = 0.9;
+
     private User user;
 
     @Before
@@ -179,7 +181,7 @@ public class BorrowPOSTAddBorrowEnpointTest {
                 .andExpect(jsonPath("$.borrowedGames[0].category.name").exists())
                 .andExpect(jsonPath("$.borrowedGames[0].category.name").value(game10.getCategory().getName()))
                 .andExpect(jsonPath("$.totalPrice").exists())
-                .andExpect(jsonPath("$.totalPrice").value(game10.getPrice() * 0.9));
+                .andExpect(jsonPath("$.totalPrice").value(game10.getPrice() * DISCOUNT));
     }
     private long getIdFromContentBodyJson(final String content) throws JSONException {
         JSONObject jsonObject = new JSONObject(content);
