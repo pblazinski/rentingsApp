@@ -238,26 +238,4 @@ public class BorrowServiceImplTest {
         assertThat(result.getTimeBack())
                 .isNotNull();
     }
-
-    @Test
-    public void shouldSetBorrowPenaltyForReturnedAfterTimeGame() {
-        //given
-        Borrow borrow = BorrowUtil.mockBorrow();
-        borrow.setDeadline(LocalDateTime.now().minusDays(5));
-        List<Borrow> borrows = Collections.singletonList(borrow);
-
-        when(borrowRepository.findBorrowsByTimeBack(null))
-                .thenReturn(borrows);
-        when(borrowRepository.save(borrow))
-                .thenReturn(borrow);
-
-        //when
-        borrowService.countPenaltiesScheduler();
-
-        //then
-        verify(borrowRepository)
-                .findBorrowsByTimeBack(null);
-        verify(borrowRepository)
-                .save(borrow);
-    }
 }

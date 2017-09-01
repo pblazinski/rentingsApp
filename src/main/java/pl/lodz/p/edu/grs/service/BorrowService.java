@@ -24,6 +24,4 @@ public interface BorrowService {
     void removeBorrow(Long id);
 
     Borrow updateReturnTime(Long id);
-
-    void countPenaltiesScheduler();
 }
