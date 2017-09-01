@@ -25,4 +25,6 @@ public interface UserService {
     User updateEmail(long userId, String email);
 
     User findByEmail(String email);
+
+    void blockUser(long userId);
 }

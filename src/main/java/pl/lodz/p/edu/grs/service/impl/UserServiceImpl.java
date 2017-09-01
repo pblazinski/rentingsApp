@@ -62,7 +62,7 @@ public class UserServiceImpl implements UserService {
         User user = userFactory.createUser(registerUserDto);
 
         user.grant(Role.USER);
-
+        user.setActive(true);
         user = userRepository.save(user);
 
         log.info("Register user <{}> with email <{}>", user.getId(), user.getEmail());
@@ -142,13 +142,28 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findByEmail(String email) {
+    public User findByEmail(final String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException(String.format("Email: %s not found.", email)));
 
         log.info("Found user with email <{}>", user.getEmail());
 
         return user;
+    }
+
+    @Override
+    public void blockUser(final long userId) {
+        if(!userRepository.exists(userId)){
+            throw new EntityNotFoundException();
+        }
+
+        User user = userRepository.findOne(userId);
+
+        user.setActive(false);
+
+        userRepository.save(user);
+
+        log.info("Blocked user <{}>", user.getId());
     }
 
 }

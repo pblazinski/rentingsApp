@@ -44,6 +44,7 @@ public class UserUtil {
                 PASSWORD,
                 FIRST_NAME,
                 LAST_NAME,
+                true,
                 null,
                 new HashSet<>(Arrays.asList(Role.USER))
         );

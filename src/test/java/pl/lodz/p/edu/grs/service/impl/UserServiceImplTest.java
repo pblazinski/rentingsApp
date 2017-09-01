@@ -280,4 +280,25 @@ public class UserServiceImplTest {
         //when
         userService.findOne(UserUtil.USER_ID);
     }
+
+    @Test
+    public void shouldBlockUser() throws Exception {
+        //given
+        User user = UserUtil.mockUser();
+        when(userRepository.exists(user.getId()))
+                .thenReturn(true);
+        when(userRepository.findOne(user.getId()))
+                .thenReturn(user);
+
+        //then
+        userService.blockUser(user.getId());
+
+        //then
+        verify(userRepository)
+                .exists(user.getId());
+        verify(userRepository)
+                .findOne(user.getId());
+        verify(userRepository)
+                .save(user);
+    }
 }
