@@ -1,6 +1,5 @@
 package pl.lodz.p.edu.grs.model.game;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import javax.persistence.Embeddable;

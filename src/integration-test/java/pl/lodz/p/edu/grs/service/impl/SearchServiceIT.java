@@ -36,7 +36,7 @@ public class SearchServiceIT {
     public void setUp() throws Exception {
         gameRepository.deleteAll();
         categories = StubHelper.stubCategories();
-        List<GameDto> games = StubHelper.stubGames();
+        List<Game> games = StubHelper.stubGames();
     }
 
     @Test

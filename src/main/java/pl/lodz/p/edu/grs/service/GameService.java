@@ -28,5 +28,5 @@ public interface GameService {
 
     Game getGame(Long id);
 
-    Game addRate(long userId, RateDto rateDto, final String email);
+    Game addRate(long gameId, RateDto rateDto, final String email);
 }
