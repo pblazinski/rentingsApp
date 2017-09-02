@@ -120,7 +120,7 @@ public class BorrowServiceImplTest {
         List<Borrow> borrows = Arrays.asList(borrow, borrow, borrow, borrow, borrow, borrow, borrow, borrow, borrow, borrow, borrow, borrow, borrow, borrow);
         PageImpl<Borrow> borrowsPage = new PageImpl<>(borrows);
 
-        when(borrowRepository.findBorrowsByUser_Email(new PageRequest(0, 20), user.getEmail()))
+        when(borrowRepository.findBorrowsByUserEmail(new PageRequest(0, 20), user.getEmail()))
                 .thenReturn(borrowsPage);
         when(borrowFactory.create(Collections.singletonList(game), user))
                 .thenReturn(borrow);

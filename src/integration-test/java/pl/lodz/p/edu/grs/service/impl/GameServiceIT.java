@@ -1,5 +1,6 @@
 package pl.lodz.p.edu.grs.service.impl;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -491,5 +492,47 @@ public class GameServiceIT {
         assertThat(throwable)
                 .isInstanceOf(GameAddRateException.class)
                 .hasMessage("User cannot add rate for game which not borrow.");
+    }
+
+    @Test
+    public void shouldThrowConstraintViolationExceptionWhenAddRateWithTooBigRate() {
+        //given
+        Borrow borrow = StubHelper.stubBorrow();
+        RateDto rateDto = RateDto.builder()
+                .rate(11)
+                .comment("It's a comment.")
+                .build();
+        User user = borrow.getUser();
+        Game game = borrow.getBorrowedGames().get(0);
+
+        //when
+        Throwable throwable = catchThrowable(() -> gameService.addRate(game.getId(), rateDto, user.getEmail()));
+
+        //then
+        Throwable rootCause = ExceptionUtils.getRootCause(throwable);
+
+        assertThat(rootCause)
+                .isInstanceOf(ConstraintViolationException.class);
+    }
+
+    @Test
+    public void shouldThrowConstraintViolationExceptionWhenAddRateWithTooLongComment() {
+        //given
+        Borrow borrow = StubHelper.stubBorrow();
+        RateDto rateDto = RateDto.builder()
+                .rate(1)
+                .comment(StringUtils.repeat("a", 256))
+                .build();
+        User user = borrow.getUser();
+        Game game = borrow.getBorrowedGames().get(0);
+
+        //when
+        Throwable throwable = catchThrowable(() -> gameService.addRate(game.getId(), rateDto, user.getEmail()));
+
+        //then
+        Throwable rootCause = ExceptionUtils.getRootCause(throwable);
+
+        assertThat(rootCause)
+                .isInstanceOf(ConstraintViolationException.class);
     }
 }

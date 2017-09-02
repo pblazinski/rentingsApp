@@ -45,6 +45,12 @@ public class StubHelper {
         return userService.registerUser(userDTO);
     }
 
+    public static User stubSecondUser() {
+        RegisterUserDto userDto = UserUtil.mockRegisterUserDTO();
+        userDto.setEmail(UserUtil.EMAIL2);
+        return userService.registerUser(userDto);
+    }
+
     public static List<Game> stubGames() {
         GameDto game = new GameDto("Quake", "FPS bestseller", true, 80, categories.get(0).getId());
         GameDto game1 = new GameDto("H1Z1: King Of The Kill", "Battle Royale", true, 120, categories.get(1).getId());

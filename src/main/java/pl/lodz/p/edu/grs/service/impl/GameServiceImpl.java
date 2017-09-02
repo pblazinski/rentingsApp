@@ -35,14 +35,9 @@ import static java.util.stream.Collectors.toList;
 @Transactional
 public class GameServiceImpl implements GameService {
 
-    //TODO add mising test for addRate
-
     private final BorrowRepository borrowRepository;
-
     private final GameRepository gameRepository;
-
     private final CategoryService categoryService;
-
     private final GameFactory gameFactory;
 
     @Autowired

@@ -107,7 +107,7 @@ public class BorrowServiceImpl implements BorrowService {
 
         borrow.getBorrowedGames().forEach(game -> game.updateAvailability(false));
 
-        if (borrowRepository.findBorrowsByUser_Email(new PageRequest(0, 20), user.getEmail()).getTotalElements() >= 10) {
+        if (borrowRepository.findBorrowsByUserEmail(new PageRequest(0, 20), user.getEmail()).getTotalElements() >= 10) {
             borrow.setTotalPrice(borrow.getTotalPrice() * DISCOUNT);
             log.info("Discount for user <{}> and borrow <{}>", user.getId(), borrow.getId());
         }

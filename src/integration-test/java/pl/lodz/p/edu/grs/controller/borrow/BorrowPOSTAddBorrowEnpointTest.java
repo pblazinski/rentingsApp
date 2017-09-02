@@ -33,6 +33,7 @@ import pl.lodz.p.edu.grs.util.CategoryUtil;
 import pl.lodz.p.edu.grs.util.GameUtil;
 import pl.lodz.p.edu.grs.util.StubHelper;
 
+import java.util.Arrays;
 import java.util.Iterator;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;

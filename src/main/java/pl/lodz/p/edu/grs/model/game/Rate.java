@@ -4,7 +4,9 @@ import lombok.Getter;
 
 import javax.persistence.Embeddable;
 import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Embeddable
 @Getter
@@ -12,8 +14,10 @@ public class Rate {
 
     @NotNull
     private Long userId;
+    @Min(1)
     @Max(10)
     private Long rate;
+    @Size(max = 255)
     private String comment;
 
     protected Rate() {
