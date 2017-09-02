@@ -34,7 +34,7 @@ public class PenaltyScheduler {
 
         for (Borrow borrow : borrowsUnReturned) {
             if (borrow.getDeadline().isBefore(now)) {
-                borrow.setPenalties(borrow.getPenalties() + borrow.getTotalPrice() * PENALTY);
+                borrow.updatePenalties(borrow.getPenalties() + borrow.getTotalPrice() * PENALTY);
 
                 if (borrow.getPenalties() == borrow.getTotalPrice() * 0.75) {
                     userService.blockUser(borrow.getId());

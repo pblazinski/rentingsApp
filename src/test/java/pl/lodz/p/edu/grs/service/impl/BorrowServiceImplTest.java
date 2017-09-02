@@ -87,7 +87,7 @@ public class BorrowServiceImplTest {
         Pageable pageable = new PageRequest(0, 10);
         Borrow borrow = new Borrow();
         User user = UserUtil.mockUser();
-        borrow.setUser(user);
+        borrow.updateUser(user);
         List<Borrow> borrows = Collections.singletonList(borrow);
         PageImpl<Borrow> borrowsPage = new PageImpl<>(borrows);
 
@@ -114,8 +114,8 @@ public class BorrowServiceImplTest {
         Borrow borrow = BorrowUtil.mockBorrow();
         User user = UserUtil.mockUser();
         Game game = GameUtil.mockGame();
-        borrow.setBorrowedGames(Collections.singletonList(game));
-        borrow.setUser(user);
+        borrow.updateBorrowedGames(Arrays.asList(game));
+        borrow.updateUser(user);
 
         List<Borrow> borrows = Arrays.asList(borrow, borrow, borrow, borrow, borrow, borrow, borrow, borrow, borrow, borrow, borrow, borrow, borrow, borrow);
         PageImpl<Borrow> borrowsPage = new PageImpl<>(borrows);

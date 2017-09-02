@@ -4,8 +4,8 @@ import pl.lodz.p.edu.grs.controller.borrow.BorrowDto;
 import pl.lodz.p.edu.grs.model.Borrow;
 import pl.lodz.p.edu.grs.model.game.Game;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 
 
 public class BorrowUtil {
@@ -15,7 +15,7 @@ public class BorrowUtil {
     public static Borrow mockBorrow() {
         Game game = GameUtil.mockGame();
         return Borrow.builder()
-                .borrowedGames(Collections.singletonList(game))
+                .borrowedGames(new ArrayList<>(Arrays.asList(game)))
                 .penalties(0)
                 .totalPrice(game.getPrice())
                 .id(1L)

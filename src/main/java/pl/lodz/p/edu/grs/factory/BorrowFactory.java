@@ -11,8 +11,8 @@ import java.util.List;
 public class BorrowFactory {
 
     public Borrow create(List<Game> borrowed, User user) {
-       Borrow borrow = new Borrow(borrowed, user);
-       borrow.setTotalPrice(borrowed.stream().mapToDouble(Game::getPrice).sum());
-       return borrow;
+        Borrow borrow = new Borrow(borrowed, user);
+        borrow.updateTotalPrice(borrowed.stream().mapToDouble(Game::getPrice).sum());
+        return borrow;
     }
 }

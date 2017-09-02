@@ -87,7 +87,7 @@ public class BorrowServiceImpl implements BorrowService {
         }
         Borrow borrow = borrowRepository.findOne(id);
 
-        borrow.setPenalties(value);
+        borrow.updatePenalties(value);
 
         log.info("Updated borrow <{}> with value <{}>", borrow.getId(), value);
 
@@ -108,7 +108,7 @@ public class BorrowServiceImpl implements BorrowService {
         borrow.getBorrowedGames().forEach(game -> game.updateAvailability(false));
 
         if (borrowRepository.findBorrowsByUserEmail(new PageRequest(0, 20), user.getEmail()).getTotalElements() >= 10) {
-            borrow.setTotalPrice(borrow.getTotalPrice() * DISCOUNT);
+            borrow.updateTotalPrice(borrow.getTotalPrice() * DISCOUNT);
             log.info("Discount for user <{}> and borrow <{}>", user.getId(), borrow.getId());
         }
 
@@ -140,7 +140,7 @@ public class BorrowServiceImpl implements BorrowService {
 
         borrow.getBorrowedGames().forEach(game -> game.updateAvailability(true));
 
-        borrow.setTimeBack(localDateTime);
+        borrow.updateTimeBack(localDateTime);
 
         borrow = borrowRepository.save(borrow);
         log.info("Returned borrow <{}> with <{}>  at", id, borrow.getBorrowedGames().size(), borrow.getTimeBack());

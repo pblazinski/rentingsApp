@@ -74,7 +74,7 @@ public class Game {
     }
 
     @PrePersist
-    public void setDate() {
+    private void setDate() {
         this.createdAt = LocalDateTime.now();
     }
 
