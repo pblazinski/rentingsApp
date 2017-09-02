@@ -203,6 +203,7 @@ public class GameServiceImpl implements GameService {
         return gameRepository.findOne(id);
     }
 
+    //TODO change expception to own created
     @Override
     public Game addRate(final long gameId, final RateDto rateDto, final String email) {
         Borrow borrow = borrowRepository

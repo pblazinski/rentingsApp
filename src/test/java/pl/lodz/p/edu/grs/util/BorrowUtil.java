@@ -10,9 +10,7 @@ import java.util.Collections;
 
 public class BorrowUtil {
 
-
-
-
+    public static final long BORROW_ID = 1L;
 
     public static Borrow mockBorrow() {
         Game game = GameUtil.mockGame();

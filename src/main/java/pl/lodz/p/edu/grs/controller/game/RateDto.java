@@ -1,5 +1,6 @@
 package pl.lodz.p.edu.grs.controller.game;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,6 +10,7 @@ import javax.validation.constraints.Size;
 
 @Getter
 @Setter
+@Builder
 public class RateDto {
 
     private long borrowId;

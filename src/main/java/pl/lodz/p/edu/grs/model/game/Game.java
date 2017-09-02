@@ -108,5 +108,4 @@ public class Game {
     public void addRate(final Rate rate) {
         this.ratingSummary.addRate(rate);
     }
-
 }
