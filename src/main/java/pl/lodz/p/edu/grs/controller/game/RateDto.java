@@ -13,7 +13,6 @@ import javax.validation.constraints.Size;
 @Builder
 public class RateDto {
 
-    private long borrowId;
     @Min(1)
     @Max(10)
     private long rate;

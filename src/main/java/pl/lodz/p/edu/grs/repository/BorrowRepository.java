@@ -13,7 +13,7 @@ public interface BorrowRepository extends JpaRepository<Borrow, Long> {
 
     Page<Borrow> findBorrowsByUserEmail(Pageable pageable, String email);
 
-    Optional<Borrow> findByIdAndUserEmailAndBorrowedGamesIdIn(long borrowId, String email, long gameId);
+    Optional<Borrow> findByUserEmailAndBorrowedGamesIdIn(String email, long gameId);
 
     List<Borrow> findBorrowsByTimeBack(LocalDateTime time);
 

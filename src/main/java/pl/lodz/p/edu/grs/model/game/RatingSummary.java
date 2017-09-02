@@ -20,9 +20,9 @@ public class RatingSummary {
 
     private double average;
 
-    public void addRate(final Rate rate) {
+    void addRate(final Rate rate) {
         if (this.rates.contains(rate)) {
-            throw new RateAddException("User can add only one rate for one game");
+            throw new RateAddException("User can add only one rate for one game", rate);
         }
 
         this.rates.add(rate);

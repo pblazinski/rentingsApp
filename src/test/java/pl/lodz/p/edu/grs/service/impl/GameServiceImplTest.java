@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import pl.lodz.p.edu.grs.controller.game.GameDto;
 import pl.lodz.p.edu.grs.controller.game.RateDto;
+import pl.lodz.p.edu.grs.exceptions.GameAddRateException;
 import pl.lodz.p.edu.grs.factory.GameFactory;
 import pl.lodz.p.edu.grs.model.Borrow;
 import pl.lodz.p.edu.grs.model.Category;
@@ -33,7 +34,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
-import static pl.lodz.p.edu.grs.util.BorrowUtil.BORROW_ID;
 import static pl.lodz.p.edu.grs.util.BorrowUtil.mockBorrow;
 import static pl.lodz.p.edu.grs.util.GameUtil.AVAILABLE;
 import static pl.lodz.p.edu.grs.util.GameUtil.DESCRIPTION;
@@ -284,12 +284,11 @@ public class GameServiceImplTest {
         User user = mock(User.class);
         Borrow borrow = mock(Borrow.class);
         RateDto rateDto = RateDto.builder()
-                .borrowId(BORROW_ID)
                 .comment("comment")
                 .rate(10)
                 .build();
 
-        when(borrowRepository.findByIdAndUserEmailAndBorrowedGamesIdIn(BORROW_ID, EMAIL, GAME_ID))
+        when(borrowRepository.findByUserEmailAndBorrowedGamesIdIn(EMAIL, GAME_ID))
                 .thenReturn(Optional.of(borrow));
         when(borrow.getUser())
                 .thenReturn(user);
@@ -302,7 +301,7 @@ public class GameServiceImplTest {
 
         //then
         verify(borrowRepository)
-                .findByIdAndUserEmailAndBorrowedGamesIdIn(BORROW_ID, EMAIL, GAME_ID);
+                .findByUserEmailAndBorrowedGamesIdIn(EMAIL, GAME_ID);
         verify(borrow)
                 .getUser();
         verify(borrow)
@@ -313,26 +312,25 @@ public class GameServiceImplTest {
                 .save(game);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void shouldThrowIllegalArgumentExceptionWhenUserAddRateForGameWhichNotBorrow() throws Exception {
+    @Test(expected = GameAddRateException.class)
+    public void shouldThrowGameAddRateExceptionWhenUserAddRateForGameWhichNotBorrow() throws Exception {
         //given
         Game game = mock(Game.class);
         User user = mock(User.class);
         Borrow borrow = mock(Borrow.class);
         RateDto rateDto = RateDto.builder()
-                .borrowId(BORROW_ID)
                 .comment("comment")
                 .rate(10)
                 .build();
 
-        when(borrowRepository.findByIdAndUserEmailAndBorrowedGamesIdIn(BORROW_ID, EMAIL, GAME_ID))
+        when(borrowRepository.findByUserEmailAndBorrowedGamesIdIn(EMAIL, GAME_ID))
                 .thenReturn(Optional.empty());
         //when
         gameService.addRate(USER_ID, rateDto, EMAIL);
 
         //then
         verify(borrowRepository)
-                .findByIdAndUserEmailAndBorrowedGamesIdIn(BORROW_ID, EMAIL, GAME_ID);
+                .findByUserEmailAndBorrowedGamesIdIn(EMAIL, GAME_ID);
         verifyZeroInteractions(borrow);
         verifyZeroInteractions(game);
         verifyZeroInteractions(user);

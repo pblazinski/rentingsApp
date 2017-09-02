@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import pl.lodz.p.edu.grs.controller.game.GameDto;
 import pl.lodz.p.edu.grs.controller.game.RateDto;
+import pl.lodz.p.edu.grs.exceptions.GameAddRateException;
 import pl.lodz.p.edu.grs.factory.GameFactory;
 import pl.lodz.p.edu.grs.model.Borrow;
 import pl.lodz.p.edu.grs.model.Category;
@@ -203,12 +204,11 @@ public class GameServiceImpl implements GameService {
         return gameRepository.findOne(id);
     }
 
-    //TODO change expception to own created
     @Override
     public Game addRate(final long gameId, final RateDto rateDto, final String email) {
         Borrow borrow = borrowRepository
-                .findByIdAndUserEmailAndBorrowedGamesIdIn(rateDto.getBorrowId(), email, gameId)
-                .orElseThrow(IllegalArgumentException::new);
+                .findByUserEmailAndBorrowedGamesIdIn(email, gameId)
+                .orElseThrow(() -> new GameAddRateException("User cannot add rate for game which not borrow."));
 
         User user = borrow.getUser();
 
