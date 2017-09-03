@@ -89,6 +89,21 @@ public class Game {
                 '}';
     }
 
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Game game = (Game) o;
+
+        return id != null ? id.equals(game.id) : game.id == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
+    }
+
     public void updateTitleAndDescription(final String title, final String description) {
         this.title = title;
         this.description = description;
