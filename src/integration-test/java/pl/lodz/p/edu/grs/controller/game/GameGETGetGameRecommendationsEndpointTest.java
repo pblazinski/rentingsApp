@@ -30,6 +30,7 @@ import java.util.Collections;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
@@ -98,6 +99,59 @@ public class GameGETGetGameRecommendationsEndpointTest {
 
         //then
         result.andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.categoryBased.[*].id").exists())
+                .andExpect(jsonPath("$.categoryBased.[*].title").exists())
+                .andExpect(jsonPath("$.categoryBased.[*].description").exists())
+                .andExpect(jsonPath("$.categoryBased.[*].available").exists())
+                .andExpect(jsonPath("$.categoryBased.[*].price").exists())
+                .andExpect(jsonPath("$.categoryBased.[*].category.id").exists())
+                .andExpect(jsonPath("$.categoryBased.[*].category.name").exists())
+                .andExpect(jsonPath("$.categoryBased.[*].ratingSummary.average").exists())
+                .andExpect(jsonPath("$.collaborationBased.[*].id").exists())
+                .andExpect(jsonPath("$.collaborationBased.[*].title").exists())
+                .andExpect(jsonPath("$.collaborationBased.[*].description").exists())
+                .andExpect(jsonPath("$.collaborationBased.[*].available").exists())
+                .andExpect(jsonPath("$.collaborationBased.[*].price").exists())
+                .andExpect(jsonPath("$.collaborationBased.[*].category.id").exists())
+                .andExpect(jsonPath("$.collaborationBased.[*].category.name").exists())
+                .andExpect(jsonPath("$.collaborationBased.[*].ratingSummary.average").exists());
+
+        result.andExpect(jsonPath("$.categoryBased.[*]").isNotEmpty())
+                .andExpect(jsonPath("$.categoryBased.[0].id").value(darkSouls.getId()))
+                .andExpect(jsonPath("$.categoryBased.[0].title").value(darkSouls.getTitle()))
+                .andExpect(jsonPath("$.categoryBased.[0].description").value(darkSouls.getDescription()))
+                .andExpect(jsonPath("$.categoryBased.[0].price").value(darkSouls.getPrice()))
+                .andExpect(jsonPath("$.categoryBased.[0].category.id").value(darkSouls.getCategory().getId()))
+                .andExpect(jsonPath("$.categoryBased.[0].category.name").value(darkSouls.getCategory().getName()))
+                .andExpect(jsonPath("$.categoryBased.[0].ratingSummary.average").value(darkSouls.getRatingSummary().getAverage()))
+                .andExpect(jsonPath("$.categoryBased.[1].id").value(horizonZero.getId()))
+                .andExpect(jsonPath("$.categoryBased.[1].title").value(horizonZero.getTitle()))
+                .andExpect(jsonPath("$.categoryBased.[1].description").value(horizonZero.getDescription()))
+                .andExpect(jsonPath("$.categoryBased.[1].price").value(horizonZero.getPrice()))
+                .andExpect(jsonPath("$.categoryBased.[1].category.id").value(horizonZero.getCategory().getId()))
+                .andExpect(jsonPath("$.categoryBased.[1].category.name").value(horizonZero.getCategory().getName()))
+                .andExpect(jsonPath("$.categoryBased.[1].ratingSummary.average").value(horizonZero.getRatingSummary().getAverage()))
+                .andExpect(jsonPath("$.collaborationBased.[0].id").value(darkSouls.getId()))
+                .andExpect(jsonPath("$.collaborationBased.[0].title").value(darkSouls.getTitle()))
+                .andExpect(jsonPath("$.collaborationBased.[0].description").value(darkSouls.getDescription()))
+                .andExpect(jsonPath("$.collaborationBased.[0].price").value(darkSouls.getPrice()))
+                .andExpect(jsonPath("$.collaborationBased.[0].category.id").value(darkSouls.getCategory().getId()))
+                .andExpect(jsonPath("$.collaborationBased.[0].category.name").value(darkSouls.getCategory().getName()))
+                .andExpect(jsonPath("$.collaborationBased.[0].ratingSummary.average").value(darkSouls.getRatingSummary().getAverage()))
+                .andExpect(jsonPath("$.collaborationBased.[1].id").value(horizonZero.getId()))
+                .andExpect(jsonPath("$.collaborationBased.[1].title").value(horizonZero.getTitle()))
+                .andExpect(jsonPath("$.collaborationBased.[1].description").value(horizonZero.getDescription()))
+                .andExpect(jsonPath("$.collaborationBased.[1].price").value(horizonZero.getPrice()))
+                .andExpect(jsonPath("$.collaborationBased.[1].category.id").value(horizonZero.getCategory().getId()))
+                .andExpect(jsonPath("$.collaborationBased.[1].category.name").value(horizonZero.getCategory().getName()))
+                .andExpect(jsonPath("$.collaborationBased.[1].ratingSummary.average").value(horizonZero.getRatingSummary().getAverage()))
+                .andExpect(jsonPath("$.collaborationBased.[2].id").value(cod.getId()))
+                .andExpect(jsonPath("$.collaborationBased.[2].title").value(cod.getTitle()))
+                .andExpect(jsonPath("$.collaborationBased.[2].description").value(cod.getDescription()))
+                .andExpect(jsonPath("$.collaborationBased.[2].price").value(cod.getPrice()))
+                .andExpect(jsonPath("$.collaborationBased.[2].category.id").value(cod.getCategory().getId()))
+                .andExpect(jsonPath("$.collaborationBased.[2].category.name").value(cod.getCategory().getName()))
+                .andExpect(jsonPath("$.collaborationBased.[2].ratingSummary.average").value(cod.getRatingSummary().getAverage()));
     }
 }
