@@ -18,6 +18,8 @@ public interface BorrowRepository extends JpaRepository<Borrow, Long> {
 
     List<Borrow> findBorrowsByTimeBack(LocalDateTime time);
 
+    List<Borrow> findAllByBorrowedGamesId(Long gameId);
+
     List<Borrow> findAllByBorrowedGamesIn(List<Game> games);
 
 }

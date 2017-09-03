@@ -17,6 +17,7 @@ import pl.lodz.p.edu.grs.service.RecommendationService;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -112,9 +113,14 @@ public class GameController {
     @GetMapping("/{gameId}/recommendations")
     public Recommendation getGameRecommendations(@PathVariable final long gameId,
                                                  @RequestParam final long limit) {
-        List<Game> recommendation = recommendationService.getGameRecommendationBasedOnCategory(gameId, limit);
+        List<Game> basedOnCategory =
+                recommendationService.getGameRecommendationBasedOnCategory(gameId, limit);
+        List<Game> basedOnCollaboration =
+                recommendationService.getGameRecommendationBasedOnCollaboration(gameId, limit);
+
         return Recommendation.builder()
-                .categoryBased(recommendation)
+                .collaborationBased(basedOnCollaboration)
+                .categoryBased(basedOnCategory)
                 .build();
     }
 

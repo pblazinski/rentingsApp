@@ -172,4 +172,43 @@ public class RecommendationServiceIT {
                 .hasSize(0)
                 .doesNotContain(darkSouls, wiedzmin, horizonZero, battlefield);
     }
+
+    @Test
+    public void shouldReturnGamesListBasedOnCollaborationRecommendation() {
+        //given
+        Category rpg = categoryService.addCategory(new CategoryDto("RPG"));
+        Category fps = categoryService.addCategory(new CategoryDto("FPS"));
+
+        Game darkSouls = gameService
+                .addGame(new GameDto("Dark Souls 3", "Amazing RPG games", true, 56.0, rpg.getId()));
+        Game wiedzmin = gameService
+                .addGame(new GameDto("Wiedźmin 3", "The best polish rpg games", true, 99.99, rpg.getId()));
+        Game horizonZero = gameService
+                .addGame(new GameDto("Horizon Zero Down", "opis", true, 91.11, rpg.getId()));
+        Game battlefield = gameService
+                .addGame(new GameDto("Battlefield", "asdas", true, 99.99, fps.getId()));
+        Game cod = gameService
+                .addGame(new GameDto("COD", "asdas", true, 99.99, fps.getId()));
+
+
+        User user = userService
+                .registerUser(new RegisterUserDto("test@test", "test", "test", "password"));
+        User second = userService
+                .registerUser(new RegisterUserDto("second@second", "test", "test", "password"));
+
+        borrowService.addBorrow(new BorrowDto(Arrays.asList(wiedzmin.getId(), darkSouls.getId(), horizonZero.getId())), user.getEmail());
+        borrowService.addBorrow(new BorrowDto(Collections.singletonList(battlefield.getId())), second.getEmail());
+        borrowService.addBorrow(new BorrowDto(Arrays.asList(wiedzmin.getId(), cod.getId())), user.getEmail());
+
+        //when
+        List<Game> result = recommendationService.getGameRecommendationBasedOnCollaboration(wiedzmin.getId(), 100);
+
+        //then
+        assertThat(result)
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(3)
+                .contains(darkSouls, horizonZero, cod)
+                .doesNotContain(battlefield, wiedzmin);
+    }
 }

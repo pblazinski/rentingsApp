@@ -93,4 +93,30 @@ public class RecommendationServiceImplTest {
                 .isNotNull()
                 .isEmpty();
     }
+
+    @Test
+    public void shouldReturnGamesListBasedOnCollaborationRecommendation() {
+        //given
+        Game firstGame = mock(Game.class);
+        Game secondGame = mock(Game.class);
+
+        List<Long> games = Arrays.asList(FIRST_GAME_ID, SECOND_GAME_ID);
+
+        Borrow borrow = mock(Borrow.class);
+
+
+        when(borrowRepository.findAllByBorrowedGamesId(GAME_ID))
+                .thenReturn(Collections.singletonList(borrow));
+        when(borrow.getBorrowedGames())
+                .thenReturn(Arrays.asList(firstGame, secondGame));
+
+        //when
+        List<Game> result = recommendationService.getGameRecommendationBasedOnCollaboration(GAME_ID, 100);
+
+        //then
+        assertThat(result)
+                .isNotNull()
+                .hasSize(2)
+                .contains(firstGame, secondGame);
+    }
 }

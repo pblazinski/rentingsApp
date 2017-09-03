@@ -7,4 +7,6 @@ import java.util.List;
 public interface RecommendationService {
 
     List<Game> getGameRecommendationBasedOnCategory(long gameId, long limit);
+
+    List<Game> getGameRecommendationBasedOnCollaboration(final Long gamesId, long limit);
 }

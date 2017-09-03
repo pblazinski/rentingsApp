@@ -9,6 +9,8 @@ import pl.lodz.p.edu.grs.repository.BorrowRepository;
 import pl.lodz.p.edu.grs.repository.GameRepository;
 import pl.lodz.p.edu.grs.service.RecommendationService;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -42,6 +44,22 @@ public class RecommendationServiceImpl implements RecommendationService {
         log.info("Found <{}> game with same category as <{}> which was borrow.", recommendation.size(), gameId);
 
         return recommendation;
+    }
+
+    @Override
+    public List<Game> getGameRecommendationBasedOnCollaboration(final Long gamesId, final long limit) {
+        List<Borrow> borrows = borrowRepository.findAllByBorrowedGamesId(gamesId);
+
+        List<Game> games = borrows.stream()
+                .flatMap(b -> b.getBorrowedGames().stream())
+                .distinct()
+                .filter(g -> !g.getId().equals(gamesId))
+                .limit(limit)
+                .collect(Collectors.toList());
+
+        log.info("Found <{}> game based on collaboration with games.", games.size());
+
+        return games;
     }
 
     private boolean anyMatch(final Game game, final List<Game> games) {

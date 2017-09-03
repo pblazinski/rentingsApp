@@ -13,6 +13,7 @@ import java.util.List;
 public class Recommendation {
 
     private List<Game> categoryBased;
+    private List<Game> collaborationBased;
 
     public Recommendation() {
     }
