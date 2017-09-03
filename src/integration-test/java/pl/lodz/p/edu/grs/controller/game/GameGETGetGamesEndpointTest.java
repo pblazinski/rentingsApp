@@ -26,13 +26,13 @@ import pl.lodz.p.edu.grs.util.CategoryUtil;
 import pl.lodz.p.edu.grs.util.GameUtil;
 import pl.lodz.p.edu.grs.util.StubHelper;
 
-    import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
-    import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-    import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-    @RunWith(SpringRunner.class)
-    @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-    @AutoConfigureMockMvc
+@RunWith(SpringRunner.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureMockMvc
 public class GameGETGetGamesEndpointTest {
 
     @Autowired
