@@ -1,23 +1,34 @@
 package pl.lodz.p.edu.grs.model;
 
 
-import lombok.*;
-import org.hibernate.annotations.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.validator.constraints.NotEmpty;
+import pl.lodz.p.edu.grs.model.game.Game;
 import pl.lodz.p.edu.grs.model.user.User;
 
-import javax.persistence.*;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.PrePersist;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Builder
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Borrow {
@@ -29,7 +40,7 @@ public class Borrow {
     @NotEmpty
     @Cascade(CascadeType.PERSIST)
     @ManyToMany(fetch = FetchType.EAGER)
-    private List<Game> borrowedGames;
+    private List<Game> borrowedGames = new ArrayList<>();
 
     @NotNull
     @ManyToOne
@@ -57,9 +68,29 @@ public class Borrow {
         this.user = user;
     }
 
-
-    public void updatePrice(double price) {
+    public void updateTotalPrice(final double price) {
         this.totalPrice = price;
+    }
+
+    public void updatePenalties(final double penalties) {
+        this.penalties = penalties;
+    }
+
+    public void updateTimeBack(final LocalDateTime timeBack) {
+        this.timeBack = timeBack;
+    }
+
+    public void updateUser(final User user) {
+        this.user = user;
+    }
+
+    public void updateBorrowedGames(final List<Game> borrowedGames) {
+        this.borrowedGames.clear();
+        this.borrowedGames.addAll(borrowedGames);
+    }
+
+    public void updateDeadline(final LocalDateTime deadline) {
+        this.deadline = deadline;
     }
 
     @PrePersist

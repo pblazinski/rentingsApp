@@ -1,5 +1,6 @@
 package pl.lodz.p.edu.grs.service.impl;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -14,11 +15,16 @@ import pl.lodz.p.edu.grs.Application;
 import pl.lodz.p.edu.grs.controller.borrow.BorrowDto;
 import pl.lodz.p.edu.grs.controller.category.CategoryDto;
 import pl.lodz.p.edu.grs.controller.game.GameDto;
+import pl.lodz.p.edu.grs.controller.game.RateDto;
 import pl.lodz.p.edu.grs.controller.user.RegisterUserDto;
+import pl.lodz.p.edu.grs.exceptions.GameAddRateException;
 import pl.lodz.p.edu.grs.exceptions.NotFoundException;
+import pl.lodz.p.edu.grs.exceptions.RateAddException;
 import pl.lodz.p.edu.grs.model.Borrow;
 import pl.lodz.p.edu.grs.model.Category;
-import pl.lodz.p.edu.grs.model.Game;
+import pl.lodz.p.edu.grs.model.game.Game;
+import pl.lodz.p.edu.grs.model.game.Rate;
+import pl.lodz.p.edu.grs.model.game.RatingSummary;
 import pl.lodz.p.edu.grs.model.user.User;
 import pl.lodz.p.edu.grs.repository.BorrowRepository;
 import pl.lodz.p.edu.grs.repository.CategoryRepository;
@@ -30,12 +36,14 @@ import pl.lodz.p.edu.grs.service.GameService;
 import pl.lodz.p.edu.grs.service.UserService;
 import pl.lodz.p.edu.grs.util.CategoryUtil;
 import pl.lodz.p.edu.grs.util.GameUtil;
+import pl.lodz.p.edu.grs.util.StubHelper;
 import pl.lodz.p.edu.grs.util.UserUtil;
 
 import javax.persistence.EntityNotFoundException;
 import javax.validation.ConstraintViolationException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
@@ -89,7 +97,6 @@ public class GameServiceIT {
     }
 
 
-
     @Test
     public void shouldReturnMostPopularGame() {
         //
@@ -98,14 +105,14 @@ public class GameServiceIT {
 
         Category category = categoryService.addCategory(new CategoryDto("1"));
 
-        Game game = gameService.addGame(new GameDto("1","1",true,10,category.getId()));
-        Game game1 = gameService.addGame(new GameDto("2","1",true,10,category.getId()));
-        Game game2 = gameService.addGame(new GameDto("3","1",true,10,category.getId()));
-        Game game3 = gameService.addGame(new GameDto("4","1",true,10,category.getId()));
-        Game game4 = gameService.addGame(new GameDto("5","1",true,10,category.getId()));
+        Game game = gameService.addGame(new GameDto("1", "1", true, 10, category.getId()));
+        Game game1 = gameService.addGame(new GameDto("2", "1", true, 10, category.getId()));
+        Game game2 = gameService.addGame(new GameDto("3", "1", true, 10, category.getId()));
+        Game game3 = gameService.addGame(new GameDto("4", "1", true, 10, category.getId()));
+        Game game4 = gameService.addGame(new GameDto("5", "1", true, 10, category.getId()));
 
-        Borrow borrow = borrowService.addBorrow(new BorrowDto(Arrays.asList(game4.getId(),game1.getId(),game2.getId())), user.getEmail());
-        Borrow borrow2 = borrowService.addBorrow(new BorrowDto(Arrays.asList(game4.getId(),game1.getId(),game3.getId(),game.getId())), user.getEmail());
+        Borrow borrow = borrowService.addBorrow(new BorrowDto(Arrays.asList(game4.getId(), game1.getId(), game2.getId())), user.getEmail());
+        Borrow borrow2 = borrowService.addBorrow(new BorrowDto(Arrays.asList(game4.getId(), game1.getId(), game3.getId(), game.getId())), user.getEmail());
         Borrow borrow3 = borrowService.addBorrow(new BorrowDto(Arrays.asList(game4.getId())), user.getEmail());
 
 
@@ -120,7 +127,6 @@ public class GameServiceIT {
         assertThat(games.get(1).getId())
                 .isEqualTo(game1.getId());
     }
-
 
 
     @Test
@@ -407,5 +413,126 @@ public class GameServiceIT {
         gameService.updateCategory(game.getId(), 100L);
 
         //then
+    }
+
+    @Test
+    public void shouldAddRate() {
+        //given
+        Borrow borrow = StubHelper.stubBorrow();
+        RateDto rateDto = RateDto.builder()
+                .rate(10)
+                .comment("It's a comment.")
+                .build();
+        User user = borrow.getUser();
+        Game game = borrow.getBorrowedGames().get(0);
+
+        //when
+        Game result = gameService.addRate(game.getId(), rateDto, user.getEmail());
+
+        //then
+        RatingSummary ratingSummary = result.getRatingSummary();
+
+        assertThat(ratingSummary)
+                .isNotNull();
+        assertThat(ratingSummary.getAverage())
+                .isEqualTo(rateDto.getRate());
+        Set<Rate> rates = ratingSummary.getRates();
+        Rate rate = rates.iterator().next();
+        assertThat(rates)
+                .isNotEmpty()
+                .hasSize(1);
+        assertThat(rate.getRate())
+                .isNotNull()
+                .isEqualTo(rateDto.getRate());
+        assertThat(rate.getComment())
+                .isNotBlank()
+                .isEqualTo(rateDto.getComment());
+        assertThat(rate.getUserId())
+                .isNotNull()
+                .isEqualTo(user.getId());
+    }
+
+    @Test
+    public void shouldThrowRateAddExceptionWhenUserTryToAddSecondRate() {
+        //given
+        Borrow borrow = StubHelper.stubBorrow();
+        RateDto rateDto = RateDto.builder()
+                .rate(10)
+                .comment("It's a comment.")
+                .build();
+        User user = borrow.getUser();
+        Game game = borrow.getBorrowedGames().get(0);
+
+        gameService.addRate(game.getId(), rateDto, user.getEmail());
+        //when
+        Throwable throwable = catchThrowable(() -> gameService.addRate(game.getId(), rateDto, user.getEmail()));
+
+        //then
+        assertThat(throwable)
+                .isInstanceOf(RateAddException.class)
+                .hasMessage("User can add only one rate for one game");
+    }
+
+    @Test
+    public void shouldThrowGameAddRateExceptionWhenUserTryAddRateForGameWhichNotBorrow() {
+        //given
+        Borrow borrow = StubHelper.stubBorrow();
+        RateDto rateDto = RateDto.builder()
+                .rate(10)
+                .comment("It's a comment.")
+                .build();
+        User user = borrow.getUser();
+        Game game = borrow.getBorrowedGames().get(0);
+
+        gameService.addRate(game.getId(), rateDto, user.getEmail());
+        //when
+        Throwable throwable = catchThrowable(() -> gameService.addRate(game.getId() + 100L, rateDto, user.getEmail()));
+
+        //then
+        assertThat(throwable)
+                .isInstanceOf(GameAddRateException.class)
+                .hasMessage("User cannot add rate for game which not borrow.");
+    }
+
+    @Test
+    public void shouldThrowConstraintViolationExceptionWhenAddRateWithTooBigRate() {
+        //given
+        Borrow borrow = StubHelper.stubBorrow();
+        RateDto rateDto = RateDto.builder()
+                .rate(11)
+                .comment("It's a comment.")
+                .build();
+        User user = borrow.getUser();
+        Game game = borrow.getBorrowedGames().get(0);
+
+        //when
+        Throwable throwable = catchThrowable(() -> gameService.addRate(game.getId(), rateDto, user.getEmail()));
+
+        //then
+        Throwable rootCause = ExceptionUtils.getRootCause(throwable);
+
+        assertThat(rootCause)
+                .isInstanceOf(ConstraintViolationException.class);
+    }
+
+    @Test
+    public void shouldThrowConstraintViolationExceptionWhenAddRateWithTooLongComment() {
+        //given
+        Borrow borrow = StubHelper.stubBorrow();
+        RateDto rateDto = RateDto.builder()
+                .rate(1)
+                .comment(StringUtils.repeat("a", 256))
+                .build();
+        User user = borrow.getUser();
+        Game game = borrow.getBorrowedGames().get(0);
+
+        //when
+        Throwable throwable = catchThrowable(() -> gameService.addRate(game.getId(), rateDto, user.getEmail()));
+
+        //then
+        Throwable rootCause = ExceptionUtils.getRootCause(throwable);
+
+        assertThat(rootCause)
+                .isInstanceOf(ConstraintViolationException.class);
     }
 }

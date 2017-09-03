@@ -4,9 +4,9 @@ import org.springframework.stereotype.Component;
 import pl.lodz.p.edu.grs.controller.borrow.BorrowDto;
 import pl.lodz.p.edu.grs.controller.category.CategoryDto;
 import pl.lodz.p.edu.grs.controller.game.GameDto;
+import pl.lodz.p.edu.grs.controller.user.RegisterUserDto;
 import pl.lodz.p.edu.grs.model.Borrow;
 import pl.lodz.p.edu.grs.service.BorrowService;
-import pl.lodz.p.edu.grs.controller.user.RegisterUserDto;
 import pl.lodz.p.edu.grs.service.CategoryService;
 import pl.lodz.p.edu.grs.service.GameService;
 import pl.lodz.p.edu.grs.service.UserService;
@@ -88,7 +88,8 @@ public class DataInitializer {
 
 
         Borrow borrow = borrowService.addBorrow(borrowDto, "rafal@koper");
-        borrowService.addBorrow(borrowDto2, "rafal@koper");
+        borrowService.updateReturnTime(borrow.getId());
+        borrowService.addBorrow(borrowDto2, "patryk@blazinski");
         borrowService.addBorrow(borrowDto3, "rafal@koper");
     }
 }

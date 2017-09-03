@@ -12,10 +12,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Validator;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
-import pl.lodz.p.edu.grs.model.Game;
+import pl.lodz.p.edu.grs.model.game.Game;
 import pl.lodz.p.edu.grs.service.GameService;
 
 import javax.validation.Valid;
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -26,6 +27,7 @@ public class GameController {
     private final GameService gameService;
 
     private final Validator category;
+
     //TODO Pre authorize on controllers methods !important
     @Autowired
     public GameController(final GameService gameService,
@@ -60,7 +62,7 @@ public class GameController {
 
     @PutMapping("/{id}/info")
     public HttpEntity updateTitleAndDescription(@PathVariable final Long id,
-                                                @RequestBody @Valid UpdateGameInfoDto updateGameInfoDto){
+                                                @RequestBody @Valid UpdateGameInfoDto updateGameInfoDto) {
         Game game = gameService.updateTitleAndDescription(id,
                 updateGameInfoDto.getTitle(),
                 updateGameInfoDto.getDescription());
@@ -78,7 +80,7 @@ public class GameController {
 
     @PutMapping("/{id}/available")
     public HttpEntity updateAvailability(@PathVariable final Long id,
-                                  @RequestBody @Valid UpdateGameAvailabilityDto updateGameAvailabilityDto) {
+                                         @RequestBody @Valid UpdateGameAvailabilityDto updateGameAvailabilityDto) {
         Game game = gameService.updateAvailability(id, updateGameAvailabilityDto.isAvailable());
 
         return ResponseEntity.ok(game);
@@ -87,6 +89,15 @@ public class GameController {
     @PutMapping("/category")
     public HttpEntity updateCategory(@RequestBody @Valid final UpdateGameCategoryDto updateGameCategoryDto) {
         Game game = gameService.updateCategory(updateGameCategoryDto.getId(), updateGameCategoryDto.getCategoryId());
+
+        return ResponseEntity.ok(game);
+    }
+
+    @PostMapping("/{gameId}/rates")
+    public HttpEntity addRate(@PathVariable final long gameId,
+                              @RequestBody @Valid RateDto rateDto,
+                              final Principal principal) {
+        Game game = gameService.addRate(gameId, rateDto, principal.getName());
 
         return ResponseEntity.ok(game);
     }

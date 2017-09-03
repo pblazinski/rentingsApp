@@ -49,7 +49,7 @@ public class PenaltySchedulerTest {
     public void shouldSetBorrowPenaltyForReturnedAfterTimeGame() {
         //given
         Borrow borrow = BorrowUtil.mockBorrow();
-        borrow.setDeadline(LocalDateTime.now().minusDays(5));
+        borrow.updateDeadline(LocalDateTime.now().minusDays(5));
         List<Borrow> borrows = Collections.singletonList(borrow);
 
         when(borrowRepository.findBorrowsByTimeBack(null))

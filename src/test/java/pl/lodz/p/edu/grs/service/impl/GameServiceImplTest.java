@@ -10,38 +10,50 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import pl.lodz.p.edu.grs.controller.game.GameDto;
+import pl.lodz.p.edu.grs.controller.game.RateDto;
+import pl.lodz.p.edu.grs.exceptions.GameAddRateException;
 import pl.lodz.p.edu.grs.factory.GameFactory;
 import pl.lodz.p.edu.grs.model.Borrow;
 import pl.lodz.p.edu.grs.model.Category;
-import pl.lodz.p.edu.grs.model.Game;
+import pl.lodz.p.edu.grs.model.game.Game;
+import pl.lodz.p.edu.grs.model.game.Rate;
+import pl.lodz.p.edu.grs.model.user.User;
 import pl.lodz.p.edu.grs.repository.BorrowRepository;
-import pl.lodz.p.edu.grs.repository.CategoryRepository;
 import pl.lodz.p.edu.grs.repository.GameRepository;
 import pl.lodz.p.edu.grs.service.CategoryService;
 import pl.lodz.p.edu.grs.service.GameService;
-import pl.lodz.p.edu.grs.util.BorrowUtil;
 import pl.lodz.p.edu.grs.util.CategoryUtil;
-import pl.lodz.p.edu.grs.util.GameUtil;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
+import static pl.lodz.p.edu.grs.util.BorrowUtil.mockBorrow;
+import static pl.lodz.p.edu.grs.util.GameUtil.AVAILABLE;
+import static pl.lodz.p.edu.grs.util.GameUtil.DESCRIPTION;
+import static pl.lodz.p.edu.grs.util.GameUtil.GAME_ID;
+import static pl.lodz.p.edu.grs.util.GameUtil.PRICE;
+import static pl.lodz.p.edu.grs.util.GameUtil.TITLE;
+import static pl.lodz.p.edu.grs.util.GameUtil.mockGame;
+import static pl.lodz.p.edu.grs.util.GameUtil.mockGameDto;
+import static pl.lodz.p.edu.grs.util.UserUtil.EMAIL;
+import static pl.lodz.p.edu.grs.util.UserUtil.USER_ID;
 
 @RunWith(MockitoJUnitRunner.class)
 public class GameServiceImplTest {
 
     @Mock
     private BorrowRepository borrowRepository;
-
     @Mock
     private GameRepository gameRepository;
-
     @Mock
     private GameFactory gameFactory;
-
     @Mock
     private CategoryService categoryService;
 
@@ -56,7 +68,7 @@ public class GameServiceImplTest {
     @Test
     public void shouldReturnMostPopularGame() throws Exception {
         //given
-        List<Borrow> borrows = Collections.singletonList(BorrowUtil.mockBorrow());
+        List<Borrow> borrows = Collections.singletonList(mockBorrow());
 
         when(borrowRepository.findAll())
                 .thenReturn(borrows);
@@ -75,8 +87,6 @@ public class GameServiceImplTest {
         assertThat(result.get(0))
                 .isEqualTo(borrows.get(0).getBorrowedGames().get(0));
     }
-
-
 
 
     @Test
@@ -106,8 +116,8 @@ public class GameServiceImplTest {
     @Test
     public void shouldAddGame() throws Exception {
         //given
-        GameDto gameDto = GameUtil.mockGameDto();
-        Game game = GameUtil.mockGame();
+        GameDto gameDto = mockGameDto();
+        Game game = mockGame();
 
         Category category = CategoryUtil.mockCategory();
 
@@ -134,19 +144,19 @@ public class GameServiceImplTest {
         assertThat(result.getCategory())
                 .isEqualTo(category);
         assertThat(result.getDescription())
-                .isEqualTo(GameUtil.DESCRIPTION);
+                .isEqualTo(DESCRIPTION);
         assertThat(result.isAvailable())
-                .isEqualTo(GameUtil.AVAILABLE);
+                .isEqualTo(AVAILABLE);
         assertThat(result.getPrice())
-                .isEqualTo(GameUtil.PRICE);
+                .isEqualTo(PRICE);
         assertThat(result.getTitle())
-                .isEqualTo(GameUtil.TITLE);
+                .isEqualTo(TITLE);
     }
 
     @Test
     public void shouldUpdateGameTitleAndDescription() throws Exception {
         //given
-        Game game = GameUtil.mockGame();
+        Game game = mockGame();
 
         String title = "New title";
         String description = "New description";
@@ -176,7 +186,7 @@ public class GameServiceImplTest {
     @Test
     public void shouldUpdateGamePrice() throws Exception {
         //given
-        Game game = GameUtil.mockGame();
+        Game game = mockGame();
 
         double price = 0.99;
         when(gameRepository.exists(game.getId()))
@@ -200,7 +210,7 @@ public class GameServiceImplTest {
     @Test
     public void shouldUpdateGameAvailability() throws Exception {
         //given
-        Game game = GameUtil.mockGame();
+        Game game = mockGame();
 
         boolean availability = false;
         when(gameRepository.exists(game.getId()))
@@ -224,7 +234,7 @@ public class GameServiceImplTest {
     @Test
     public void shouldUpdateGameCategory() throws Exception {
         //given
-        Game game = GameUtil.mockGame();
+        Game game = mockGame();
 
         Category category = new Category(1L, "UPDATED");
         when(gameRepository.exists(game.getId()))
@@ -251,7 +261,7 @@ public class GameServiceImplTest {
     public void shouldDeleteGame() throws Exception {
         //given
         long gameId = 1L;
-        Game game = GameUtil.mockGame();
+        Game game = mockGame();
         when(gameRepository.exists(game.getId()))
                 .thenReturn(true);
         when(gameRepository.getOne(gameId))
@@ -266,4 +276,65 @@ public class GameServiceImplTest {
         verify(gameRepository)
                 .delete(game);
     }
+
+    @Test
+    public void shouldAddRate() throws Exception {
+        //given
+        Game game = mock(Game.class);
+        User user = mock(User.class);
+        Borrow borrow = mock(Borrow.class);
+        RateDto rateDto = RateDto.builder()
+                .comment("comment")
+                .rate(10)
+                .build();
+
+        when(borrowRepository.findByUserEmailAndBorrowedGamesIdIn(EMAIL, GAME_ID))
+                .thenReturn(Optional.of(borrow));
+        when(borrow.getUser())
+                .thenReturn(user);
+        when(borrow.getBorrowedGames())
+                .thenReturn(Collections.singletonList(game));
+        when(game.getId())
+                .thenReturn(GAME_ID);
+        //when
+        gameService.addRate(USER_ID, rateDto, EMAIL);
+
+        //then
+        verify(borrowRepository)
+                .findByUserEmailAndBorrowedGamesIdIn(EMAIL, GAME_ID);
+        verify(borrow)
+                .getUser();
+        verify(borrow)
+                .getBorrowedGames();
+        verify(game)
+                .addRate(any(Rate.class));
+        verify(gameRepository)
+                .save(game);
+    }
+
+    @Test(expected = GameAddRateException.class)
+    public void shouldThrowGameAddRateExceptionWhenUserAddRateForGameWhichNotBorrow() throws Exception {
+        //given
+        Game game = mock(Game.class);
+        User user = mock(User.class);
+        Borrow borrow = mock(Borrow.class);
+        RateDto rateDto = RateDto.builder()
+                .comment("comment")
+                .rate(10)
+                .build();
+
+        when(borrowRepository.findByUserEmailAndBorrowedGamesIdIn(EMAIL, GAME_ID))
+                .thenReturn(Optional.empty());
+        //when
+        gameService.addRate(USER_ID, rateDto, EMAIL);
+
+        //then
+        verify(borrowRepository)
+                .findByUserEmailAndBorrowedGamesIdIn(EMAIL, GAME_ID);
+        verifyZeroInteractions(borrow);
+        verifyZeroInteractions(game);
+        verifyZeroInteractions(user);
+        verifyZeroInteractions(gameRepository);
+    }
+
 }

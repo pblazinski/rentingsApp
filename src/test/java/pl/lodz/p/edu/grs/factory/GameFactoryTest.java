@@ -5,7 +5,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 import pl.lodz.p.edu.grs.controller.game.GameDto;
-import pl.lodz.p.edu.grs.model.Game;
+import pl.lodz.p.edu.grs.model.game.Game;
 import pl.lodz.p.edu.grs.util.GameUtil;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,6 +37,8 @@ public class GameFactoryTest {
         assertThat(result.getTitle())
                 .isNotBlank()
                 .isEqualTo(GameUtil.TITLE);
+        assertThat(result.getRatingSummary())
+                .isNotNull();
         assertThat(result.getDescription())
                 .isNotBlank()
                 .isEqualTo(GameUtil.DESCRIPTION);

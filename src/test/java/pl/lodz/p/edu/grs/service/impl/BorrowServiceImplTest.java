@@ -12,7 +12,7 @@ import org.springframework.data.domain.Pageable;
 import pl.lodz.p.edu.grs.controller.borrow.BorrowDto;
 import pl.lodz.p.edu.grs.factory.BorrowFactory;
 import pl.lodz.p.edu.grs.model.Borrow;
-import pl.lodz.p.edu.grs.model.Game;
+import pl.lodz.p.edu.grs.model.game.Game;
 import pl.lodz.p.edu.grs.model.user.User;
 import pl.lodz.p.edu.grs.repository.BorrowRepository;
 import pl.lodz.p.edu.grs.service.BorrowService;
@@ -22,13 +22,14 @@ import pl.lodz.p.edu.grs.util.BorrowUtil;
 import pl.lodz.p.edu.grs.util.GameUtil;
 import pl.lodz.p.edu.grs.util.UserUtil;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BorrowServiceImplTest {
@@ -86,11 +87,11 @@ public class BorrowServiceImplTest {
         Pageable pageable = new PageRequest(0, 10);
         Borrow borrow = new Borrow();
         User user = UserUtil.mockUser();
-        borrow.setUser(user);
+        borrow.updateUser(user);
         List<Borrow> borrows = Collections.singletonList(borrow);
         PageImpl<Borrow> borrowsPage = new PageImpl<>(borrows);
 
-        when(borrowRepository.findBorrowsByUser_Email(pageable, user.getEmail()))
+        when(borrowRepository.findBorrowsByUserEmail(pageable, user.getEmail()))
                 .thenReturn(borrowsPage);
 
 
@@ -113,13 +114,13 @@ public class BorrowServiceImplTest {
         Borrow borrow = BorrowUtil.mockBorrow();
         User user = UserUtil.mockUser();
         Game game = GameUtil.mockGame();
-        borrow.setBorrowedGames(Collections.singletonList(game));
-        borrow.setUser(user);
+        borrow.updateBorrowedGames(Arrays.asList(game));
+        borrow.updateUser(user);
 
         List<Borrow> borrows = Arrays.asList(borrow, borrow, borrow, borrow, borrow, borrow, borrow, borrow, borrow, borrow, borrow, borrow, borrow, borrow);
         PageImpl<Borrow> borrowsPage = new PageImpl<>(borrows);
 
-        when(borrowRepository.findBorrowsByUser_Email(new PageRequest(0, 20), user.getEmail()))
+        when(borrowRepository.findBorrowsByUserEmail(new PageRequest(0, 20), user.getEmail()))
                 .thenReturn(borrowsPage);
         when(borrowFactory.create(Collections.singletonList(game), user))
                 .thenReturn(borrow);

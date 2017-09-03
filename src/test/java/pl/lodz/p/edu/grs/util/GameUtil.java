@@ -1,7 +1,8 @@
 package pl.lodz.p.edu.grs.util;
 
 import pl.lodz.p.edu.grs.controller.game.GameDto;
-import pl.lodz.p.edu.grs.model.Game;
+import pl.lodz.p.edu.grs.model.game.Game;
+import pl.lodz.p.edu.grs.model.game.RatingSummary;
 
 import java.time.LocalDateTime;
 
@@ -30,6 +31,6 @@ public class GameUtil {
     }
 
     public static Game mockGame() {
-        return new Game(GAME_ID, TITLE, DESCRIPTION, AVAILABLE, TIME, PRICE, CategoryUtil.mockCategory());
+        return new Game(GAME_ID, TITLE, DESCRIPTION, AVAILABLE, TIME, PRICE, CategoryUtil.mockCategory(), new RatingSummary());
     }
 }

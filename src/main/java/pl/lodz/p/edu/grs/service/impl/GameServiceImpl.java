@@ -6,10 +6,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import pl.lodz.p.edu.grs.controller.game.GameDto;
+import pl.lodz.p.edu.grs.controller.game.RateDto;
+import pl.lodz.p.edu.grs.exceptions.GameAddRateException;
 import pl.lodz.p.edu.grs.factory.GameFactory;
 import pl.lodz.p.edu.grs.model.Borrow;
 import pl.lodz.p.edu.grs.model.Category;
-import pl.lodz.p.edu.grs.model.Game;
+import pl.lodz.p.edu.grs.model.game.Game;
+import pl.lodz.p.edu.grs.model.game.Rate;
+import pl.lodz.p.edu.grs.model.user.User;
 import pl.lodz.p.edu.grs.repository.BorrowRepository;
 import pl.lodz.p.edu.grs.repository.GameRepository;
 import pl.lodz.p.edu.grs.service.CategoryService;
@@ -22,7 +26,9 @@ import java.util.List;
 import java.util.Map;
 
 import static java.util.function.Function.identity;
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.counting;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toList;
 
 @Slf4j
 @Service
@@ -30,11 +36,8 @@ import static java.util.stream.Collectors.*;
 public class GameServiceImpl implements GameService {
 
     private final BorrowRepository borrowRepository;
-
     private final GameRepository gameRepository;
-
     private final CategoryService categoryService;
-
     private final GameFactory gameFactory;
 
     @Autowired
@@ -80,7 +83,7 @@ public class GameServiceImpl implements GameService {
 
         Game result = gameFactory.create(game);
 
-        result.setCategory(category);
+        result.updateCategory(category);
 
         result = gameRepository.save(result);
 
@@ -196,5 +199,25 @@ public class GameServiceImpl implements GameService {
         return gameRepository.findOne(id);
     }
 
+    @Override
+    public Game addRate(final long gameId, final RateDto rateDto, final String email) {
+        Borrow borrow = borrowRepository
+                .findByUserEmailAndBorrowedGamesIdIn(email, gameId)
+                .orElseThrow(() -> new GameAddRateException("User cannot add rate for game which not borrow."));
 
+        User user = borrow.getUser();
+
+        Game game = borrow.getBorrowedGames()
+                .stream()
+                .filter(g -> g.getId().equals(gameId))
+                .findFirst().get();
+
+        game.addRate(new Rate(user.getId(), rateDto.getRate(), rateDto.getComment()));
+
+        game = gameRepository.save(game);
+
+        log.info("Add rate <{}> for game <{}>", rateDto.getRate(), gameId);
+
+        return game;
+    }
 }

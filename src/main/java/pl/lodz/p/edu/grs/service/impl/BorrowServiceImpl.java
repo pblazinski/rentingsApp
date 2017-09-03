@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import pl.lodz.p.edu.grs.controller.borrow.BorrowDto;
 import pl.lodz.p.edu.grs.factory.BorrowFactory;
 import pl.lodz.p.edu.grs.model.Borrow;
-import pl.lodz.p.edu.grs.model.Game;
+import pl.lodz.p.edu.grs.model.game.Game;
 import pl.lodz.p.edu.grs.model.user.User;
 import pl.lodz.p.edu.grs.repository.BorrowRepository;
 import pl.lodz.p.edu.grs.service.BorrowService;
@@ -60,7 +60,7 @@ public class BorrowServiceImpl implements BorrowService {
 
     @Override
     public Page<Borrow> findUserBorrows(final Pageable pageable, final String principal) {
-        Page<Borrow> userBorrows = borrowRepository.findBorrowsByUser_Email(pageable, principal);
+        Page<Borrow> userBorrows = borrowRepository.findBorrowsByUserEmail(pageable, principal);
 
         log.info("Found <{}> borrows page borrowed by <{}>", userBorrows.getTotalElements(), principal);
 
@@ -87,7 +87,7 @@ public class BorrowServiceImpl implements BorrowService {
         }
         Borrow borrow = borrowRepository.findOne(id);
 
-        borrow.setPenalties(value);
+        borrow.updatePenalties(value);
 
         log.info("Updated borrow <{}> with value <{}>", borrow.getId(), value);
 
@@ -107,8 +107,8 @@ public class BorrowServiceImpl implements BorrowService {
 
         borrow.getBorrowedGames().forEach(game -> game.updateAvailability(false));
 
-        if (borrowRepository.findBorrowsByUser_Email(new PageRequest(0, 20), user.getEmail()).getTotalElements() >= 10) {
-            borrow.setTotalPrice(borrow.getTotalPrice() * DISCOUNT);
+        if (borrowRepository.findBorrowsByUserEmail(new PageRequest(0, 20), user.getEmail()).getTotalElements() >= 10) {
+            borrow.updateTotalPrice(borrow.getTotalPrice() * DISCOUNT);
             log.info("Discount for user <{}> and borrow <{}>", user.getId(), borrow.getId());
         }
 
@@ -140,7 +140,7 @@ public class BorrowServiceImpl implements BorrowService {
 
         borrow.getBorrowedGames().forEach(game -> game.updateAvailability(true));
 
-        borrow.setTimeBack(localDateTime);
+        borrow.updateTimeBack(localDateTime);
 
         borrow = borrowRepository.save(borrow);
         log.info("Returned borrow <{}> with <{}>  at", id, borrow.getBorrowedGames().size(), borrow.getTimeBack());
