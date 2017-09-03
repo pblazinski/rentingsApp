@@ -10,7 +10,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.TransactionSystemException;
 import pl.lodz.p.edu.grs.Application;
 import pl.lodz.p.edu.grs.controller.category.CategoryDto;
 import pl.lodz.p.edu.grs.model.Category;
@@ -18,10 +17,7 @@ import pl.lodz.p.edu.grs.repository.BorrowRepository;
 import pl.lodz.p.edu.grs.repository.CategoryRepository;
 import pl.lodz.p.edu.grs.repository.GameRepository;
 import pl.lodz.p.edu.grs.repository.UserRepository;
-import pl.lodz.p.edu.grs.service.BorrowService;
 import pl.lodz.p.edu.grs.service.CategoryService;
-import pl.lodz.p.edu.grs.service.GameService;
-import pl.lodz.p.edu.grs.service.UserService;
 import pl.lodz.p.edu.grs.util.CategoryUtil;
 
 import javax.persistence.EntityNotFoundException;
@@ -40,17 +36,12 @@ public class CategoryServiceIT {
 
     @Autowired
     private BorrowRepository borrowRepository;
-
-
     @Autowired
     private GameRepository gameRepository;
-
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private CategoryRepository categoryRepository;
-
     @Autowired
     private CategoryService categoryService;
 
@@ -61,6 +52,7 @@ public class CategoryServiceIT {
         categoryRepository.deleteAll();
         userRepository.deleteAll();
     }
+
     @Before
     public void tearDown() throws Exception {
         borrowRepository.deleteAll();
@@ -113,6 +105,16 @@ public class CategoryServiceIT {
         //given
         CategoryDto categoryDto = CategoryUtil.mockCategoryDto();
         categoryDto.setName(BLANK_VALUE);
+        //when
+        categoryService.addCategory(categoryDto);
+        //then
+    }
+
+    @Test(expected = ConstraintViolationException.class)
+    public void shouldThrowConstraintViolationExceptionWhenAddCategoryWithNullName() {
+        //given
+        CategoryDto categoryDto = CategoryUtil.mockCategoryDto();
+        categoryDto.setName(null);
         //when
         categoryService.addCategory(categoryDto);
         //then
