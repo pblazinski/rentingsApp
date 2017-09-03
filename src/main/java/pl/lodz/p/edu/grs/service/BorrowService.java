@@ -5,9 +5,6 @@ import org.springframework.data.domain.Pageable;
 import pl.lodz.p.edu.grs.controller.borrow.BorrowDto;
 import pl.lodz.p.edu.grs.model.Borrow;
 
-import java.security.Principal;
-import java.util.List;
-
 
 public interface BorrowService {
 

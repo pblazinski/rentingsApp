@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import pl.lodz.p.edu.grs.model.Borrow;
+import pl.lodz.p.edu.grs.model.game.Game;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,5 +17,7 @@ public interface BorrowRepository extends JpaRepository<Borrow, Long> {
     Optional<Borrow> findByUserEmailAndBorrowedGamesIdIn(String email, long gameId);
 
     List<Borrow> findBorrowsByTimeBack(LocalDateTime time);
+
+    List<Borrow> findAllByBorrowedGamesIn(List<Game> games);
 
 }
