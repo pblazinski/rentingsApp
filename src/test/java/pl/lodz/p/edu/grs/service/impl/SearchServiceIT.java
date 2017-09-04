@@ -1,5 +1,6 @@
 package pl.lodz.p.edu.grs.service.impl;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -7,12 +8,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import pl.lodz.p.edu.grs.Application;
 import pl.lodz.p.edu.grs.controller.search.SearchDto;
 import pl.lodz.p.edu.grs.model.Category;
 import pl.lodz.p.edu.grs.model.game.Game;
+import pl.lodz.p.edu.grs.repository.BorrowRepository;
+import pl.lodz.p.edu.grs.repository.CategoryRepository;
 import pl.lodz.p.edu.grs.repository.GameRepository;
+import pl.lodz.p.edu.grs.repository.UserRepository;
 import pl.lodz.p.edu.grs.service.SearchService;
 import pl.lodz.p.edu.grs.util.StubHelper;
 
@@ -21,19 +26,29 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = Application.class)
+@SpringBootTest
+@ActiveProfiles("test")
 public class SearchServiceIT {
 
     @Autowired
     private SearchService searchService;
     @Autowired
     private GameRepository gameRepository;
+    @Autowired
+    private BorrowRepository borrowRepository;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     private List<Category> categories;
 
     @Before
     public void setUp() throws Exception {
+        borrowRepository.deleteAll();
+        userRepository.deleteAll();
         gameRepository.deleteAll();
+        categoryRepository.deleteAll();
         categories = StubHelper.stubCategories();
         List<Game> games = StubHelper.stubGames();
     }

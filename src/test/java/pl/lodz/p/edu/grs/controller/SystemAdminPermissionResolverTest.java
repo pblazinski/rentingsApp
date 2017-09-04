@@ -2,8 +2,6 @@ package pl.lodz.p.edu.grs.controller;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
 import pl.lodz.p.edu.grs.model.user.Role;
 import pl.lodz.p.edu.grs.model.user.User;
 
@@ -16,7 +14,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
 public class SystemAdminPermissionResolverTest {
 
     private SystemAdminPermissionResolver systemAdminPermissionResolver;

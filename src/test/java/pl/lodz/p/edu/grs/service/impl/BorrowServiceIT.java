@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
-import pl.lodz.p.edu.grs.Application;
 import pl.lodz.p.edu.grs.controller.borrow.BorrowDto;
 import pl.lodz.p.edu.grs.controller.game.GameDto;
 import pl.lodz.p.edu.grs.controller.user.RegisterUserDto;
@@ -37,34 +37,28 @@ import java.util.Collections;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = Application.class)
+@SpringBootTest
+@ActiveProfiles("test")
 public class BorrowServiceIT {
 
     @Autowired
     private BorrowService borrowService;
-
     @Autowired
     private BorrowRepository borrowRepository;
-
     @Autowired
     private GameService gameService;
-
     @Autowired
     private GameRepository gameRepository;
-
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private UserService userService;
-
     @Autowired
     private CategoryRepository categoryRepository;
-
     @Autowired
     private CategoryService categoryService;
 
-    public static final double DISCOUNT = 0.9;
+    private static final double DISCOUNT = 0.9;
 
     @After
     public void setUp() throws Exception {
@@ -161,16 +155,16 @@ public class BorrowServiceIT {
         gameDto.setCategoryId(category.getId());
 
         Game game = gameService.addGame(gameDto);
-        Game game1 = gameService.addGame(new GameDto("1","1",true,20.99,category.getId()));
-        Game game2 = gameService.addGame(new GameDto("2","1",true,20.99,category.getId()));
-        Game game3 = gameService.addGame(new GameDto("3","1",true,20.99,category.getId()));
-        Game game4 = gameService.addGame(new GameDto("4","1",true,20.99,category.getId()));
-        Game game5 = gameService.addGame(new GameDto("5","1",true,20.99,category.getId()));
-        Game game6 = gameService.addGame(new GameDto("6","1",true,20.99,category.getId()));
-        Game game7 = gameService.addGame(new GameDto("7","1",true,20.99,category.getId()));
-        Game game8 = gameService.addGame(new GameDto("8","1",true,20.99,category.getId()));
-        Game game9 = gameService.addGame(new GameDto("9","1",true,20.99,category.getId()));
-        Game game10 = gameService.addGame(new GameDto("10","1",true,20.99,category.getId()));
+        Game game1 = gameService.addGame(new GameDto("1", "1", true, 20.99, category.getId()));
+        Game game2 = gameService.addGame(new GameDto("2", "1", true, 20.99, category.getId()));
+        Game game3 = gameService.addGame(new GameDto("3", "1", true, 20.99, category.getId()));
+        Game game4 = gameService.addGame(new GameDto("4", "1", true, 20.99, category.getId()));
+        Game game5 = gameService.addGame(new GameDto("5", "1", true, 20.99, category.getId()));
+        Game game6 = gameService.addGame(new GameDto("6", "1", true, 20.99, category.getId()));
+        Game game7 = gameService.addGame(new GameDto("7", "1", true, 20.99, category.getId()));
+        Game game8 = gameService.addGame(new GameDto("8", "1", true, 20.99, category.getId()));
+        Game game9 = gameService.addGame(new GameDto("9", "1", true, 20.99, category.getId()));
+        Game game10 = gameService.addGame(new GameDto("10", "1", true, 20.99, category.getId()));
 
         borrowService.addBorrow(new BorrowDto(Arrays.asList(game.getId())), registerUserDTO.getEmail());
         borrowService.addBorrow(new BorrowDto(Arrays.asList(game1.getId())), registerUserDTO.getEmail());

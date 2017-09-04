@@ -9,8 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
-import pl.lodz.p.edu.grs.Application;
 import pl.lodz.p.edu.grs.controller.category.CategoryDto;
 import pl.lodz.p.edu.grs.model.Category;
 import pl.lodz.p.edu.grs.repository.BorrowRepository;
@@ -29,7 +29,8 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = Application.class)
+@SpringBootTest
+@ActiveProfiles("test")
 public class CategoryServiceIT {
 
     private static final String BLANK_VALUE = "     ";
