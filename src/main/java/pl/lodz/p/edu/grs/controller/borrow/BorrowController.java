@@ -44,13 +44,14 @@ public class BorrowController {
 
     @GetMapping("/{id}")
     @ApiOperation(value = "Get borrow by id")
+    @PreAuthorize("@borrowPermisionResolver.hasAuthoritiyToGetBorrow(principal, #id)")
     public Borrow getBorrow(@PathVariable final Long id) {
         return borrowService.getBorrow(id);
     }
 
     @PostMapping
     @ApiOperation(value = "Create borrow")
-    @PreAuthorize("hasAuthority('GET_BORROW')")
+    @PreAuthorize("hasAuthority('ADD_BORROW')")
     public HttpEntity addBorrow(@RequestBody final BorrowDto borrowDto,
                                 final Principal principal) {
         Borrow borrow = borrowService.addBorrow(borrowDto, principal.getName());
@@ -69,7 +70,7 @@ public class BorrowController {
 
     @PostMapping("/{id}")
     @ApiOperation(value = "Return game back")
-    @PreAuthorize("hasAuthority('GET_BORROW')")
+    @PreAuthorize("hasAuthority('ADD_BORROW')")
     public HttpEntity returnGame(@PathVariable final Long id) {
        Borrow borrow = borrowService.updateReturnTime(id);
 

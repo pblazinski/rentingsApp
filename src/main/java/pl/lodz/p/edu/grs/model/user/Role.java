@@ -8,9 +8,9 @@ import java.util.List;
 
 public enum Role {
 
-    SYSTEM_ADMIN(Authority.LIST_USER, Authority.MODIFY_USER, Authority.MODIFY_GAME, Authority.MODIFY_CATEGORY, Authority.LIST_BORROW, Authority.MODIFY_BORROW),
+    SYSTEM_ADMIN(Authority.LIST_USER, Authority.MODIFY_USER, Authority.MODIFY_GAME, Authority.MODIFY_CATEGORY, Authority.LIST_BORROW, Authority.MODIFY_BORROW, Authority.GET_BORROW),
 
-    USER(Authority.MODIFY_USER, Authority.GET_USER, Authority.LIST_GAME, Authority.GET_GAME, Authority.GET_CATEGORY, Authority.LIST_CATEGORY, Authority.LIST_BORROW, Authority.GET_BORROW);
+    USER(Authority.MODIFY_USER, Authority.GET_USER, Authority.LIST_GAME, Authority.GET_GAME, Authority.GET_CATEGORY, Authority.LIST_CATEGORY, Authority.LIST_BORROW, Authority.GET_BORROW, Authority.ADD_BORROW);
 
     Role(final Authority... authorities) {
         this.authorities = Arrays.asList(authorities);

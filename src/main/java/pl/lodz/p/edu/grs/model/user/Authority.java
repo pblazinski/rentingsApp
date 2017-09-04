@@ -12,5 +12,6 @@ public enum Authority {
     MODIFY_CATEGORY,
     LIST_BORROW,
     GET_BORROW,
-    MODIFY_BORROW
+    MODIFY_BORROW,
+    ADD_BORROW
 }
