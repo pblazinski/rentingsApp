@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.Validator;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
@@ -58,11 +59,14 @@ public class GameController {
 
     @PostMapping
     @ApiOperation(value = "Create game")
+    @PreAuthorize("hasAuthority('MODIFY_GAME')")
     public Game addGame(@RequestBody @Valid final GameDto gameDto) {
         return gameService.addGame(gameDto);
     }
 
     @PutMapping("/{id}/info")
+    @ApiOperation(value = "Update game title and description")
+    @PreAuthorize("hasAuthority('MODIFY_GAME')")
     public HttpEntity updateTitleAndDescription(@PathVariable final Long id,
                                                 @RequestBody @Valid UpdateGameInfoDto updateGameInfoDto) {
         Game game = gameService.updateTitleAndDescription(id,
@@ -73,6 +77,8 @@ public class GameController {
     }
 
     @PutMapping("/{id}/price")
+    @ApiOperation(value = "Update game price")
+    @PreAuthorize("hasAuthority('MODIFY_GAME')")
     public HttpEntity updatePrice(@PathVariable final Long id,
                                   @RequestBody @Valid UpdateGamePriceDto updateGamePriceDto) {
         Game game = gameService.updatePrice(id, updateGamePriceDto.getPrice());
@@ -81,6 +87,8 @@ public class GameController {
     }
 
     @PutMapping("/{id}/available")
+    @ApiOperation(value = "Update game availability")
+    @PreAuthorize("hasAuthority('MODIFY_GAME')")
     public HttpEntity updateAvailability(@PathVariable final Long id,
                                          @RequestBody @Valid UpdateGameAvailabilityDto updateGameAvailabilityDto) {
         Game game = gameService.updateAvailability(id, updateGameAvailabilityDto.isAvailable());
@@ -89,6 +97,8 @@ public class GameController {
     }
 
     @PutMapping("/category")
+    @ApiOperation(value = "Update game category")
+    @PreAuthorize("hasAuthority('MODIFY_GAME')")
     public HttpEntity updateCategory(@RequestBody @Valid final UpdateGameCategoryDto updateGameCategoryDto) {
         Game game = gameService.updateCategory(updateGameCategoryDto.getId(), updateGameCategoryDto.getCategoryId());
 
@@ -96,6 +106,7 @@ public class GameController {
     }
 
     @PostMapping("/{gameId}/rates")
+    @ApiOperation(value = "Add game rate")
     public HttpEntity addRate(@PathVariable final long gameId,
                               @RequestBody @Valid RateDto rateDto,
                               final Principal principal) {
@@ -111,6 +122,7 @@ public class GameController {
     }
 
     @GetMapping("/{gameId}/recommendations")
+    @ApiOperation(value = "Get game recomendations")
     public Recommendation getGameRecommendations(@PathVariable final long gameId,
                                                  @RequestParam final long limit) {
         List<Game> basedOnCategory =
@@ -126,6 +138,7 @@ public class GameController {
 
     @DeleteMapping("/{id}")
     @ApiOperation(value = "Delete game")
+    @PreAuthorize("hasAuthority('MODIFY_GAME')")
     public void remove(@PathVariable final Long id) {
         gameService.remove(id);
     }

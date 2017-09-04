@@ -51,6 +51,11 @@ public class StubHelper {
         return userService.registerUser(userDto);
     }
 
+    public static User stubSystemAdmin() {
+        RegisterUserDto adminDto = new RegisterUserDto("email@admin.pl", "THE BEST", "ADMIN", "password");
+        return userService.createSystemAdmin(adminDto);
+    }
+
     public static List<Game> stubGames() {
         GameDto game = new GameDto("Quake", "FPS bestseller", true, 80, categories.get(0).getId());
         GameDto game1 = new GameDto("H1Z1: King Of The Kill", "Battle Royale", true, 120, categories.get(1).getId());

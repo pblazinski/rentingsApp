@@ -56,12 +56,15 @@ public class GamePOSTAddGameEndpointTest {
 
     private User user;
 
+    private User admin;
+
     @Before
     public void setUp() throws Exception {
         borrowRepository.deleteAll();
         gameRepository.deleteAll();
         categoryRepository.deleteAll();
         userRepository.deleteAll();
+        admin = StubHelper.stubSystemAdmin();
         user = StubHelper.stubUser();
     }
 
@@ -79,7 +82,7 @@ public class GamePOSTAddGameEndpointTest {
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/api/games/")
                 .accept(MediaType.APPLICATION_JSON_UTF8)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .with(user(new AppUser(user)))
+                .with(user(new AppUser(admin)))
                 .content(content);
 
         //when
@@ -105,8 +108,50 @@ public class GamePOSTAddGameEndpointTest {
                 .andExpect(jsonPath("$.category.name").value(game.getCategory().getName()))
                 .andExpect(jsonPath("$.available").exists())
                 .andExpect(jsonPath("$.available").value(game.isAvailable()));
-
     }
+
+
+    @Test
+    public void shouldReturnForbiddenWhenAddGame() throws Exception {
+        //given
+        GameDto gameDto = GameUtil.mockGameDto();
+
+        Category category = categoryService.addCategory(CategoryUtil.mockCategoryDto());
+
+        gameDto.setCategoryId(category.getId());
+
+        String content = objectMapper.writeValueAsString(gameDto);
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/api/games/")
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .with(user(new AppUser(user)))
+                .content(content);
+
+        //when
+        ResultActions result = mockMvc.perform(requestBuilder);
+
+        //then
+        result.andExpect(status().isForbidden());
+    }
+
+    @Test
+    public void shouldReturnUnauthorizedWhenAddGame() throws Exception {
+        //given
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/api/games/")
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .contentType(MediaType.APPLICATION_JSON_UTF8);
+
+        //when
+        ResultActions result = mockMvc.perform(requestBuilder);
+
+        //then
+        result.andExpect(status().isUnauthorized());
+    }
+
+
+
 
     private long getIdFromContentBodyJson(final String content) throws JSONException {
         JSONObject jsonObject = new JSONObject(content);

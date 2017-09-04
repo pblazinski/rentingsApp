@@ -93,4 +93,6 @@ public class GameGETGetGamesEndpointTest {
                 .andExpect(jsonPath("$.content[0].available").value(game.isAvailable()));
     }
 
+
+
 }

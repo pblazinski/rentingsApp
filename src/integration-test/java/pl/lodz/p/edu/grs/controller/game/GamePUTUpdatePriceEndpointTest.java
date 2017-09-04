@@ -56,6 +56,8 @@ public class GamePUTUpdatePriceEndpointTest {
 
     private User user;
 
+    private User admin;
+
     private static final double CORRECT_PRICE = 10.99;
 
     private static final double BELOWZERO_PRICE = -5;
@@ -66,6 +68,7 @@ public class GamePUTUpdatePriceEndpointTest {
         gameRepository.deleteAll();
         categoryRepository.deleteAll();
         userRepository.deleteAll();
+        admin = StubHelper.stubSystemAdmin();
         user = StubHelper.stubUser();
     }
 
@@ -84,7 +87,7 @@ public class GamePUTUpdatePriceEndpointTest {
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.put(String.format("/api/games/%d/price", game.getId()))
                 .accept(MediaType.APPLICATION_JSON_UTF8)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .with(user(new AppUser(user)))
+                .with(user(new AppUser(admin)))
                 .content(content);
 
         //when
@@ -114,7 +117,7 @@ public class GamePUTUpdatePriceEndpointTest {
     }
 
     @Test
-    public void shouldBadRequestStatysWhenUpdateBelovZeroPrice() throws Exception {
+    public void shouldBadRequestStatusWhenUpdateBeloveZeroPrice() throws Exception {
         //given
         Category category = categoryService.addCategory(CategoryUtil.mockCategoryDto());
 
@@ -141,5 +144,54 @@ public class GamePUTUpdatePriceEndpointTest {
                 .isNotSameAs(BELOWZERO_PRICE);
 
         result.andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void shouldReturnForbiddenStatusWhenUpdateGamePrice() throws Exception {
+        //given
+        Category category = categoryService.addCategory(CategoryUtil.mockCategoryDto());
+
+        GameDto gameDto = GameUtil.mockGameDto();
+        gameDto.setCategoryId(category.getId());
+        UpdateGamePriceDto gameInfoDto = new UpdateGamePriceDto(CORRECT_PRICE);
+        Game game = gameService.addGame(gameDto);
+
+        String content = objectMapper.writeValueAsString(gameInfoDto);
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.put(String.format("/api/games/%d/price", game.getId()))
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .with(user(new AppUser(user)))
+                .content(content);
+
+        //when
+        ResultActions result = mockMvc.perform(requestBuilder);
+
+        //then
+        result.andExpect(status().isForbidden());
+    }
+
+    @Test
+    public void shouldReturnUnauthorizedStatusWhenUpdateGamePrice() throws Exception {
+        //given
+        Category category = categoryService.addCategory(CategoryUtil.mockCategoryDto());
+
+        GameDto gameDto = GameUtil.mockGameDto();
+        gameDto.setCategoryId(category.getId());
+        UpdateGamePriceDto gameInfoDto = new UpdateGamePriceDto(CORRECT_PRICE);
+        Game game = gameService.addGame(gameDto);
+
+        String content = objectMapper.writeValueAsString(gameInfoDto);
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.put(String.format("/api/games/%d/price", game.getId()))
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(content);
+
+        //when
+        ResultActions result = mockMvc.perform(requestBuilder);
+
+        //then
+        result.andExpect(status().isUnauthorized());
     }
 }

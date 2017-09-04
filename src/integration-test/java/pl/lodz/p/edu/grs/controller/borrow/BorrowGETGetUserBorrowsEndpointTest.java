@@ -102,4 +102,23 @@ public class BorrowGETGetUserBorrowsEndpointTest {
                 .andExpect(jsonPath("$.content[0].totalPrice").exists())
                 .andExpect(jsonPath("$.content[0].totalPrice").value(borrow.getTotalPrice()));
     }
+
+    @Test
+    public void shouldReturnUnauthorizedStatusWhenGetPageOfBorrows() throws Exception {
+        //given
+        Category category = categoryService.addCategory(CategoryUtil.mockCategoryDto());
+        GameDto gameDto = GameUtil.mockGameDto();
+        gameDto.setCategoryId(category.getId());
+
+        Game game = gameService.addGame(gameDto);
+
+        Borrow borrow = borrowService.addBorrow(new BorrowDto(Collections.singletonList(game.getId())), user.getEmail());
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.get("/api/borrow/my");
+        //when
+        ResultActions result = mockMvc.perform(requestBuilder);
+
+        //then
+        result.andExpect(status().isUnauthorized());
+    }
 }

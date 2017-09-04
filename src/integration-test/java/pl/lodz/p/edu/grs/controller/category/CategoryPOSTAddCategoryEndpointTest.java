@@ -51,6 +51,8 @@ public class CategoryPOSTAddCategoryEndpointTest {
 
     private User user;
 
+    private User admin;
+
     private static final String BLANK_VALUE = "  ";
 
 
@@ -61,6 +63,7 @@ public class CategoryPOSTAddCategoryEndpointTest {
         gameRepository.deleteAll();
         categoryRepository.deleteAll();
         userRepository.deleteAll();
+        admin = StubHelper.stubSystemAdmin();
         user = StubHelper.stubUser();
     }
 
@@ -73,7 +76,7 @@ public class CategoryPOSTAddCategoryEndpointTest {
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/api/category/")
                 .accept(MediaType.APPLICATION_JSON_UTF8)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .with(user(new AppUser(user)))
+                .with(user(new AppUser(admin)))
                 .content(content);
         //when
         ResultActions result = mockMvc.perform(requestBuilder);
@@ -109,6 +112,40 @@ public class CategoryPOSTAddCategoryEndpointTest {
         result.andExpect(status().isBadRequest());
     }
 
+    @Test
+    public void shouldReturnForbiddenStatusWhenAddCategory() throws Exception {
+        //given
+        CategoryDto categoryDto = CategoryUtil.mockCategoryDto();
+
+        String content = objectMapper.writeValueAsString(categoryDto);
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/api/category/")
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .with(user(new AppUser(user)))
+                .content(content);
+        //when
+        ResultActions result = mockMvc.perform(requestBuilder);
+
+        //then
+        result.andExpect(status().isForbidden());
+    }
+
+    @Test
+    public void shouldReturnUnauthorizedStatusWhenAddCategory() throws Exception {
+        //given
+        CategoryDto categoryDto = CategoryUtil.mockCategoryDto();
+
+        String content = objectMapper.writeValueAsString(categoryDto);
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/api/category/")
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(content);
+        //when
+        ResultActions result = mockMvc.perform(requestBuilder);
+
+        //then
+        result.andExpect(status().isUnauthorized());
+    }
 
     private long getIdFromContentBody(final String content) throws IOException {
         TypeReference<HashMap<String, String>> typeRef

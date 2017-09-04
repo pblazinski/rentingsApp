@@ -53,17 +53,46 @@ public class GameDELETERemoveEndpointTest {
 
     private User user;
 
+    private User admin;
+
     @Before
     public void setUp() throws Exception {
         borrowRepository.deleteAll();
         gameRepository.deleteAll();
         categoryRepository.deleteAll();
         userRepository.deleteAll();
+        admin = StubHelper.stubSystemAdmin();
         user = StubHelper.stubUser();
     }
 
     @Test
     public void shouldDeleteGameWithSpecifiedId() throws Exception {
+        //given
+        Category category = categoryService.addCategory(CategoryUtil.mockCategoryDto());
+
+        GameDto gameDto = GameUtil.mockGameDto();
+        gameDto.setCategoryId(category.getId());
+        Game game = gameService.addGame(gameDto);
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.delete(String.format("/api/games/%d", game.getId()))
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .with(user(new AppUser(admin)))
+                .contentType(MediaType.APPLICATION_JSON_UTF8);
+
+        //when
+        ResultActions result = mockMvc.perform(requestBuilder);
+
+        //then
+        game = gameRepository.findOne(game.getId());
+
+        result.andExpect(status().isOk());
+
+        assertThat(game)
+                .isNull();
+    }
+
+    @Test
+    public void shouldThrowForbiddenWhenUserRemoveGame() throws Exception {
         //given
         Category category = categoryService.addCategory(CategoryUtil.mockCategoryDto());
 
@@ -80,11 +109,21 @@ public class GameDELETERemoveEndpointTest {
         ResultActions result = mockMvc.perform(requestBuilder);
 
         //then
-        game = gameRepository.findOne(game.getId());
+        result.andExpect(status().isForbidden());
+    }
 
-        assertThat(game)
-                .isNull();
+    @Test
+    public void shouldReturnNotAuthorizedWhenDeleteGame() throws Exception {
+        //given
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.delete(String.format("/api/games/%d", 1L))
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .contentType(MediaType.APPLICATION_JSON_UTF8);
 
-        result.andExpect(status().isOk());
+        //when
+        ResultActions result = mockMvc.perform(requestBuilder);
+
+        //then
+        result.andExpect(status().isUnauthorized());
+
     }
 }

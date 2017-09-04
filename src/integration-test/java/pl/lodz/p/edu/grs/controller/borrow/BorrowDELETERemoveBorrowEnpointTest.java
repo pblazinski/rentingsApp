@@ -36,8 +36,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -64,12 +63,15 @@ public class BorrowDELETERemoveBorrowEnpointTest {
 
     private User user;
 
+    private User admin;
+
     @Before
     public void setUp() throws Exception {
         borrowRepository.deleteAll();
         gameRepository.deleteAll();
         categoryRepository.deleteAll();
         userRepository.deleteAll();
+        admin = StubHelper.stubSystemAdmin();
         user = StubHelper.stubUser();
     }
 
@@ -86,7 +88,7 @@ public class BorrowDELETERemoveBorrowEnpointTest {
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.delete(String.format("/api/borrow/%d", borrow.getId()))
                 .accept(MediaType.APPLICATION_JSON_UTF8)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .with(user(new AppUser(user)));
+                .with(user(new AppUser(admin)));
         //when
         ResultActions result = mockMvc.perform(requestBuilder);
 
@@ -94,6 +96,49 @@ public class BorrowDELETERemoveBorrowEnpointTest {
         boolean exists = borrowRepository.exists(borrow.getId());
         assertThat(exists)
                 .isEqualTo(false);
+
+        result.andExpect(status().isOk());
+    }
+
+    @Test
+    public void shouldReturnForbiddenStatusWhenRemoveBorrowWithSpecifiedId() throws Exception {
+        //given
+        Category category = categoryService.addCategory(CategoryUtil.mockCategoryDto());
+        GameDto gameDto = GameUtil.mockGameDto();
+        gameDto.setCategoryId(category.getId());
+
+        Game game = gameService.addGame(gameDto);
+
+        Borrow borrow = borrowService.addBorrow(new BorrowDto(Collections.singletonList(game.getId())), user.getEmail());
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.delete(String.format("/api/borrow/%d", borrow.getId()))
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .with(user(new AppUser(user)));
+        //when
+        ResultActions result = mockMvc.perform(requestBuilder);
+
+        //then
+        result.andExpect(status().isForbidden());
+    }
+
+    @Test
+    public void shouldReturnUnauthorizedStatusWhenRemoveBorrowWithSpecifiedId() throws Exception {
+        //given
+        Category category = categoryService.addCategory(CategoryUtil.mockCategoryDto());
+        GameDto gameDto = GameUtil.mockGameDto();
+        gameDto.setCategoryId(category.getId());
+
+        Game game = gameService.addGame(gameDto);
+
+        Borrow borrow = borrowService.addBorrow(new BorrowDto(Collections.singletonList(game.getId())), user.getEmail());
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.delete(String.format("/api/borrow/%d", borrow.getId()))
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .contentType(MediaType.APPLICATION_JSON_UTF8);
+        //when
+        ResultActions result = mockMvc.perform(requestBuilder);
+
+        //then
+        result.andExpect(status().isUnauthorized());
     }
 
     private long getIdFromContentBodyJson(final String content) throws JSONException {
