@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import pl.lodz.p.edu.grs.aspect.Monitored;
 import pl.lodz.p.edu.grs.model.user.User;
 import pl.lodz.p.edu.grs.service.UserService;
 
@@ -45,6 +46,7 @@ public class UserController {
         return userService.findAll(pageable);
     }
 
+    @Monitored
     @GetMapping("/{userId}")
     @ApiOperation("Get user by id")
     public User getUserById(@PathVariable final long userId) {
