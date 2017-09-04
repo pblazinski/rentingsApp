@@ -56,6 +56,8 @@ public class GamePUTUpdateTitleAndDescriptionTest {
 
     private User user;
 
+    private User admin;
+
     private static final String CORRECT_TITLE = "Title";
 
     private static final String CORRECT_DESCRIPTION = "Description";
@@ -68,6 +70,7 @@ public class GamePUTUpdateTitleAndDescriptionTest {
         gameRepository.deleteAll();
         categoryRepository.deleteAll();
         userRepository.deleteAll();
+        admin = StubHelper.stubSystemAdmin();
         user = StubHelper.stubUser();
     }
 
@@ -86,7 +89,7 @@ public class GamePUTUpdateTitleAndDescriptionTest {
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.put(String.format("/api/games/%d/info", game.getId()))
                 .accept(MediaType.APPLICATION_JSON_UTF8)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .with(user(new AppUser(user)))
+                .with(user(new AppUser(admin)))
                 .content(content);
 
         //when
@@ -94,11 +97,6 @@ public class GamePUTUpdateTitleAndDescriptionTest {
 
         //then
         game = gameRepository.findOne(game.getId());
-
-        assertThat(game.getDescription())
-                .isEqualTo(CORRECT_DESCRIPTION);
-        assertThat(game.getTitle())
-                .isEqualTo(CORRECT_TITLE);
 
         result.andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").exists())
@@ -115,6 +113,11 @@ public class GamePUTUpdateTitleAndDescriptionTest {
                 .andExpect(jsonPath("$.category.name").value(game.getCategory().getName()))
                 .andExpect(jsonPath("$.available").exists())
                 .andExpect(jsonPath("$.available").value(game.isAvailable()));
+
+        assertThat(game.getDescription())
+                .isEqualTo(CORRECT_DESCRIPTION);
+        assertThat(game.getTitle())
+                .isEqualTo(CORRECT_TITLE);
     }
 
     @Test
@@ -149,4 +152,52 @@ public class GamePUTUpdateTitleAndDescriptionTest {
         result.andExpect(status().isBadRequest());
     }
 
+    @Test
+    public void shouldReturnForbiddenStatusWhenUpdateTitleAndDescription() throws Exception {
+        //given
+        Category category = categoryService.addCategory(CategoryUtil.mockCategoryDto());
+
+        GameDto gameDto = GameUtil.mockGameDto();
+        gameDto.setCategoryId(category.getId());
+        UpdateGameInfoDto gameInfoDto = new UpdateGameInfoDto(CORRECT_TITLE, CORRECT_DESCRIPTION);
+        Game game = gameService.addGame(gameDto);
+
+        String content = objectMapper.writeValueAsString(gameInfoDto);
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.put(String.format("/api/games/%d/info", game.getId()))
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .with(user(new AppUser(user)))
+                .content(content);
+
+        //when
+        ResultActions result = mockMvc.perform(requestBuilder);
+
+        //then
+        result.andExpect(status().isForbidden());
+    }
+
+    @Test
+    public void shouldReturnUnauthorizedStatusWhenUpdateTitleAndDescription() throws Exception {
+        //given
+        Category category = categoryService.addCategory(CategoryUtil.mockCategoryDto());
+
+        GameDto gameDto = GameUtil.mockGameDto();
+        gameDto.setCategoryId(category.getId());
+        UpdateGameInfoDto gameInfoDto = new UpdateGameInfoDto(CORRECT_TITLE, CORRECT_DESCRIPTION);
+        Game game = gameService.addGame(gameDto);
+
+        String content = objectMapper.writeValueAsString(gameInfoDto);
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.put(String.format("/api/games/%d/info", game.getId()))
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(content);
+
+        //when
+        ResultActions result = mockMvc.perform(requestBuilder);
+
+        //then
+        result.andExpect(status().isUnauthorized());
+    }
 }

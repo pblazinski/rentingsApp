@@ -45,6 +45,7 @@ public class CategoryDELETERemoveEndpointTest {
     private BorrowRepository borrowRepository;
 
     private User user;
+    private User admin;
 
     @Before
     public void setUp() throws Exception {
@@ -52,6 +53,7 @@ public class CategoryDELETERemoveEndpointTest {
         gameRepository.deleteAll();
         categoryRepository.deleteAll();
         userRepository.deleteAll();
+        admin = StubHelper.stubSystemAdmin();
         user = StubHelper.stubUser();
     }
 
@@ -63,7 +65,7 @@ public class CategoryDELETERemoveEndpointTest {
         Category category = categoryService.addCategory(categoryDto);
 
         MockHttpServletRequestBuilder requestBuilder = delete(String.format("/api/category/%d", category.getId()))
-                .with(user(new AppUser(user)));
+                .with(user(new AppUser(admin)));
 
         //when
         ResultActions result = mockMvc.perform(requestBuilder);
@@ -75,5 +77,36 @@ public class CategoryDELETERemoveEndpointTest {
                 .isNull();
 
         result.andExpect(status().isOk());
+    }
+
+    @Test
+    public void shouldReturnForbiddenStatusWhenRemoveCategory() throws Exception {
+        //given
+        CategoryDto categoryDto = CategoryUtil.mockCategoryDto();
+        Category category = categoryService.addCategory(categoryDto);
+
+        MockHttpServletRequestBuilder requestBuilder = delete(String.format("/api/category/%d", category.getId()))
+                .with(user(new AppUser(user)));
+
+        //when
+        ResultActions result = mockMvc.perform(requestBuilder);
+
+        //then
+        result.andExpect(status().isForbidden());
+    }
+
+    @Test
+    public void shouldReturnUnauthorizedStatusWhenRemoveCategory() throws Exception {
+        //given
+        CategoryDto categoryDto = CategoryUtil.mockCategoryDto();
+        Category category = categoryService.addCategory(categoryDto);
+
+        MockHttpServletRequestBuilder requestBuilder = delete(String.format("/api/category/%d", category.getId()));
+
+        //when
+        ResultActions result = mockMvc.perform(requestBuilder);
+
+        //then
+        result.andExpect(status().isUnauthorized());
     }
 }

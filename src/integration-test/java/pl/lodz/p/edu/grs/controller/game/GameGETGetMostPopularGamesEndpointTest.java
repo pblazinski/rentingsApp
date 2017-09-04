@@ -74,14 +74,14 @@ public class GameGETGetMostPopularGamesEndpointTest {
         //given
         Category category = categoryService.addCategory(new CategoryDto("1"));
 
-        Game game = gameService.addGame(new GameDto("1","1",true,10,category.getId()));
-        Game game1 = gameService.addGame(new GameDto("2","1",true,10,category.getId()));
-        Game game2 = gameService.addGame(new GameDto("3","1",true,10,category.getId()));
-        Game game3 = gameService.addGame(new GameDto("4","1",true,10,category.getId()));
-        Game game4 = gameService.addGame(new GameDto("5","1",true,10,category.getId()));
+        Game game = gameService.addGame(new GameDto("1", "1", true, 10, category.getId()));
+        Game game1 = gameService.addGame(new GameDto("2", "1", true, 10, category.getId()));
+        Game game2 = gameService.addGame(new GameDto("3", "1", true, 10, category.getId()));
+        Game game3 = gameService.addGame(new GameDto("4", "1", true, 10, category.getId()));
+        Game game4 = gameService.addGame(new GameDto("5", "1", true, 10, category.getId()));
 
-        Borrow borrow = borrowService.addBorrow(new BorrowDto(Arrays.asList(game4.getId(),game1.getId(),game2.getId())), user.getEmail());
-        Borrow borrow2 = borrowService.addBorrow(new BorrowDto(Arrays.asList(game4.getId(),game1.getId())), user.getEmail());
+        Borrow borrow = borrowService.addBorrow(new BorrowDto(Arrays.asList(game4.getId(), game1.getId(), game2.getId())), user.getEmail());
+        Borrow borrow2 = borrowService.addBorrow(new BorrowDto(Arrays.asList(game4.getId(), game1.getId())), user.getEmail());
         Borrow borrow3 = borrowService.addBorrow(new BorrowDto(Arrays.asList(game4.getId())), user.getEmail());
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.get("/api/games/popular/3")

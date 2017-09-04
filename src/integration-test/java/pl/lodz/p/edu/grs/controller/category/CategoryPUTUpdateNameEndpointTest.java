@@ -52,6 +52,8 @@ public class CategoryPUTUpdateNameEndpointTest {
 
     private User user;
 
+    private User admin;
+
     private static final String BLANK_VALUE = "  ";
 
     @Before
@@ -60,12 +62,43 @@ public class CategoryPUTUpdateNameEndpointTest {
         gameRepository.deleteAll();
         categoryRepository.deleteAll();
         userRepository.deleteAll();
+        admin = StubHelper.stubSystemAdmin();
         user = StubHelper.stubUser();
     }
 
 
     @Test
     public void shouldReturnOkStatusWhenUpdateCategoryName() throws Exception {
+        //given
+        String UPDATED = "UPDATED";
+        CategoryDto categoryDto = new CategoryDto(UPDATED);
+        Category category = categoryService.addCategory(categoryDto);
+
+        String content = objectMapper.writeValueAsString(categoryDto);
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.put(String.format("/api/category/%d", category.getId()))
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .with(user(new AppUser(admin)))
+                .content(content);
+
+        //when
+        ResultActions result = mockMvc.perform(requestBuilder);
+
+        //then
+        category = categoryRepository.findOne(category.getId());
+
+
+        result.andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").exists())
+                .andExpect(jsonPath("$.id").value(category.getId()))
+                .andExpect(jsonPath("$.name").exists())
+                .andExpect(jsonPath("$.name").value(UPDATED));
+    }
+
+
+    @Test
+    public void shouldReturnForbiddenStatusWhenUpdateCategoryName() throws Exception {
         //given
         String UPDATED = "UPDATED";
         CategoryDto categoryDto = new CategoryDto(UPDATED);
@@ -83,14 +116,28 @@ public class CategoryPUTUpdateNameEndpointTest {
         ResultActions result = mockMvc.perform(requestBuilder);
 
         //then
-        category = categoryRepository.findOne(category.getId());
+        result.andExpect(status().isForbidden());
+    }
 
+    @Test
+    public void shouldReturnUnauthorizedStatusWhenUpdateCategoryName() throws Exception {
+        //given
+        String UPDATED = "UPDATED";
+        CategoryDto categoryDto = new CategoryDto(UPDATED);
+        Category category = categoryService.addCategory(categoryDto);
 
-        result.andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").exists())
-                .andExpect(jsonPath("$.id").value(category.getId()))
-                .andExpect(jsonPath("$.name").exists())
-                .andExpect(jsonPath("$.name").value(UPDATED));
+        String content = objectMapper.writeValueAsString(categoryDto);
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.put(String.format("/api/category/%d", category.getId()))
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(content);
+
+        //when
+        ResultActions result = mockMvc.perform(requestBuilder);
+
+        //then
+        result.andExpect(status().isUnauthorized());
     }
 
     @Test

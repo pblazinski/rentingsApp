@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.Validator;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
@@ -58,11 +59,13 @@ public class GameController {
 
     @PostMapping
     @ApiOperation(value = "Create game")
+    @PreAuthorize("hasAuthority('MODIFY_GAME')")
     public Game addGame(@RequestBody @Valid final GameDto gameDto) {
         return gameService.addGame(gameDto);
     }
 
     @PutMapping("/{id}/info")
+    @PreAuthorize("hasAuthority('MODIFY_GAME')")
     public HttpEntity updateTitleAndDescription(@PathVariable final Long id,
                                                 @RequestBody @Valid UpdateGameInfoDto updateGameInfoDto) {
         Game game = gameService.updateTitleAndDescription(id,
@@ -73,6 +76,7 @@ public class GameController {
     }
 
     @PutMapping("/{id}/price")
+    @PreAuthorize("hasAuthority('MODIFY_GAME')")
     public HttpEntity updatePrice(@PathVariable final Long id,
                                   @RequestBody @Valid UpdateGamePriceDto updateGamePriceDto) {
         Game game = gameService.updatePrice(id, updateGamePriceDto.getPrice());
@@ -81,6 +85,7 @@ public class GameController {
     }
 
     @PutMapping("/{id}/available")
+    @PreAuthorize("hasAuthority('MODIFY_GAME')")
     public HttpEntity updateAvailability(@PathVariable final Long id,
                                          @RequestBody @Valid UpdateGameAvailabilityDto updateGameAvailabilityDto) {
         Game game = gameService.updateAvailability(id, updateGameAvailabilityDto.isAvailable());
@@ -89,6 +94,7 @@ public class GameController {
     }
 
     @PutMapping("/category")
+    @PreAuthorize("hasAuthority('MODIFY_GAME')")
     public HttpEntity updateCategory(@RequestBody @Valid final UpdateGameCategoryDto updateGameCategoryDto) {
         Game game = gameService.updateCategory(updateGameCategoryDto.getId(), updateGameCategoryDto.getCategoryId());
 
@@ -126,6 +132,7 @@ public class GameController {
 
     @DeleteMapping("/{id}")
     @ApiOperation(value = "Delete game")
+    @PreAuthorize("hasAuthority('MODIFY_GAME')")
     public void remove(@PathVariable final Long id) {
         gameService.remove(id);
     }

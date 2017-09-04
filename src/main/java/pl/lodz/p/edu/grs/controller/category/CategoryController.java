@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.edu.grs.model.Category;
 import pl.lodz.p.edu.grs.service.CategoryService;
@@ -32,12 +33,14 @@ public class CategoryController {
 
     @PostMapping
     @ApiOperation(value = "Create category")
+    @PreAuthorize("hasAuthority('MODIFY_CATEGORY')")
     public Category addCategory(@RequestBody @Valid final CategoryDto categoryDto) {
         return categoryService.addCategory(categoryDto);
     }
 
     @PutMapping("/{categoryId}")
     @ApiOperation(value = "Update category")
+    @PreAuthorize("hasAuthority('MODIFY_CATEGORY')")
     public HttpEntity updateName(@PathVariable final Long categoryId,
                                  @RequestBody @Valid final CategoryDto categoryDto) {
         Category category = categoryService.updateCategory(categoryDto.getName(), categoryId);
@@ -53,6 +56,7 @@ public class CategoryController {
 
     @DeleteMapping("/{id}")
     @ApiOperation(value = "Delete category")
+    @PreAuthorize("hasAuthority('MODIFY_CATEGORY')")
     public HttpEntity remove(@PathVariable Long id) {
         categoryService.remove(id);
 

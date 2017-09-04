@@ -55,6 +55,8 @@ public class GamePUTUpdateAvailabilityEndpointTest {
     private BorrowRepository borrowRepository;
     private User user;
 
+    private User admin;
+
     private static final Boolean AVAILABLE = false;
 
     @Before
@@ -63,11 +65,58 @@ public class GamePUTUpdateAvailabilityEndpointTest {
         gameRepository.deleteAll();
         categoryRepository.deleteAll();
         userRepository.deleteAll();
+        admin = StubHelper.stubSystemAdmin();
         user = StubHelper.stubUser();
     }
 
     @Test
     public void shouldReturnOkStatusWhenUpdateGameAvailability() throws Exception {
+        //given
+        Category category = categoryService.addCategory(CategoryUtil.mockCategoryDto());
+
+        GameDto gameDto = GameUtil.mockGameDto();
+        gameDto.setCategoryId(category.getId());
+        UpdateGameAvailabilityDto gameInfoDto = new UpdateGameAvailabilityDto(AVAILABLE);
+        Game game = gameService.addGame(gameDto);
+
+        String content = objectMapper.writeValueAsString(gameInfoDto);
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.put(String.format("/api/games/%d/available", game.getId()))
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .with(user(new AppUser(admin)))
+                .content(content);
+
+        //when
+        ResultActions result = mockMvc.perform(requestBuilder);
+
+        //then
+        game = gameRepository.findOne(game.getId());
+
+        result.andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").exists())
+                .andExpect(jsonPath("$.id").value(game.getId()))
+                .andExpect(jsonPath("$.title").exists())
+                .andExpect(jsonPath("$.title").value(game.getTitle()))
+                .andExpect(jsonPath("$.description").exists())
+                .andExpect(jsonPath("$.description").value(game.getDescription()))
+                .andExpect(jsonPath("$.price").exists())
+                .andExpect(jsonPath("$.price").value(game.getPrice()))
+                .andExpect(jsonPath("$.category.id").exists())
+                .andExpect(jsonPath("$.category.id").value(game.getCategory().getId()))
+                .andExpect(jsonPath("$.category.name").exists())
+                .andExpect(jsonPath("$.category.name").value(game.getCategory().getName()))
+                .andExpect(jsonPath("$.available").exists())
+                .andExpect(jsonPath("$.available").value(game.isAvailable()));
+
+        assertThat(game.isAvailable())
+                .isEqualTo(AVAILABLE);
+
+
+    }
+
+    @Test
+    public void shouldReturnForbiddenStatusWhenAddGame() throws Exception {
         //given
         Category category = categoryService.addCategory(CategoryUtil.mockCategoryDto());
 
@@ -88,25 +137,32 @@ public class GamePUTUpdateAvailabilityEndpointTest {
         ResultActions result = mockMvc.perform(requestBuilder);
 
         //then
-        game = gameRepository.findOne(game.getId());
-
-        assertThat(game.isAvailable())
-                .isEqualTo(AVAILABLE);
-
-        result.andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").exists())
-                .andExpect(jsonPath("$.id").value(game.getId()))
-                .andExpect(jsonPath("$.title").exists())
-                .andExpect(jsonPath("$.title").value(game.getTitle()))
-                .andExpect(jsonPath("$.description").exists())
-                .andExpect(jsonPath("$.description").value(game.getDescription()))
-                .andExpect(jsonPath("$.price").exists())
-                .andExpect(jsonPath("$.price").value(game.getPrice()))
-                .andExpect(jsonPath("$.category.id").exists())
-                .andExpect(jsonPath("$.category.id").value(game.getCategory().getId()))
-                .andExpect(jsonPath("$.category.name").exists())
-                .andExpect(jsonPath("$.category.name").value(game.getCategory().getName()))
-                .andExpect(jsonPath("$.available").exists())
-                .andExpect(jsonPath("$.available").value(game.isAvailable()));
+        result.andExpect(status().isForbidden());
     }
+
+    @Test
+    public void shouldReturnUnauthorizedStatusWhenAddGame() throws Exception {
+        //given
+        Category category = categoryService.addCategory(CategoryUtil.mockCategoryDto());
+
+        GameDto gameDto = GameUtil.mockGameDto();
+        gameDto.setCategoryId(category.getId());
+        UpdateGameAvailabilityDto gameInfoDto = new UpdateGameAvailabilityDto(AVAILABLE);
+        Game game = gameService.addGame(gameDto);
+
+        String content = objectMapper.writeValueAsString(gameInfoDto);
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.put(String.format("/api/games/%d/available", game.getId()))
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(content);
+
+        //when
+        ResultActions result = mockMvc.perform(requestBuilder);
+
+        //then
+        result.andExpect(status().isUnauthorized());
+    }
+
 }
+

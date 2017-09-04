@@ -27,6 +27,8 @@ import pl.lodz.p.edu.grs.util.CategoryUtil;
 import pl.lodz.p.edu.grs.util.GameUtil;
 import pl.lodz.p.edu.grs.util.StubHelper;
 
+import javax.rmi.CORBA.Stub;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -54,6 +56,7 @@ public class GamePUTUpdateGameCategoryEndpointTest {
     @Autowired
     private BorrowRepository borrowRepository;
     private User user;
+    private User admin;
 
     @Before
     public void setUp() {
@@ -61,6 +64,7 @@ public class GamePUTUpdateGameCategoryEndpointTest {
         gameRepository.deleteAll();
         categoryRepository.deleteAll();
         userRepository.deleteAll();
+        admin = StubHelper.stubSystemAdmin();
         user = StubHelper.stubUser();
     }
 
@@ -81,7 +85,7 @@ public class GamePUTUpdateGameCategoryEndpointTest {
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.put("/api/games/category")
                 .accept(MediaType.APPLICATION_JSON_UTF8)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .with(user(new AppUser(user)))
+                .with(user(new AppUser(admin)))
                 .content(content);
 
         //when
@@ -110,5 +114,59 @@ public class GamePUTUpdateGameCategoryEndpointTest {
                 .andExpect(jsonPath("$.available").value(game.isAvailable()));
     }
 
+    @Test
+    public void shouldReturnForbiddenWhenChangeGameCategory() throws Exception {
+        Category category = categoryService.addCategory(CategoryUtil.mockCategoryDto());
+        Category category1 = categoryService.addCategory(CategoryUtil.mockCategoryDto());
+
+        GameDto gameDto = GameUtil.mockGameDto();
+        gameDto.setCategoryId(category.getId());
+
+        Game game = gameService.addGame(gameDto);
+
+        UpdateGameCategoryDto gameCategoryDto = new UpdateGameCategoryDto(game.getId(), category1.getId());
+
+        String content = objectMapper.writeValueAsString(gameCategoryDto);
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.put("/api/games/category")
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .with(user(new AppUser(user)))
+                .content(content);
+
+        //when
+        ResultActions result = mockMvc.perform(requestBuilder);
+
+
+        //then
+        result.andExpect(status().isForbidden());
+    }
+
+    @Test
+    public void shouldReturnUnauthorizedWhenChangeGameCategory() throws Exception {
+        Category category = categoryService.addCategory(CategoryUtil.mockCategoryDto());
+        Category category1 = categoryService.addCategory(CategoryUtil.mockCategoryDto());
+
+        GameDto gameDto = GameUtil.mockGameDto();
+        gameDto.setCategoryId(category.getId());
+
+        Game game = gameService.addGame(gameDto);
+
+        UpdateGameCategoryDto gameCategoryDto = new UpdateGameCategoryDto(game.getId(), category1.getId());
+
+        String content = objectMapper.writeValueAsString(gameCategoryDto);
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.put("/api/games/category")
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(content);
+
+        //when
+        ResultActions result = mockMvc.perform(requestBuilder);
+
+
+        //then
+        result.andExpect(status().isUnauthorized());
+    }
     //TODO bad request when cant find categroy
 }

@@ -182,6 +182,33 @@ public class BorrowPOSTAddBorrowEnpointTest {
                 .andExpect(jsonPath("$.totalPrice").exists())
                 .andExpect(jsonPath("$.totalPrice").value(game10.getPrice() * DISCOUNT));
     }
+
+    @Test
+    public void shouldReturnUnauthorizedWhenAddNewBorrow() throws Exception {
+        //given
+        Category category = categoryService.addCategory(CategoryUtil.mockCategoryDto());
+        GameDto gameDto = GameUtil.mockGameDto();
+        gameDto.setCategoryId(category.getId());
+
+        Game game = gameService.addGame(gameDto);
+
+        String content = "   {\n" +
+                "   \t\"games\": [" + game.getId() + "]\n" +
+                "   }";
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/api/borrow/")
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(content);
+        //when
+        ResultActions result = mockMvc.perform(requestBuilder);
+
+        //then
+        result.andExpect(status().isUnauthorized());
+    }
+
+
+
     private long getIdFromContentBodyJson(final String content) throws JSONException {
         JSONObject jsonObject = new JSONObject(content);
 
