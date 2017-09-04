@@ -10,23 +10,14 @@ import java.util.HashSet;
 public class UserUtil {
 
     public static final Long USER_ID = 1L;
-
     public static final String EMAIL = "correct@email.com";
-
     public static final String FIRST_NAME = "first";
-
     public static final String LAST_NAME = "last";
-
     public static final String PASSWORD = "password";
-
     public static final Long USER_ID2 = 2L;
-
     public static final String EMAIL2 = "correct2@email.com";
-
     public static final String FIRST_NAME2 = "first";
-
     public static final String LAST_NAME2 = "last";
-
     public static final String PASSWORD2 = "password";
 
 

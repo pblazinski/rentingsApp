@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import pl.lodz.p.edu.grs.exceptions.GameAddRateException;
 import pl.lodz.p.edu.grs.exceptions.RateAddException;
+import pl.lodz.p.edu.grs.exceptions.UserRoleException;
 import pl.lodz.p.edu.grs.model.game.Rate;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,6 +34,19 @@ public class ExceptionHandlerAdvice {
 
     @ExceptionHandler({GameAddRateException.class})
     public ResponseEntity handleGameAddRateException(final GameAddRateException ex,
+                                                     final HttpServletRequest request) {
+        Map<String, Object> response = createResponse(
+                HttpStatus.BAD_REQUEST.value(),
+                ex.getMessage(),
+                request.getRequestURI(),
+                ex.getClass().getName()
+        );
+
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @ExceptionHandler({UserRoleException.class})
+    public ResponseEntity handleUserRoleException(final UserRoleException ex,
                                                      final HttpServletRequest request) {
         Map<String, Object> response = createResponse(
                 HttpStatus.BAD_REQUEST.value(),

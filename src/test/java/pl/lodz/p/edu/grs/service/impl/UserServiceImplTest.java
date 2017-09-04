@@ -76,6 +76,7 @@ public class UserServiceImplTest {
         //given
         RegisterUserDto registerDTO = UserUtil.mockRegisterUserDTO();
         User user = UserUtil.mockUser();
+        user.getRoles().clear();
 
         when(userFactory.createUser(registerDTO))
                 .thenReturn(user);

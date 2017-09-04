@@ -2,6 +2,7 @@ package pl.lodz.p.edu.grs.controller.user;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,6 +16,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import pl.lodz.p.edu.grs.model.user.User;
+import pl.lodz.p.edu.grs.model.user.UserConstants;
 import pl.lodz.p.edu.grs.repository.BorrowRepository;
 import pl.lodz.p.edu.grs.repository.CategoryRepository;
 import pl.lodz.p.edu.grs.repository.GameRepository;
@@ -39,10 +41,8 @@ public class UserPOSTRegisterUserEndpointTest {
     private UserRepository userRepository;
     @Autowired
     private BorrowRepository borrowRepository;
-
     @Autowired
     private MockMvc mockMvc;
-
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -127,6 +127,25 @@ public class UserPOSTRegisterUserEndpointTest {
     }
 
     @Test
+    public void shouldReturnBadRequestWhenRegisterUserWithTooLongFirstName() throws Exception {
+        //given
+        RegisterUserDto userDTO = UserUtil.mockRegisterUserDTO();
+        userDTO.setFirstName(StringUtils.repeat("a", UserConstants.MAX_SIZE_FIRST_NAME + 1));
+
+        String content = objectMapper.writeValueAsString(userDTO);
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/api/users/")
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(content);
+
+        //when
+        ResultActions result = mockMvc.perform(requestBuilder);
+
+        //then
+        result.andExpect(status().isBadRequest());
+    }
+
+    @Test
     public void shouldReturnBadRequestWhenRegisterUserWithBlankLastName() throws Exception {
         //given
         RegisterUserDto userDTO = UserUtil.mockRegisterUserDTO();
@@ -146,10 +165,48 @@ public class UserPOSTRegisterUserEndpointTest {
     }
 
     @Test
+    public void shouldReturnBadRequestWhenRegisterUserWithTooLongLastName() throws Exception {
+        //given
+        RegisterUserDto userDTO = UserUtil.mockRegisterUserDTO();
+        userDTO.setLastName(StringUtils.repeat("a", UserConstants.MAX_SIZE_LAST_NAME + 1));
+
+        String content = objectMapper.writeValueAsString(userDTO);
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/api/users/")
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(content);
+
+        //when
+        ResultActions result = mockMvc.perform(requestBuilder);
+
+        //then
+        result.andExpect(status().isBadRequest());
+    }
+
+    @Test
     public void shouldReturnBadRequestWhenRegisterUserWithBlankPassword() throws Exception {
         //given
         RegisterUserDto userDTO = UserUtil.mockRegisterUserDTO();
         userDTO.setPassword(BLANK_VALUE);
+
+        String content = objectMapper.writeValueAsString(userDTO);
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/api/users/")
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(content);
+
+        //when
+        ResultActions result = mockMvc.perform(requestBuilder);
+
+        //then
+        result.andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void shouldReturnBadRequestWhenRegisterUserWithTooShortPassword() throws Exception {
+        //given
+        RegisterUserDto userDTO = UserUtil.mockRegisterUserDTO();
+        userDTO.setPassword(StringUtils.repeat("a", UserConstants.MIN_SIZE_PASSWORD - 1));
 
         String content = objectMapper.writeValueAsString(userDTO);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/api/users/")

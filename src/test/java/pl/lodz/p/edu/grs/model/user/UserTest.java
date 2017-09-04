@@ -4,8 +4,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
+import pl.lodz.p.edu.grs.exceptions.UserRoleException;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UserTest {
@@ -16,6 +18,7 @@ public class UserTest {
     private static final String EMAIL = "email@correct.email";
     private static final String PASSWORD = "password";
     private static final Role ROLE = Role.USER;
+    private static final boolean ACTIVE = true;
 
     @Before
     public void setUp() throws Exception {
@@ -88,6 +91,34 @@ public class UserTest {
     }
 
     @Test
+    public void shouldSetActive() throws Exception {
+        //given
+
+        //when
+        user.updateActive(ACTIVE);
+
+        //then
+        assertThat(user.isActive())
+                .isNotNull()
+                .isEqualTo(ACTIVE);
+    }
+
+    @Test
+    public void shouldReplaceActive() throws Exception {
+        //given
+        user.updateActive(false);
+
+        //when
+        user.updateActive(ACTIVE);
+
+        //then
+        assertThat(user.isActive())
+                .isNotNull()
+                .isNotSameAs(false)
+                .isEqualTo(ACTIVE);
+    }
+
+    @Test
     public void shouldSetPassword() throws Exception {
         //given
 
@@ -130,6 +161,21 @@ public class UserTest {
     }
 
     @Test
+    public void shouldThrowUserRoleExceptionWhenAddTheSameRoleForUser() throws Exception {
+        //given
+        user.grant(ROLE);
+
+        //when
+        Throwable throwable = catchThrowable(() -> user.grant(ROLE));
+
+        //then
+        assertThat(throwable)
+                .hasNoCause()
+                .isInstanceOf(UserRoleException.class)
+                .hasMessage("Cannot add same role for user");
+    }
+
+    @Test
     public void shouldRemoveRole() throws Exception {
         //given
         user.grant(ROLE);
@@ -141,5 +187,19 @@ public class UserTest {
         assertThat(user.getRoles())
                 .doesNotContain(ROLE)
                 .isEmpty();
+    }
+
+    @Test
+    public void shouldThrowUserRoleExceptionWhenRemoveRoleWhichUserNotHas() throws Exception {
+        //given
+
+        //when
+        Throwable throwable = catchThrowable(() -> user.revoke(ROLE));
+
+        //then
+        assertThat(throwable)
+                .hasNoCause()
+                .isInstanceOf(UserRoleException.class)
+                .hasMessage(String.format("User don't have role %s", ROLE));
     }
 }
