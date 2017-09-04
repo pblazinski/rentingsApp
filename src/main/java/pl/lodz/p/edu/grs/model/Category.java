@@ -7,7 +7,6 @@ import javax.persistence.*;
 
 @Entity
 @Getter
-@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,7 +19,6 @@ public class Category {
     @NotBlank
     @Column(nullable = false)
     private String name;
-
 
     public Category(String name) {
         this.name = name;

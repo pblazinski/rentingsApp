@@ -2,7 +2,6 @@ package pl.lodz.p.edu.grs.controller.game;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,9 +13,11 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.edu.grs.model.game.Game;
 import pl.lodz.p.edu.grs.service.GameService;
+import pl.lodz.p.edu.grs.service.RecommendationService;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -25,14 +26,15 @@ import java.util.List;
 public class GameController {
 
     private final GameService gameService;
-
+    private final RecommendationService recommendationService;
     private final Validator category;
 
     //TODO Pre authorize on controllers methods !important
-    @Autowired
     public GameController(final GameService gameService,
+                          final RecommendationService recommendationService,
                           @Qualifier("categoryValidator") final Validator category) {
         this.gameService = gameService;
+        this.recommendationService = recommendationService;
         this.category = category;
     }
 
@@ -108,6 +110,19 @@ public class GameController {
         return gameService.getGame(id);
     }
 
+    @GetMapping("/{gameId}/recommendations")
+    public Recommendation getGameRecommendations(@PathVariable final long gameId,
+                                                 @RequestParam final long limit) {
+        List<Game> basedOnCategory =
+                recommendationService.getGameRecommendationBasedOnCategory(gameId, limit);
+        List<Game> basedOnCollaboration =
+                recommendationService.getGameRecommendationBasedOnCollaboration(gameId, limit);
+
+        return Recommendation.builder()
+                .collaborationBased(basedOnCollaboration)
+                .categoryBased(basedOnCategory)
+                .build();
+    }
 
     @DeleteMapping("/{id}")
     @ApiOperation(value = "Delete game")

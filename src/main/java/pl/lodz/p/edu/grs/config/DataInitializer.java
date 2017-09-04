@@ -47,6 +47,7 @@ public class DataInitializer {
         GameDto game1 = new GameDto("H1Z1: King Of The Kill", "Battle Royale", true, 120, 2L);
         GameDto game2 = new GameDto("Destiny 2", "Open Beta", true, 10, 2L);
         GameDto game3 = new GameDto("Empire Earth II", "RPG", true, 41, 2L);
+        GameDto game5 = new GameDto("Test", "RPG", true, 41, 2L);
         GameDto game4 = new GameDto("FIFA 18", "Battle Royale", true, 12, 1L);
 
 
@@ -54,6 +55,7 @@ public class DataInitializer {
         gameService.addGame(game1);
         gameService.addGame(game2);
         gameService.addGame(game3);
+        gameService.addGame(game5);
         gameService.addGame(game4);
     }
 
@@ -82,7 +84,7 @@ public class DataInitializer {
     private void mockBorrows() {
         BorrowDto borrowDto = new BorrowDto(Arrays.asList(1L, 2L));
 
-        BorrowDto borrowDto2 = new BorrowDto(Arrays.asList(2L, 3L));
+        BorrowDto borrowDto2 = new BorrowDto(Arrays.asList(2L, 3L, 6L));
 
         BorrowDto borrowDto3 = new BorrowDto(Arrays.asList(2L, 4L));
 

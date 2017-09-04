@@ -15,6 +15,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.validation.Valid;
@@ -54,12 +55,12 @@ public class Game {
     private double price;
 
     @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "category_id")
     private Category category;
 
     @Valid
     @Embedded
     private RatingSummary ratingSummary = new RatingSummary();
-
 
     public Game(String title, String description, boolean available, double price) {
         this(null, title, description, available, price);
@@ -86,6 +87,21 @@ public class Game {
                 ", description='" + description + '\'' +
                 ", available=" + available +
                 '}';
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Game game = (Game) o;
+
+        return id != null ? id.equals(game.id) : game.id == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
     }
 
     public void updateTitleAndDescription(final String title, final String description) {
