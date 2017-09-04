@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
+import pl.lodz.p.edu.grs.exceptions.UserRoleException;
 import pl.lodz.p.edu.grs.model.game.Game;
 
 import javax.persistence.Column;
@@ -19,6 +20,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -43,10 +45,12 @@ public class User {
     private String password;
 
     @NotBlank
+    @Size(max = UserConstants.MAX_SIZE_FIRST_NAME)
     @Column(nullable = false)
     private String firstName;
 
     @NotBlank
+    @Size(max = UserConstants.MAX_SIZE_LAST_NAME)
     @Column(nullable = false)
     private String lastName;
 
@@ -83,21 +87,21 @@ public class User {
         this.email = email;
     }
 
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
     public void grant(final Role role) {
         if (this.roles.contains(role)) {
-            //TODO throw exception
+            throw new UserRoleException("Cannot add same role for user");
         }
         this.roles.add(role);
     }
 
     public void revoke(final Role role) {
         if (!this.roles.contains(role)) {
-            //TODO throw exception
+            throw new UserRoleException(String.format("User don't have role %s", role));
         }
         this.roles.remove(role);
+    }
+
+    public void updateActive(final boolean active) {
+        this.active = active;
     }
 }

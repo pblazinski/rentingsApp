@@ -22,9 +22,7 @@ import javax.transaction.Transactional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-
     private final UserFactory userFactory;
-
     private final PasswordEncoder passwordEncoder;
 
     public UserServiceImpl(final UserRepository userRepository,
@@ -62,7 +60,8 @@ public class UserServiceImpl implements UserService {
         User user = userFactory.createUser(registerUserDto);
 
         user.grant(Role.USER);
-        user.setActive(true);
+        user.updateActive(true);
+
         user = userRepository.save(user);
 
         log.info("Register user <{}> with email <{}>", user.getId(), user.getEmail());
@@ -153,13 +152,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void blockUser(final long userId) {
-        if(!userRepository.exists(userId)){
+        if (!userRepository.exists(userId)) {
             throw new EntityNotFoundException();
         }
 
         User user = userRepository.findOne(userId);
 
-        user.setActive(false);
+        user.updateActive(false);
 
         userRepository.save(user);
 

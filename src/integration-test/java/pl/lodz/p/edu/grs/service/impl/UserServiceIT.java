@@ -1,5 +1,6 @@
 package pl.lodz.p.edu.grs.service.impl;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.junit.After;
 import org.junit.Test;
@@ -13,13 +14,11 @@ import pl.lodz.p.edu.grs.Application;
 import pl.lodz.p.edu.grs.controller.user.RegisterUserDto;
 import pl.lodz.p.edu.grs.model.user.Role;
 import pl.lodz.p.edu.grs.model.user.User;
+import pl.lodz.p.edu.grs.model.user.UserConstants;
 import pl.lodz.p.edu.grs.repository.BorrowRepository;
 import pl.lodz.p.edu.grs.repository.CategoryRepository;
 import pl.lodz.p.edu.grs.repository.GameRepository;
 import pl.lodz.p.edu.grs.repository.UserRepository;
-import pl.lodz.p.edu.grs.service.BorrowService;
-import pl.lodz.p.edu.grs.service.CategoryService;
-import pl.lodz.p.edu.grs.service.GameService;
 import pl.lodz.p.edu.grs.service.UserService;
 import pl.lodz.p.edu.grs.util.UserUtil;
 
@@ -38,20 +37,14 @@ public class UserServiceIT {
 
     @Autowired
     private BorrowRepository borrowRepository;
-
-
     @Autowired
     private GameRepository gameRepository;
-
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private UserService userService;
-
     @Autowired
     private CategoryRepository categoryRepository;
-
 
     @After
     public void tearDown() throws Exception {
@@ -147,10 +140,34 @@ public class UserServiceIT {
     }
 
     @Test(expected = ConstraintViolationException.class)
+    public void shouldThrowConstraintViolationExceptionWhenRegisterUserWithTooLongFirstName() {
+        //given
+        RegisterUserDto userDTO = UserUtil.mockRegisterUserDTO();
+        userDTO.setFirstName(StringUtils.repeat("a", UserConstants.MAX_SIZE_FIRST_NAME + 1));
+
+        //when
+        userService.registerUser(userDTO);
+
+        //then
+    }
+
+    @Test(expected = ConstraintViolationException.class)
     public void shouldThrowConstraintViolationExceptionWhenRegisterUserWithBlankLastName() {
         //given
         RegisterUserDto userDTO = UserUtil.mockRegisterUserDTO();
         userDTO.setLastName(BLANK_VALUE);
+
+        //when
+        userService.registerUser(userDTO);
+
+        //then
+    }
+
+    @Test(expected = ConstraintViolationException.class)
+    public void shouldThrowConstraintViolationExceptionWhenRegisterUserWithTooLongLastName() {
+        //given
+        RegisterUserDto userDTO = UserUtil.mockRegisterUserDTO();
+        userDTO.setFirstName(StringUtils.repeat("a", UserConstants.MAX_SIZE_LAST_NAME + 1));
 
         //when
         userService.registerUser(userDTO);
@@ -274,6 +291,24 @@ public class UserServiceIT {
     }
 
     @Test
+    public void shouldThrowConstraintViolationExceptionWhenUpdateNamesWithTooLongFirstName() {
+        //given
+        RegisterUserDto userDTO = UserUtil.mockRegisterUserDTO();
+        User user = userService.registerUser(userDTO);
+        Long userId = user.getId();
+
+        //when
+        Throwable throwable = catchThrowable(() ->
+                userService.updateNames(userId, StringUtils.repeat("a", UserConstants.MAX_SIZE_FIRST_NAME + 1), user.getLastName())
+        );
+
+        //then
+        Throwable rootCause = ExceptionUtils.getRootCause(throwable);
+        assertThat(rootCause)
+                .isInstanceOf(ConstraintViolationException.class);
+    }
+
+    @Test
     public void shouldThrowConstraintViolationExceptionWhenUpdateNamesWithBlankLastName() {
         //given
         RegisterUserDto userDTO = UserUtil.mockRegisterUserDTO();
@@ -282,6 +317,24 @@ public class UserServiceIT {
 
         //when
         Throwable throwable = catchThrowable(() -> userService.updateNames(userId, user.getFirstName(), BLANK_VALUE));
+
+        //then
+        Throwable rootCause = ExceptionUtils.getRootCause(throwable);
+        assertThat(rootCause)
+                .isInstanceOf(ConstraintViolationException.class);
+    }
+
+    @Test
+    public void shouldThrowConstraintViolationExceptionWhenUpdateNamesWithTooLongLastName() {
+        //given
+        RegisterUserDto userDTO = UserUtil.mockRegisterUserDTO();
+        User user = userService.registerUser(userDTO);
+        Long userId = user.getId();
+
+        //when
+        Throwable throwable = catchThrowable(() ->
+                userService.updateNames(userId, user.getFirstName(), StringUtils.repeat("a", UserConstants.MAX_SIZE_LAST_NAME + 1))
+        );
 
         //then
         Throwable rootCause = ExceptionUtils.getRootCause(throwable);
@@ -315,6 +368,16 @@ public class UserServiceIT {
 
         //when
         userService.updatePassword(1L, UserUtil.PASSWORD);
+
+        //then
+    }
+
+    @Test(expected = EntityNotFoundException.class)
+    public void shouldThrowEntityNotFoundExceptionWhenUBlockUserWhichNotExist() {
+        //given
+
+        //when
+        userService.blockUser(1L);
 
         //then
     }
@@ -368,7 +431,6 @@ public class UserServiceIT {
                 .isTrue();
         assertThat(check.isActive())
                 .isFalse();
-
     }
 
 }
