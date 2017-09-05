@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import pl.lodz.p.edu.grs.controller.user.RegisterUserDto;
 import pl.lodz.p.edu.grs.factory.UserFactory;
@@ -22,6 +23,7 @@ import pl.lodz.p.edu.grs.util.UserUtil;
 import javax.persistence.EntityNotFoundException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -301,5 +303,17 @@ public class UserServiceImplTest {
                 .findOne(user.getId());
         verify(userRepository)
                 .save(user);
+    }
+
+    @Test(expected = UsernameNotFoundException.class)
+    public void shouldThrowUsernameNotFoundExceptionWhenNotFoundByEmail() throws Exception {
+        //given
+        when(userRepository.findByEmail(UserUtil.EMAIL))
+                .thenReturn(Optional.empty());
+
+        //then
+        userService.findByEmail(UserUtil.EMAIL);
+
+        //then
     }
 }

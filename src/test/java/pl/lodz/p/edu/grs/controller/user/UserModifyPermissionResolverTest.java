@@ -16,6 +16,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -65,6 +66,35 @@ public class UserModifyPermissionResolverTest {
                 .hasAuthority(Authority.MODIFY_USER);
         verify(user)
                 .getId();
+
+        assertThat(result)
+                .isTrue();
+    }
+
+    @Test
+    public void shouldCompleteSuccessfullyWhenUserIsSystemAdmin() throws Exception {
+        //given
+        AppUser appUser = mock(AppUser.class);
+        User user = mock(User.class);
+
+        when(appUser.getUsername())
+                .thenReturn(EMAIL);
+        when(userRepository.findByEmail(EMAIL))
+                .thenReturn(Optional.of(user));
+        when(systemAdminPermissionResolver.isSystemAdmin(user))
+                .thenReturn(true);
+
+        //when
+        boolean result = userModifyPermissionResolver.hasAuthorityToModifyUser(appUser, USER_ID);
+
+        //then
+        verify(appUser)
+                .getUsername();
+        verify(userRepository)
+                .findByEmail(EMAIL);
+        verify(systemAdminPermissionResolver)
+                .isSystemAdmin(user);
+        verifyNoMoreInteractions(appUser);
 
         assertThat(result)
                 .isTrue();

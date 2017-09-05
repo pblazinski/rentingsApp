@@ -1,7 +1,5 @@
 package pl.lodz.p.edu.grs.model.user;
 
-import sun.security.x509.AuthorityInfoAccessExtension;
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;

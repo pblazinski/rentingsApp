@@ -84,7 +84,9 @@ public class StubHelper {
         stubCategories();
         List<Game> games = stubGames();
 
-        BorrowDto borrowDto = new BorrowDto(Collections.singletonList(games.get(0).getId()));
+        BorrowDto borrowDto = new BorrowDto();
+        borrowDto.setGames(Collections.singletonList(games.get(0).getId()));
+
         return borrowService.addBorrow(borrowDto, user.getEmail());
     }
 

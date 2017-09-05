@@ -44,7 +44,7 @@ public class BorrowController {
 
     @GetMapping("/{id}")
     @ApiOperation(value = "Get borrow by id")
-    @PreAuthorize("@borrowPermisionResolver.hasAuthoritiyToGetBorrow(principal, #id)")
+    @PreAuthorize("@borrowPermissionResolver.hasAuthoritiyToGetBorrow(principal, #id)")
     public Borrow getBorrow(@PathVariable final Long id) {
         return borrowService.getBorrow(id);
     }

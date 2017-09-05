@@ -24,6 +24,7 @@ import pl.lodz.p.edu.grs.service.CategoryService;
 import pl.lodz.p.edu.grs.service.GameService;
 import pl.lodz.p.edu.grs.util.CategoryUtil;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -335,6 +336,24 @@ public class GameServiceImplTest {
         verifyZeroInteractions(game);
         verifyZeroInteractions(user);
         verifyZeroInteractions(gameRepository);
+    }
+
+    @Test(expected = EntityNotFoundException.class)
+    public void shouldThrowEntityNotFoundExceptionWhenTryToRemoveGameWhichNotExist() {
+        //given
+        when(gameRepository.exists(GAME_ID))
+                .thenReturn(false);
+        //when
+        gameService.remove(GAME_ID);
+    }
+
+    @Test(expected = EntityNotFoundException.class)
+    public void shouldThrowEntityNotFoundExceptionWhenTryToGetGameWhichNotExist() {
+        //given
+        when(gameRepository.exists(GAME_ID))
+                .thenReturn(false);
+        //when
+        gameService.getGame(GAME_ID);
     }
 
 }
