@@ -1,10 +1,12 @@
 package pl.lodz.p.edu.grs.controller.user;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 
-@Data
+@Getter
+@Setter
 public class UpdateUserEmailDto {
 
     @Email

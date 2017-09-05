@@ -9,20 +9,19 @@ import pl.lodz.p.edu.grs.repository.BorrowRepository;
 import pl.lodz.p.edu.grs.repository.UserRepository;
 import pl.lodz.p.edu.grs.security.AppUser;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @Component
-public class BorrowPermisionResolver {
+public class BorrowPermissionResolver {
 
     private final UserRepository userRepository;
-
     private final SystemAdminPermissionResolver systemAdminPermissionResolver;
-
     private final BorrowRepository borrowRepository;
 
-    public BorrowPermisionResolver(final UserRepository userRepository,
-                                   final SystemAdminPermissionResolver systemAdminPermissionResolver,
-                                   final BorrowRepository borrowRepository) {
+    public BorrowPermissionResolver(final UserRepository userRepository,
+                                    final SystemAdminPermissionResolver systemAdminPermissionResolver,
+                                    final BorrowRepository borrowRepository) {
         this.userRepository = userRepository;
         this.systemAdminPermissionResolver = systemAdminPermissionResolver;
         this.borrowRepository = borrowRepository;
@@ -43,6 +42,7 @@ public class BorrowPermisionResolver {
 
         User user = optional.get();
 
-        return systemAdminPermissionResolver.isSystemAdmin(user) || userDetails.hasAuthority(Authority.GET_BORROW) && user.getId() == borrow.getUser().getId();
+        return systemAdminPermissionResolver.isSystemAdmin(user) ||
+                (userDetails.hasAuthority(Authority.GET_BORROW) && Objects.equals(user.getId(), borrow.getUser().getId()));
     }
 }

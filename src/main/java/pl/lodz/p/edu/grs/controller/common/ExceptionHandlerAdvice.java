@@ -45,19 +45,6 @@ public class ExceptionHandlerAdvice {
         return ResponseEntity.badRequest().body(response);
     }
 
-    @ExceptionHandler({UserRoleException.class})
-    public ResponseEntity handleUserRoleException(final UserRoleException ex,
-                                                     final HttpServletRequest request) {
-        Map<String, Object> response = createResponse(
-                HttpStatus.BAD_REQUEST.value(),
-                ex.getMessage(),
-                request.getRequestURI(),
-                ex.getClass().getName()
-        );
-
-        return ResponseEntity.badRequest().body(response);
-    }
-
     private Map<String, Object> createResponse(final int status,
                                                final String message,
                                                final String path,

@@ -26,7 +26,12 @@ public class UserUtil {
     }
 
     public static RegisterUserDto mockRegisterUserDTO() {
-        return new RegisterUserDto(EMAIL, FIRST_NAME, LAST_NAME, PASSWORD);
+        RegisterUserDto registerUserDto = new RegisterUserDto();
+        registerUserDto.setEmail(EMAIL);
+        registerUserDto.setPassword(PASSWORD);
+        registerUserDto.setFirstName(FIRST_NAME);
+        registerUserDto.setLastName(LAST_NAME);
+        return registerUserDto;
     }
 
     public static User mockUser() {
