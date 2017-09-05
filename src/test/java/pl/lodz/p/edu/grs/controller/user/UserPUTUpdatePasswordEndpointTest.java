@@ -1,6 +1,7 @@
 package pl.lodz.p.edu.grs.controller.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,6 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import pl.lodz.p.edu.grs.model.user.User;
+import pl.lodz.p.edu.grs.model.user.UserConstants;
 import pl.lodz.p.edu.grs.repository.BorrowRepository;
 import pl.lodz.p.edu.grs.repository.CategoryRepository;
 import pl.lodz.p.edu.grs.repository.GameRepository;
@@ -152,6 +154,32 @@ public class UserPUTUpdatePasswordEndpointTest {
         //given
         String oldPassword = user.getPassword();
         UpdateUserPasswordDto emailDto = mockUpdatePasswordDto(INVALID_PASSWORD);
+
+        String content = objectMapper.writeValueAsString(emailDto);
+
+        MockHttpServletRequestBuilder requestBuilder = put(String.format("/api/users/%d/password", user.getId()))
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .with(user(new AppUser(user)))
+                .content(content);
+
+        //when
+        ResultActions result = mockMvc.perform(requestBuilder);
+
+        //then
+        user = userRepository.findOne(user.getId());
+
+        assertThat(user.getPassword())
+                .isEqualTo(oldPassword);
+
+        result.andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void shouldReturnBadRequestWhenUpdatePasswordForTooShortPassword() throws Exception {
+        //given
+        String oldPassword = user.getPassword();
+        UpdateUserPasswordDto emailDto = mockUpdatePasswordDto(StringUtils.repeat("a", UserConstants.MIN_SIZE_PASSWORD - 1));
 
         String content = objectMapper.writeValueAsString(emailDto);
 

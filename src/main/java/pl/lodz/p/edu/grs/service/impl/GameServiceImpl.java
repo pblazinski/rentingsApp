@@ -102,7 +102,7 @@ public class GameServiceImpl implements GameService {
                                           final String title,
                                           final String description) {
         if (!gameRepository.exists(id)) {
-            throw new EntityNotFoundException(); //TODO add tests veryfing that
+            throw new EntityNotFoundException();
         }
         Game game = gameRepository.getOne(id);
 

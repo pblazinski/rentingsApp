@@ -1,6 +1,7 @@
 package pl.lodz.p.edu.grs.controller.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,6 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import pl.lodz.p.edu.grs.model.user.User;
+import pl.lodz.p.edu.grs.model.user.UserConstants;
 import pl.lodz.p.edu.grs.repository.BorrowRepository;
 import pl.lodz.p.edu.grs.repository.CategoryRepository;
 import pl.lodz.p.edu.grs.repository.GameRepository;
@@ -179,9 +181,64 @@ public class UserPUTUpdateNamesEndpointTest {
     }
 
     @Test
+    public void shouldReturnBadRequestWhenUpdateNamesWithFirstNameIsTooLong() throws Exception {
+        //given
+        UpdateUserNamesDto namesDto = mockUpdateUserNamesDto(StringUtils.repeat("b", UserConstants.MAX_SIZE_FIRST_NAME + 1), CORRECT_LAST_NAME);
+
+        String content = objectMapper.writeValueAsString(namesDto);
+
+        MockHttpServletRequestBuilder requestBuilder = put(String.format("/api/users/%d/names", user.getId()))
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .with(user(new AppUser(user)))
+                .content(content);
+
+        //when
+        ResultActions result = mockMvc.perform(requestBuilder);
+
+        //then
+        user = userRepository.findOne(user.getId());
+
+        assertThat(user.getFirstName())
+                .isNotSameAs(CORRECT_FIRST_NAME);
+        assertThat(user.getLastName())
+                .isNotSameAs(CORRECT_LAST_NAME);
+
+        result.andExpect(status().isBadRequest());
+    }
+
+    @Test
     public void shouldReturnBadRequestWhenUpdateNamesWithLastNameIsBlank() throws Exception {
         //given
         UpdateUserNamesDto namesDto = mockUpdateUserNamesDto(CORRECT_FIRST_NAME, BLANK_VALUE);
+
+        String content = objectMapper.writeValueAsString(namesDto);
+
+        MockHttpServletRequestBuilder requestBuilder = put(String.format("/api/users/%d/names", user.getId()))
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .with(user(new AppUser(user)))
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(content);
+
+        //when
+        ResultActions result = mockMvc.perform(requestBuilder);
+
+        //then
+        user = userRepository.findOne(user.getId());
+
+        assertThat(user.getFirstName())
+                .isNotSameAs(CORRECT_FIRST_NAME);
+
+        assertThat(user.getLastName())
+                .isNotSameAs(CORRECT_LAST_NAME);
+
+        result.andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void shouldReturnBadRequestWhenUpdateNamesWithLastNameIsTooLong() throws Exception {
+        //given
+        UpdateUserNamesDto namesDto = mockUpdateUserNamesDto(CORRECT_FIRST_NAME, StringUtils.repeat("a", UserConstants.MAX_SIZE_LAST_NAME + 1));
 
         String content = objectMapper.writeValueAsString(namesDto);
 

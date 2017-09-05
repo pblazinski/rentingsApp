@@ -1,9 +1,16 @@
 package pl.lodz.p.edu.grs.model;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.NotBlank;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 @Entity
 @Getter
@@ -19,10 +26,6 @@ public class Category {
     @NotBlank
     @Column(nullable = false)
     private String name;
-
-    public Category(String name) {
-        this.name = name;
-    }
 
     public void updateName(final String name) {
         this.name = name;
