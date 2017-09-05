@@ -1,4 +1,4 @@
-package pl.lodz.p.edu.grs.service.impl;
+package pl.lodz.p.edu.grs.service.impl.it;
 
 import org.junit.After;
 import org.junit.Before;

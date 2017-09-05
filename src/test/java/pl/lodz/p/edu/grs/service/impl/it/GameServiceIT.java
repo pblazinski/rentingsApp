@@ -1,4 +1,4 @@
-package pl.lodz.p.edu.grs.service.impl;
+package pl.lodz.p.edu.grs.service.impl.it;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
