@@ -8,18 +8,8 @@ public class GameRantingsPointcuts {
     public void asyncControllerMethod() {
     }
 
-
-    @Pointcut("bean(*Controller)")
-    public void asyncBeanController() {
-    }
-
     @Pointcut("@annotation(Monitored)")
-    public void monitor() {
-
-    }
-
-    @Pointcut("execution(* *..repository..*())")
-    public void asynchCacheRepository() {
+    public void monitored() {
 
     }
 
