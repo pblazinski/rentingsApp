@@ -2,23 +2,27 @@ package pl.lodz.p.edu.grs.controller.game;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.Validator;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import pl.lodz.p.edu.grs.model.game.Game;
 import pl.lodz.p.edu.grs.service.GameService;
 import pl.lodz.p.edu.grs.service.RecommendationService;
 
 import javax.validation.Valid;
 import java.security.Principal;
-import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -28,20 +32,12 @@ public class GameController {
 
     private final GameService gameService;
     private final RecommendationService recommendationService;
-    private final Validator category;
 
     //TODO Pre authorize on controllers methods !important
     public GameController(final GameService gameService,
-                          final RecommendationService recommendationService,
-                          @Qualifier("categoryValidator") final Validator category) {
+                          final RecommendationService recommendationService) {
         this.gameService = gameService;
         this.recommendationService = recommendationService;
-        this.category = category;
-    }
-
-    @InitBinder("category")
-    protected void initRegistrationApplicationCreateRequestBinder(final WebDataBinder binder) {
-        binder.setValidator(category);
     }
 
     @GetMapping
